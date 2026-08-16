@@ -148,6 +148,15 @@ tr:hover td{background:var(--ac);}
 .nom-total{display:flex;justify-content:space-between;font-size:15px;font-weight:800;padding:8px 0 0;margin-top:4px;color:var(--am);}
 .nom-overtime{color:var(--na);}
 .nom-bruto{color:var(--vs);}
+.sel-search-wrap{position:relative;margin-bottom:6px;}
+.sel-search{width:100%;border:1.5px solid var(--bo);border-radius:8px;padding:9px 12px 9px 34px;font-size:15px;font-family:inherit;}
+.sel-search:focus{outline:none;border-color:var(--az);}
+.sel-search-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none;}
+.sel-opts{max-height:180px;overflow-y:auto;border:1.5px solid var(--bo);border-radius:8px;background:white;display:none;position:absolute;z-index:300;width:100%;box-shadow:0 4px 16px rgba(0,0,0,.15);}
+.sel-opt{padding:10px 14px;font-size:14px;cursor:pointer;border-bottom:1px solid var(--gc);}
+.sel-opt:hover,.sel-opt.sel-active{background:var(--ac);color:var(--am);font-weight:600;}
+.sel-opt:last-child{border-bottom:none;}
+.sel-opt-empty{padding:10px 14px;font-size:13px;color:var(--gm);text-align:center;}
 #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--go);color:white;padding:11px 22px;border-radius:9px;font-size:14px;font-weight:600;transition:transform .3s;z-index:999;pointer-events:none;}
 #toast.on{transform:translateX(-50%) translateY(0);}
 #toast.vs{background:var(--vs);}
@@ -777,7 +786,17 @@ tr:hover td{background:var(--ac);}
         <div class="fi"><label>Temperatura (°C)</label><input id="svT" type="number" step="0.1" placeholder="36.5"></div>
         <div class="fi"><label>Glucosa (mg/dL)</label><input id="svG" type="number" placeholder="90"></div>
         <div class="fi"><label>SpO₂ (%)</label><input id="svO2" type="number" placeholder="98"></div>
-        <div class="fi"><label>Peso (kg)</label><input id="svP" type="number" step="0.1" placeholder="65"></div>
+        <div class="fi ff">
+          <label>Peso</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input id="svP" type="number" step="0.1" placeholder="0.0" style="flex:1">
+            <select id="svPUnit" style="width:70px;border:1.5px solid var(--bo);border-radius:8px;padding:10px 6px;font-size:15px" onchange="convertirPeso()">
+              <option value="kg">kg</option>
+              <option value="lb">lb</option>
+            </select>
+            <span id="svPConv" style="font-size:12px;color:var(--gm);white-space:nowrap;min-width:60px"></span>
+          </div>
+        </div>
         <div class="fi ff"><label>Observaciones</label><textarea id="svOb" rows="2"></textarea></div>
       </div>
       <div class="ab"><button class="btn bol" onclick="closeM('mSV')">Cancelar</button><button class="btn bam" onclick="saveSV()">💾 Guardar</button></div>
@@ -1136,7 +1155,12 @@ function toast(msg, t) {
 }
 
 // ===== HELPERS =====
-function fh() { return new Date().toLocaleDateString('es')+' '+new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'}); }
+function fh() {
+  var n=new Date();
+  var h=n.getHours(), m=n.getMinutes(), ampm=h>=12?'PM':'AM';
+  h=h%12; if(h===0)h=12;
+  return n.toLocaleDateString('es')+' '+String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+' '+ampm;
+}
 function hoy() { return new Date().toLocaleDateString('es'); }
 function age(f) {
   if (!f) return '—';
@@ -1352,7 +1376,7 @@ function rEvol() {
 }
 
 // ===== MEDICAMENTOS =====
-function openMed()  { pSel('mR');  var n=new Date(); document.getElementById('mH').value=n.toTimeString().slice(0,5); openM('mMed'); }
+function openMed()  { pSel('mR');  var n=new Date(); document.getElementById('mH').value=n.toTimeString().slice(0,5); // valor interno sigue HH:MM openM('mMed'); }
 function openSV()   { pSel('svR'); openM('mSV'); }
 function openAlim() { pSel('alR'); openM('mAlim'); }
 function openInc()  { pSel('inR'); openM('mInc'); }
@@ -1618,7 +1642,12 @@ function pdfTurno() {
 }
 
 // ===== VISITAS MÉDICAS =====
-function openVM() { pSel('vmR'); openM('mVM'); }
+function openVM() {
+  pSel('vmR');
+  // forzar que el modal sea visible con altura correcta
+  var m = document.getElementById('mVM');
+  if (m) { m.classList.add('on'); }
+}
 function saveVM() {
   var rid=document.getElementById('vmR').value, med=document.getElementById('vmM').value.trim();
   if (!rid||!med) { toast('⚠️ Residente y médico son obligatorios'); return; }
@@ -2036,11 +2065,10 @@ function initPonchador() {
   // Reloj en tiempo real
   function tickReloj() {
     var n = new Date();
-    var h = String(n.getHours()).padStart(2,'0');
-    var m = String(n.getMinutes()).padStart(2,'0');
-    var s = String(n.getSeconds()).padStart(2,'0');
+    var hh=n.getHours(), mm=n.getMinutes(), ss=n.getSeconds(), ap=hh>=12?'PM':'AM';
+    hh=hh%12; if(hh===0)hh=12;
     var el = document.getElementById('pReloj');
-    if (el) el.textContent = h+':'+m+':'+s;
+    if (el) el.textContent = String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0')+':'+String(ss).padStart(2,'0')+' '+ap;
     var ds=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
     var ms=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
     var fel = document.getElementById('pFecha');
@@ -2058,20 +2086,22 @@ function poblarSelectEmps() {
     var sel = document.getElementById(sid); if (!sel) return;
     var first = sel.options[0];
     sel.innerHTML = ''; sel.appendChild(first);
-    if (esAdmin) {
-      // Admin ve todos los empleados
-      DB.usuarios.forEach(function(u){
-        var o = document.createElement('option');
-        o.value = u.id; o.textContent = u.nombre+' ('+rolL(u.rol)+')';
-        sel.appendChild(o);
-      });
-    } else {
-      // No-admin solo se ve a sí mismo
+    sel.disabled = false;
+    DB.usuarios.forEach(function(u){
       var o = document.createElement('option');
-      o.value = SES.id; o.textContent = SES.nombre;
+      o.value = u.id; o.textContent = u.nombre+' ('+rolL(u.rol)+')';
       sel.appendChild(o);
+    });
+    // Si no es admin, pre-seleccionar y bloquear visualmente sin disabled
+    if (!esAdmin) {
       sel.value = SES.id;
-      sel.disabled = true;
+      sel.style.pointerEvents = 'none';
+      sel.style.background = 'var(--gc)';
+      sel.style.color = 'var(--gm)';
+    } else {
+      sel.style.pointerEvents = '';
+      sel.style.background = '';
+      sel.style.color = '';
     }
   });
 
@@ -2664,6 +2694,126 @@ function savePerms() {
   }
 }
 
+// ===== BUSCADOR DE RESIDENTE =====
+function mkBuscador(containerId, selectId) {
+  // Reemplazar el select por un buscador visual
+  var sel = document.getElementById(selectId);
+  var wrap = sel ? sel.closest('.fi') : null;
+  if (!sel || !wrap) return;
+
+  var bId = 'b_'+selectId;
+  var listId = 'bl_'+selectId;
+
+  // Ocultar select original pero mantenerlo para guardar el valor
+  sel.style.display = 'none';
+
+  // Crear buscador
+  var div = document.createElement('div');
+  div.style.position = 'relative';
+  div.innerHTML =
+    '<div class="sel-search-wrap">' +
+      '<span class="sel-search-ico">🔍</span>' +
+      '<input id="'+bId+'" class="sel-search" type="text" placeholder="Buscar residente..." autocomplete="off">' +
+    '</div>' +
+    '<div id="'+listId+'" class="sel-opts"></div>';
+  wrap.appendChild(div);
+
+  var input = document.getElementById(bId);
+  var list  = document.getElementById(listId);
+
+  function mostrarOpts(filtro) {
+    var opts = Array.from(sel.options).slice(1); // saltar el primer "— Seleccionar —"
+    var f = (filtro||'').toLowerCase();
+    var h = '';
+    var encontrados = opts.filter(function(o){
+      return !f || o.textContent.toLowerCase().includes(f);
+    });
+    if (!encontrados.length) {
+      h = '<div class="sel-opt-empty">Sin resultados</div>';
+    } else {
+      encontrados.forEach(function(o){
+        h += '<div class="sel-opt" data-val="'+o.value+'" data-txt="'+o.textContent+'">'+o.textContent+'</div>';
+      });
+    }
+    list.innerHTML = h;
+    list.style.display = 'block';
+    // Eventos de clic en opciones
+    list.querySelectorAll('.sel-opt').forEach(function(el){
+      el.addEventListener('click', function(){
+        sel.value = this.getAttribute('data-val');
+        input.value = this.getAttribute('data-txt');
+        list.style.display = 'none';
+        // Disparar change en el select original
+        sel.dispatchEvent(new Event('change'));
+      });
+    });
+  }
+
+  input.addEventListener('focus', function(){ mostrarOpts(this.value); });
+  input.addEventListener('input', function(){ mostrarOpts(this.value); });
+  document.addEventListener('click', function(e){
+    if (!div.contains(e.target) && e.target !== input) {
+      list.style.display = 'none';
+    }
+  });
+
+  // Limpiar buscador cuando se llame pSel
+  sel._clearBuscador = function() {
+    input.value = '';
+    list.style.display = 'none';
+  };
+}
+
+function initBuscadores() {
+  // Inicializar buscadores en todos los selects de residente de los modales
+  [
+    {c:'mRes_bus', s:'mR'},    // no aplica - mRes no tiene residente
+    {c:'sv_bus',  s:'svR'},
+    {c:'al_bus',  s:'alR'},
+    {c:'in_bus',  s:'inR'},
+    {c:'vi_bus',  s:'viR'},
+    {c:'vm_bus',  s:'vmR'},
+    {c:'ter_bus', s:'terR'},
+  ].forEach(function(pair){
+    mkBuscador(pair.c, pair.s);
+  });
+  mkBuscador('med_bus','mR'); // medicamento
+}
+
+// pSel extendido: también limpiar buscadores
+var _pSelOrig = pSel;
+function pSel(sid) {
+  _pSelOrig(sid);
+  var sel = document.getElementById(sid);
+  if (sel && sel._clearBuscador) sel._clearBuscador();
+}
+
+// ===== PESO KG/LB =====
+function convertirPeso() {
+  var val  = parseFloat(document.getElementById('svP').value);
+  var unit = document.getElementById('svPUnit').value;
+  var conv = document.getElementById('svPConv');
+  if (!val || isNaN(val)) { conv.textContent=''; return; }
+  if (unit==='lb') {
+    conv.textContent = '= '+(val*0.453592).toFixed(1)+' kg';
+  } else {
+    conv.textContent = '= '+(val*2.20462).toFixed(1)+' lb';
+  }
+}
+
+// saveSV: guardar siempre en kg
+var _saveSVOrig = saveSV;
+function saveSV() {
+  var val  = parseFloat(document.getElementById('svP').value);
+  var unit = document.getElementById('svPUnit').value;
+  if (val && unit==='lb') {
+    document.getElementById('svP').value = (val*0.453592).toFixed(1);
+  }
+  _saveSVOrig();
+  document.getElementById('svPUnit').value = 'kg';
+  document.getElementById('svPConv').textContent = '';
+}
+
 // ===== INIT =====
 document.getElementById('viE').value = new Date().toTimeString().slice(0,5);
 if (!DB.visitasMed) DB.visitasMed=[];
@@ -2671,6 +2821,7 @@ if (!DB.planAct) DB.planAct=[];
 if (!DB.terapias) DB.terapias=[];
 if (!DB.planSemanal) DB.planSemanal=[];
 applyPerm();
+initBuscadores();
 dash(); dCharts(); rRes(); rMed(); rSV(); rAlim(); rAct(); rInc(); rVis(); rTur(); rUsr();
 calcAlerts();
 setInterval(calcAlerts, 300000);
