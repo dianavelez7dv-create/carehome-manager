@@ -148,15 +148,16 @@ tr:hover td{background:var(--ac);}
 .nom-total{display:flex;justify-content:space-between;font-size:15px;font-weight:800;padding:8px 0 0;margin-top:4px;color:var(--am);}
 .nom-overtime{color:var(--na);}
 .nom-bruto{color:var(--vs);}
-.sel-search-wrap{position:relative;margin-bottom:6px;}
-.sel-search{width:100%;border:1.5px solid var(--bo);border-radius:8px;padding:9px 12px 9px 34px;font-size:15px;font-family:inherit;}
-.sel-search:focus{outline:none;border-color:var(--az);}
-.sel-search-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none;}
-.sel-opts{max-height:180px;overflow-y:auto;border:1.5px solid var(--bo);border-radius:8px;background:white;display:none;position:absolute;z-index:300;width:100%;box-shadow:0 4px 16px rgba(0,0,0,.15);}
-.sel-opt{padding:10px 14px;font-size:14px;cursor:pointer;border-bottom:1px solid var(--gc);}
-.sel-opt:hover,.sel-opt.sel-active{background:var(--ac);color:var(--am);font-weight:600;}
-.sel-opt:last-child{border-bottom:none;}
-.sel-opt-empty{padding:10px 14px;font-size:13px;color:var(--gm);text-align:center;}
+.res-buscador{position:relative;margin-bottom:0;}
+.res-buscador input{width:100%;border:1.5px solid var(--bo);border-radius:8px;padding:10px 12px 10px 36px;font-size:16px;font-family:inherit;background:var(--bl);}
+.res-buscador input:focus{outline:none;border-color:var(--az);background:var(--ac);}
+.res-buscador-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:18px;pointer-events:none;z-index:1;}
+.res-lista{position:absolute;top:calc(100% + 4px);left:0;right:0;background:white;border:1.5px solid var(--az);border-radius:8px;max-height:200px;overflow-y:auto;z-index:500;box-shadow:0 6px 20px rgba(0,0,0,.18);display:none;}
+.res-lista.abierta{display:block;}
+.res-item{padding:12px 14px;font-size:14px;cursor:pointer;border-bottom:1px solid var(--gc);}
+.res-item:hover{background:var(--ac);color:var(--am);font-weight:700;}
+.res-item:last-child{border-bottom:none;}
+.res-vacio{padding:12px 14px;font-size:13px;color:var(--gm);text-align:center;}
 #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--go);color:white;padding:11px 22px;border-radius:9px;font-size:14px;font-weight:600;transition:transform .3s;z-index:999;pointer-events:none;}
 #toast.on{transform:translateX(-50%) translateY(0);}
 #toast.vs{background:var(--vs);}
@@ -1376,11 +1377,11 @@ function rEvol() {
 }
 
 // ===== MEDICAMENTOS =====
-function openMed()  { pSel('mR');  var n=new Date(); document.getElementById('mH').value=n.toTimeString().slice(0,5); // valor interno sigue HH:MM openM('mMed'); }
-function openSV()   { pSel('svR'); openM('mSV'); }
-function openAlim() { pSel('alR'); openM('mAlim'); }
-function openInc()  { pSel('inR'); openM('mInc'); }
-function openVis()  { pSel('viR'); var n=new Date(); document.getElementById('viE').value=n.toTimeString().slice(0,5); openM('mVis'); }
+function openMed()  { pSel('mR'); mkBuscador('mR'); var n=new Date(); document.getElementById('mH').value=n.toTimeString().slice(0,5); openM('mMed'); }
+function openSV()   { pSel('svR'); mkBuscador('svR'); openM('mSV'); }
+function openAlim() { pSel('alR'); mkBuscador('alR'); openM('mAlim'); }
+function openInc()  { pSel('inR'); mkBuscador('inR'); openM('mInc'); }
+function openVis()  { pSel('viR'); mkBuscador('viR'); var n=new Date(); document.getElementById('viE').value=n.toTimeString().slice(0,5); openM('mVis'); }
 function saveMed() {
   var rid=document.getElementById('mR').value, nom=document.getElementById('mN').value.trim();
   if (!rid||!nom) { toast('⚠️ Residente y medicamento obligatorios'); return; }
@@ -1642,12 +1643,7 @@ function pdfTurno() {
 }
 
 // ===== VISITAS MÉDICAS =====
-function openVM() {
-  pSel('vmR');
-  // forzar que el modal sea visible con altura correcta
-  var m = document.getElementById('mVM');
-  if (m) { m.classList.add('on'); }
-}
+function openVM() { pSel('vmR'); mkBuscador('vmR'); openM('mVM'); }
 function saveVM() {
   var rid=document.getElementById('vmR').value, med=document.getElementById('vmM').value.trim();
   if (!rid||!med) { toast('⚠️ Residente y médico son obligatorios'); return; }
@@ -1722,7 +1718,7 @@ function rOM() {
 
 // ===== PLAN DE ACTIVIDADES =====
 function openAct2() { openM('mAct2'); }
-function openTer()  { pSel('terR'); openM('mTer'); }
+function openTer()  { pSel('terR'); mkBuscador('terR'); openM('mTer'); }
 function openPlan() { openM('mPlan'); }
 
 function saveAct2() {
@@ -2821,7 +2817,6 @@ if (!DB.planAct) DB.planAct=[];
 if (!DB.terapias) DB.terapias=[];
 if (!DB.planSemanal) DB.planSemanal=[];
 applyPerm();
-initBuscadores();
 dash(); dCharts(); rRes(); rMed(); rSV(); rAlim(); rAct(); rInc(); rVis(); rTur(); rUsr();
 calcAlerts();
 setInterval(calcAlerts, 300000);
