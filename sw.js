@@ -1,20 +1,12 @@
-const CACHE = 'carehome-v1';
-const ARCHIVOS = [
-  './',
-  './index.html'
-];
+// Versión del caché — cambiar este número fuerza actualización
+const CACHE = 'carehome-v3';
 
-// Instalar — guardar en caché
+// Instalar — sin pre-caché para evitar problemas
 self.addEventListener('install', function(e) {
-  e.waitUntil(
-    caches.open(CACHE).then(function(cache) {
-      return cache.addAll(ARCHIVOS);
-    })
-  );
-  self.skipWaiting();
+  self.skipWaiting(); // activar inmediatamente
 });
 
-// Activar — limpiar cachés viejos
+// Activar — eliminar cachés viejos
 self.addEventListener('activate', function(e) {
   e.waitUntil(
     caches.keys().then(function(keys) {
@@ -27,23 +19,22 @@ self.addEventListener('activate', function(e) {
   self.clients.claim();
 });
 
-// Fetch — primero caché, luego red
+// Fetch — red primero, caché como respaldo
+// Esto garantiza que siempre se vea la versión más nueva
 self.addEventListener('fetch', function(e) {
   e.respondWith(
-    caches.match(e.request).then(function(cached) {
-      if (cached) return cached;
-      return fetch(e.request).then(function(response) {
-        // Guardar en caché si es un recurso válido
-        if (e.request.url.startsWith('http')) {
-          var clone = response.clone();
-          caches.open(CACHE).then(function(cache) {
-            cache.put(e.request, clone);
-          });
-        }
+    fetch(e.request)
+      .then(function(response) {
+        // Guardar copia fresca en caché
+        var clone = response.clone();
+        caches.open(CACHE).then(function(cache) {
+          cache.put(e.request, clone);
+        });
         return response;
-      }).catch(function() {
-        return cached;
-      });
-    })
+      })
+      .catch(function() {
+        // Si no hay red, usar caché
+        return caches.match(e.request);
+      })
   );
 });
