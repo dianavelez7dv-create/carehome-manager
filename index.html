@@ -1967,9 +1967,7 @@ function rVM() {
   medicos.forEach(function(m){
     var o=document.createElement('option'); o.value=m; o.textContent=m; medSel.appendChild(o);
   });
-  var medicos=[...new Set(DB.visitasMed.map(function(v){ return v.medico; }))];
-  medicos.forEach(function(m){ var o=document.createElement('option');o.value=m;o.textContent=m;medSel.appendChild(o); });
-  if (curMed) medSel.value=curMed;
+if (curMed) medSel.value=curMed;
   if (!lista.length) { tbody.innerHTML=em(8,'🩺','Sin visitas médicas registradas.'); return; }
   var h='';
   lista.forEach(function(v){
