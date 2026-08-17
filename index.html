@@ -414,6 +414,7 @@ tr:hover td{background:var(--ac);}
     <div style="display:flex;gap:9px;margin-bottom:14px;flex-wrap:wrap;align-items:flex-end">
       <div class="fi" style="flex:1;min-width:180px"><label>Filtrar por residente</label><select id="fAlimR"><option value="">— Todos —</option></select></div>
       <button class="btn bna" onclick="openAlim()">➕ Registrar Ingesta</button>
+      <button class="btn" style="background:#2D6A4F;color:white" onclick="abrirComedorQR()">📷 Modo Comedor QR</button>
     </div>
     <div class="tw"><table>
       <thead><tr><th>Hora</th><th>Residente</th><th>Comida</th><th>Menú</th><th>% Consumido</th><th>Dieta</th><th>Obs.</th></tr></thead>
@@ -1236,6 +1237,61 @@ tr:hover td{background:var(--ac);}
   </div>
 </div>
 
+<!-- Modal: Comedor QR -->
+<div class="mo" id="mComedor">
+  <div class="md" style="max-width:420px">
+    <div class="mh" style="background:#2D6A4F">🍽️ Modo Comedor — Escanear QR <button class="mx" onclick="cerrarComedorQR()">✕</button></div>
+    <div class="mb" style="text-align:center;padding:16px">
+
+      <!-- Cámara -->
+      <div id="comedorCamWrap" style="display:block">
+        <video id="comedorVideo" style="width:100%;border-radius:10px;background:#000;max-height:260px"></video>
+        <canvas id="comedorCanvas" style="display:none"></canvas>
+        <p id="comedorMsg" style="margin:10px 0 4px;font-size:14px;color:var(--gm)">Apunta al QR del paciente...</p>
+      </div>
+
+      <!-- Datos del turno/comida (siempre visible) -->
+      <div style="display:flex;gap:8px;margin:12px 0;flex-wrap:wrap">
+        <div class="fi" style="flex:1;min-width:120px">
+          <label>Comida</label>
+          <select id="comedorComida">
+            <option>☀️ Desayuno</option>
+            <option>🌤 Almuerzo</option>
+            <option>🌙 Cena</option>
+            <option>🍎 Merienda</option>
+          </select>
+        </div>
+        <div class="fi" style="flex:1;min-width:120px">
+          <label>% Consumido</label>
+          <select id="comedorConsumo">
+            <option>100% — Todo</option>
+            <option>75% — Casi todo</option>
+            <option>50% — Mitad</option>
+            <option>25% — Poco</option>
+            <option>0% — No comió</option>
+          </select>
+        </div>
+      </div>
+      <div class="fi" style="margin-bottom:10px">
+        <label>Observación rápida (opcional)</label>
+        <input id="comedorObs" type="text" placeholder="Ej: Rechazó la sopa...">
+      </div>
+
+      <!-- Resultado del escaneo -->
+      <div id="comedorResult" style="display:none;background:var(--vc);border-radius:10px;padding:14px;margin-bottom:10px">
+        <div id="comedorResNombre" style="font-size:18px;font-weight:800;color:var(--vs)"></div>
+        <div id="comedorResHab" style="font-size:13px;color:var(--gm)"></div>
+        <div id="comedorResMsg" style="font-size:13px;margin-top:4px;font-weight:600;color:var(--vs)"></div>
+      </div>
+
+      <!-- Lista de registrados en esta sesión -->
+      <div id="comedorLista" style="max-height:180px;overflow-y:auto;margin-top:8px;text-align:left"></div>
+
+      <button class="btn bra" style="width:100%;margin-top:12px" onclick="cerrarComedorQR()">✕ Cerrar</button>
+    </div>
+  </div>
+</div>
+
 <!-- Modal: Registrar Fallecimiento -->
 <div class="mo" id="mFallecido">
   <div class="md" style="max-width:500px">
@@ -1460,7 +1516,9 @@ function pSel(sid) {
   if (!sel) return;
   var cur = sel.value;
   sel.innerHTML = '<option value="">— Seleccionar —</option>';
-  DB.residentes.forEach(function(r){
+  DB.residentes.filter(function(r){
+    return r.estado !== 'Fallecido' && r.estado !== 'Inactivo';
+  }).forEach(function(r){
     var o = document.createElement('option');
     o.value = r.id;
     o.textContent = r.nombre + ' (Hab. ' + r.habitacion + ')';
@@ -1714,16 +1772,23 @@ function rEvol() {
 }
 
 // ===== MEDICAMENTOS =====
-function openMed()  { pSel('mR'); var n=new Date(); document.getElementById('mH').value=n.toTimeString().slice(0,5); // valor HH:MM
-  openM('mMed'); }
-function openSV() {
-  pSel('svR');
-  pSelEmps('svE');
-  openM('mSV');
+function openMed() {
+  openM('mMed');
+  var n = new Date();
+  document.getElementById('mH').value = n.toTimeString().slice(0,5);
+  setTimeout(function(){
+    pSel('mR');
+    var li = document.getElementById('lupa_mR');
+    if (li) li.value = '';
+  }, 50);
 }
-function openAlim() { pSel('alR'); openM('mAlim'); }
-function openInc()  { pSel('inR'); openM('mInc'); }
-function openVis()  { pSel('viR'); var n=new Date(); document.getElementById('viE').value=n.toTimeString().slice(0,5); openM('mVis'); }
+function openSV() {
+  openM('mSV');
+  setTimeout(function(){ pSel('svR'); pSelEmps('svE'); var l=document.getElementById('lupa_svR'); if(l)l.value=''; },50);
+}
+function openAlim() { openM('mAlim'); setTimeout(function(){ pSel('alR'); var l=document.getElementById('lupa_alR'); if(l)l.value=''; },50); }
+function openInc()  { openM('mInc'); setTimeout(function(){ pSel('inR'); var l=document.getElementById('lupa_inR'); if(l)l.value=''; },50); }
+function openVis()  { openM('mVis'); var n=new Date(); document.getElementById('viE').value=n.toTimeString().slice(0,5); setTimeout(function(){ pSel('viR'); var l=document.getElementById('lupa_viR'); if(l)l.value=''; },50); }
 function saveMed() {
   var rid=document.getElementById('mR').value, nom=document.getElementById('mN').value.trim();
   if (!rid||!nom) { toast('⚠️ Residente y medicamento obligatorios'); return; }
@@ -1986,9 +2051,8 @@ function pdfTurno() {
 
 // ===== VISITAS MÉDICAS =====
 function openVM() {
-  pSel('vmR');
-  var m = document.getElementById('mVM');
-  if (m) { m.classList.add('on'); }
+  openM('mVM');
+  setTimeout(function(){ pSel('vmR'); var l=document.getElementById('lupa_vmR'); if(l)l.value=''; },50);
 }
 function saveVM() {
   var rid=document.getElementById('vmR').value, med=document.getElementById('vmM').value.trim();
@@ -2066,7 +2130,7 @@ function rOM() {
 
 // ===== PLAN DE ACTIVIDADES =====
 function openAct2() { openM('mAct2'); }
-function openTer()  { pSel('terR'); openM('mTer'); }
+function openTer()  { openM('mTer'); setTimeout(function(){ pSel('terR'); var l=document.getElementById('lupa_terR'); if(l)l.value=''; },50); }
 function openPlan() { openM('mPlan'); }
 
 function saveAct2() {
@@ -3420,6 +3484,141 @@ function pdfFallecido(fid) {
   });
   doc.save('Fallecimiento_'+f.nombre.replace(/ /g,'_')+'.pdf');
   toast('📄 PDF generado','vs');
+}
+
+// ===== MODO COMEDOR QR =====
+var _comedorSession = []; // registros de esta sesión
+
+function abrirComedorQR() {
+  _comedorSession = [];
+  document.getElementById('comedorLista').innerHTML = '';
+  document.getElementById('comedorResult').style.display = 'none';
+  document.getElementById('comedorObs').value = '';
+  // Hora actual para pre-seleccionar comida
+  var h = new Date().getHours();
+  var sel = document.getElementById('comedorComida');
+  if (h>=5  && h<11) sel.value = '☀️ Desayuno';
+  else if (h>=11 && h<15) sel.value = '🌤 Almuerzo';
+  else if (h>=15 && h<18) sel.value = '🍎 Merienda';
+  else sel.value = '🌙 Cena';
+  openM('mComedor');
+  iniciarComedorCam();
+}
+
+function iniciarComedorCam() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    document.getElementById('comedorMsg').textContent = '⚠️ Cámara no disponible. Verifica los permisos.';
+    return;
+  }
+  var video = document.getElementById('comedorVideo');
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}})
+    .then(function(stream){
+      video.srcObject = stream;
+      video.play();
+      window._comedorStream = stream;
+      window._comedorInterval = setInterval(scanComedorFrame, 600);
+      document.getElementById('comedorMsg').textContent = 'Apunta al QR del paciente...';
+    })
+    .catch(function(err){
+      document.getElementById('comedorMsg').textContent = '⚠️ No se pudo acceder a la cámara.';
+    });
+}
+
+function scanComedorFrame() {
+  var video = document.getElementById('comedorVideo');
+  var canvas = document.getElementById('comedorCanvas');
+  if (!video || !video.videoWidth) return;
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+  if ('BarcodeDetector' in window) {
+    var bd = new BarcodeDetector({formats:['qr_code']});
+    bd.detect(canvas).then(function(codes){
+      if (codes.length > 0) registrarComedorQR(codes[0].rawValue);
+    }).catch(function(){});
+  }
+}
+
+function registrarComedorQR(qrVal) {
+  var r = DB.residentes.find(function(x){
+    return (x.id===qrVal || x.cedula===qrVal) && x.estado !== 'Fallecido' && x.estado !== 'Inactivo';
+  });
+  if (!r) {
+    document.getElementById('comedorMsg').textContent = '⚠️ Paciente no encontrado: '+qrVal;
+    return;
+  }
+  // Verificar si ya fue registrado en esta sesión
+  var yaReg = _comedorSession.find(function(s){ return s.residenteId === r.id; });
+  if (yaReg) {
+    mostrarComedorResult(r, '✅ Ya registrado', false);
+    return;
+  }
+  // Registrar alimentación
+  var comida = document.getElementById('comedorComida').value;
+  var consumo = document.getElementById('comedorConsumo').value;
+  var obs = document.getElementById('comedorObs').value.trim();
+  var reg = {
+    id: 'AL'+Date.now(),
+    ts: fh(), raw: new Date().toISOString(),
+    residenteId: r.id,
+    comida: comida,
+    menu: '— Comedor',
+    consumo: consumo,
+    dieta: r.dieta || 'Regular',
+    asistio: 'Comedor — QR',
+    obs: obs
+  };
+  if (!DB.alimentacion) DB.alimentacion = [];
+  DB.alimentacion.push(reg);
+  _comedorSession.push({residenteId: r.id, nombre: r.nombre, hab: r.habitacion, consumo: consumo});
+  sDB();
+  rAlim();
+  mostrarComedorResult(r, '✅ Registrado: '+comida, true);
+  actualizarListaComedor();
+  // Limpiar obs para siguiente paciente
+  document.getElementById('comedorObs').value = '';
+}
+
+function mostrarComedorResult(r, msg, nuevo) {
+  var div = document.getElementById('comedorResult');
+  var consumoSel = document.getElementById('comedorConsumo').value;
+  div.style.display = 'block';
+  div.style.background = nuevo ? '#D8F3DC' : '#FFF3CD';
+  document.getElementById('comedorResNombre').textContent = r.nombre;
+  document.getElementById('comedorResHab').textContent = 'Hab. ' + r.habitacion + ' · ' + r.sexo;
+  document.getElementById('comedorResMsg').textContent = msg + (nuevo ? ' · ' + consumoSel : '');
+  // Ocultar después de 3 segundos
+  setTimeout(function(){
+    div.style.display = 'none';
+  }, 3000);
+}
+
+function actualizarListaComedor() {
+  var div = document.getElementById('comedorLista');
+  if (!_comedorSession.length) { div.innerHTML = ''; return; }
+  var h = '<div style="font-size:12px;color:var(--gm);margin-bottom:6px;font-weight:700">Registrados en esta sesión ('+_comedorSession.length+'):</div>';
+  _comedorSession.forEach(function(s){
+    h += '<div style="display:flex;justify-content:space-between;padding:6px 10px;background:var(--bl);border-radius:8px;margin-bottom:4px;border:1px solid var(--bo)">';
+    h += '<span style="font-size:13px;font-weight:600">'+s.nombre+'</span>';
+    h += '<span style="font-size:12px;color:var(--gm)">Hab.'+s.hab+' · '+s.consumo.split('%')[0]+'%</span>';
+    h += '</div>';
+  });
+  div.innerHTML = h;
+}
+
+function cerrarComedorQR() {
+  if (window._comedorStream) {
+    window._comedorStream.getTracks().forEach(function(t){ t.stop(); });
+    window._comedorStream = null;
+  }
+  if (window._comedorInterval) {
+    clearInterval(window._comedorInterval);
+    window._comedorInterval = null;
+  }
+  closeM('mComedor');
+  if (_comedorSession.length > 0) {
+    toast('🍽️ '+_comedorSession.length+' paciente(s) registrados en el comedor', 'vs');
+  }
 }
 
 // ===== INIT =====
