@@ -1541,10 +1541,26 @@ function rRes(filtro) {
     h += '<td>'+age(r.nacimiento)+'</td>';
     h += '<td>'+(r.diagnostico||'—')+'</td>';
     h += '<td><span class="badge '+bc+'">'+r.estado+'</span></td>';
-    h += '<td style="white-space:nowrap"><button class="btn bsm" style="background:#444;color:white" onclick="generarQRResidente(\'+r.id+\')">QR</button> <button class="btn bsm bol" onclick="goExp(\'+r.id+\')">📋</button> <button class="btn bsm" style="background:var(--na);color:white" onclick="editRes(\'+r.id+\')">✏️</button> <button class="btn bsm bmo" onclick="pdfRes(\'+r.id+\')">📄</button></td>';
+    h += '<td style="white-space:nowrap">';
+    h += '<button class="btn bsm" style="background:#444;color:white" data-id="'+r.id+'" data-act="qr">QR</button> ';
+    h += '<button class="btn bsm bol" data-id="'+r.id+'" data-act="exp">📋</button> ';
+    h += '<button class="btn bsm" style="background:var(--na);color:white" data-id="'+r.id+'" data-act="edit">✏️</button> ';
+    h += '<button class="btn bsm bmo" data-id="'+r.id+'" data-act="pdf">📄</button>';
+    h += '</td>';
     h += '</tr>';
   });
   tbody.innerHTML = h;
+  // Delegación de eventos para botones de residentes
+  tbody.addEventListener('click', function(e) {
+    var btn = e.target.closest('button[data-act]');
+    if (!btn) return;
+    var id = btn.getAttribute('data-id');
+    var act = btn.getAttribute('data-act');
+    if (act === 'qr')   generarQRResidente(id);
+    if (act === 'exp')  goExp(id);
+    if (act === 'edit') editRes(id);
+    if (act === 'pdf')  pdfRes(id);
+  });
 }
 function goExp(id) {
   goTab('expediente', document.querySelectorAll('.nt')[2]);
