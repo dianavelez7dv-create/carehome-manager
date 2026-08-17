@@ -1325,7 +1325,8 @@ function clock() {
   var ds = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
   var ms = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
   document.getElementById('hFec').textContent = ds[n.getDay()]+' '+n.getDate()+' '+ms[n.getMonth()]+' '+n.getFullYear();
-  document.getElementById('hHor').textContent = n.toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});
+  var hh=n.getHours(),mm=n.getMinutes(),ap=hh>=12?'PM':'AM'; hh=hh%12; if(!hh)hh=12;
+  document.getElementById('hHor').textContent = String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0')+' '+ap;
 }
 clock(); setInterval(clock, 30000);
 
@@ -2455,7 +2456,8 @@ function ponchar(tipo) {
 
   var n = new Date();
   var hoy = n.toISOString().slice(0,10);
-  var hora = String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
+  var ph=n.getHours(),pm=n.getMinutes(),pap=ph>=12?'PM':'AM'; ph=ph%12; if(!ph)ph=12;
+  var hora = String(ph).padStart(2,'0')+':'+String(pm).padStart(2,'0')+' '+pap;
 
   // Verificar lógica: no puede entrar si ya está dentro, ni salir si no entró
   var registrosHoy = (DB.ponches||[]).filter(function(p){ return p.userId===uid && p.fecha===hoy; });
