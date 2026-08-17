@@ -151,6 +151,10 @@ tr:hover td{background:var(--ac);}
 .nom-total{display:flex;justify-content:space-between;font-size:15px;font-weight:800;padding:8px 0 0;margin-top:4px;color:var(--am);}
 .nom-overtime{color:var(--na);}
 .nom-bruto{color:var(--vs);}
+.perm-check{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1.5px solid var(--bo);border-radius:8px;cursor:pointer;}
+.perm-check:hover{border-color:var(--mo);background:var(--mc);}
+.perm-check input[type=checkbox]{width:18px;height:18px;accent-color:var(--mo);cursor:pointer;}
+.perm-check label{font-size:13px;font-weight:600;cursor:pointer;}
 .filtro-wrap{margin-bottom:6px;position:relative;}
 .filtro-inp{width:100%;border:1.5px solid var(--bo);border-radius:8px;padding:10px 12px 10px 36px;font-size:16px;font-family:inherit;background:var(--bl);}
 .filtro-inp:focus{outline:none;border-color:var(--az);background:var(--ac);}
@@ -885,7 +889,11 @@ tr:hover td{background:var(--ac);}
     <div class="mh vs">💊 Registrar Medicamento <button class="mx" onclick="closeM('mMed')">✕</button></div>
     <div class="mb">
       <div class="fg">
-        <div class="fi"><label>Residente *</label><select id="mR"><option value="">— Seleccionar —</option></select></div>
+        <div class="fi ff">
+        <label>Residente *</label>
+        <input type="text" id="lupa_mR" placeholder="🔍 Escribir para buscar..." oninput="lupaFiltrar('lupa_mR','mR')" style="border:1.5px solid var(--bo);border-radius:8px;padding:9px 12px;font-size:15px;width:100%;margin-bottom:4px">
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:4px"><button class="btn bxs" style="background:#444;color:white;white-space:nowrap" onclick="abrirQR('mR')">📷 QR</button></div><select id="mR" size="4" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px"><option value="">— Seleccionar —</option></select>
+      </div>
         <div class="fi"><label>Enfermera</label><input id="mE" type="text"></div>
         <div class="fi"><label>Medicamento *</label><input id="mN" type="text"></div>
         <div class="fi"><label>Dosis</label><input id="mD" type="text" placeholder="Ej: 500mg"></div>
@@ -905,7 +913,11 @@ tr:hover td{background:var(--ac);}
     <div class="mh am">📈 Signos Vitales <button class="mx" onclick="closeM('mSV')">✕</button></div>
     <div class="mb">
       <div class="fg">
-        <div class="fi"><label>Residente *</label><select id="svR"><option value="">— Seleccionar —</option></select></div>
+        <div class="fi ff">
+        <label>Residente *</label>
+        <input type="text" id="lupa_svR" placeholder="🔍 Escribir para buscar..." oninput="lupaFiltrar('lupa_svR','svR')" style="border:1.5px solid var(--bo);border-radius:8px;padding:9px 12px;font-size:15px;width:100%;margin-bottom:4px">
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:4px"><button class="btn bxs" style="background:#444;color:white;white-space:nowrap" onclick="abrirQR('svR')">📷 QR</button></div><select id="svR" size="4" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px"><option value="">— Seleccionar —</option></select>
+      </div>
         <div class="fi"><label>Enfermera</label><input id="svE" type="text"></div>
         <div class="fi"><label>TA Sistólica (mmHg)</label><input id="svS" type="number" placeholder="120"></div>
         <div class="fi"><label>TA Diastólica (mmHg)</label><input id="svDi" type="number" placeholder="80"></div>
@@ -938,7 +950,11 @@ tr:hover td{background:var(--ac);}
     <div class="mh na">🍽️ Registro de Ingesta <button class="mx" onclick="closeM('mAlim')">✕</button></div>
     <div class="mb">
       <div class="fg">
-        <div class="fi"><label>Residente *</label><select id="alR"><option value="">— Seleccionar —</option></select></div>
+        <div class="fi ff">
+        <label>Residente *</label>
+        <input type="text" id="lupa_alR" placeholder="🔍 Escribir para buscar..." oninput="lupaFiltrar('lupa_alR','alR')" style="border:1.5px solid var(--bo);border-radius:8px;padding:9px 12px;font-size:15px;width:100%;margin-bottom:4px">
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:4px"><button class="btn bxs" style="background:#444;color:white;white-space:nowrap" onclick="abrirQR('alR')">📷 QR</button></div><select id="alR" size="4" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px"><option value="">— Seleccionar —</option></select>
+      </div>
         <div class="fi"><label>Comida</label><select id="alC"><option>Desayuno</option><option>Merienda AM</option><option>Almuerzo</option><option>Merienda PM</option><option>Cena</option></select></div>
         <div class="fi"><label>Menú servido</label><input id="alMn" type="text"></div>
         <div class="fi"><label>% Consumido</label><select id="alCo"><option value="100">100% — Completo</option><option value="75">75% — Casi completo</option><option value="50">50% — Mitad</option><option value="25">25% — Poco</option><option value="0">0% — No comió</option></select></div>
@@ -976,7 +992,11 @@ tr:hover td{background:var(--ac);}
     <div class="mb">
       <div class="al alr" style="margin-bottom:13px">⚠️ <span>Documente con la mayor precisión posible.</span></div>
       <div class="fg">
-        <div class="fi"><label>Residente *</label><select id="inR"><option value="">— Seleccionar —</option></select></div>
+        <div class="fi ff">
+        <label>Residente *</label>
+        <input type="text" id="lupa_inR" placeholder="🔍 Escribir para buscar..." oninput="lupaFiltrar('lupa_inR','inR')" style="border:1.5px solid var(--bo);border-radius:8px;padding:9px 12px;font-size:15px;width:100%;margin-bottom:4px">
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:4px"><button class="btn bxs" style="background:#444;color:white;white-space:nowrap" onclick="abrirQR('inR')">📷 QR</button></div><select id="inR" size="4" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px"><option value="">— Seleccionar —</option></select>
+      </div>
         <div class="fi"><label>Tipo de incidente *</label><select id="inT"><option>Caída</option><option>Reacción adversa</option><option>Lesión</option><option>Agitación / conducta</option><option>Dificultad respiratoria</option><option>Dolor agudo</option><option>Cambio de conciencia</option><option>Otro</option></select></div>
         <div class="fi ff"><label>Descripción *</label><textarea id="inD" rows="3" placeholder="¿Qué ocurrió, dónde, cómo y quién estuvo presente?"></textarea></div>
         <div class="fi"><label>Gravedad</label><select id="inG"><option>🟡 Leve</option><option>🟠 Moderado</option><option>🔴 Grave</option><option>⚫ Crítico</option></select></div>
@@ -996,7 +1016,11 @@ tr:hover td{background:var(--ac);}
     <div class="mh am">👨‍👩‍👧 Registrar Visita <button class="mx" onclick="closeM('mVis')">✕</button></div>
     <div class="mb">
       <div class="fg">
-        <div class="fi"><label>Residente *</label><select id="viR"><option value="">— Seleccionar —</option></select></div>
+        <div class="fi ff">
+        <label>Residente *</label>
+        <input type="text" id="lupa_viR" placeholder="🔍 Escribir para buscar..." oninput="lupaFiltrar('lupa_viR','viR')" style="border:1.5px solid var(--bo);border-radius:8px;padding:9px 12px;font-size:15px;width:100%;margin-bottom:4px">
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:4px"><button class="btn bxs" style="background:#444;color:white;white-space:nowrap" onclick="abrirQR('viR')">📷 QR</button></div><select id="viR" size="4" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px"><option value="">— Seleccionar —</option></select>
+      </div>
         <div class="fi"><label>Nombre del visitante *</label><input id="viN" type="text"></div>
         <div class="fi"><label>Relación con el residente</label><input id="viRel" type="text" placeholder="Hijo/a, nieto/a..."></div>
         <div class="fi"><label>Cédula del visitante</label><input id="viC" type="text"></div>
@@ -1032,10 +1056,14 @@ tr:hover td{background:var(--ac);}
 <!-- Modal: Visita Médica -->
 <div class="mo" id="mVM">
   <div class="md">
-    <div class="mh mo">🩺 Registrar Visita Médica <button class="mx" onclick="closeM('mVM')">✕</button></div>
+    <div class="mh am">🩺 Registrar Visita Médica <button class="mx" onclick="closeM('mVM')">✕</button></div>
     <div class="mb">
       <div class="fg">
-        <div class="fi"><label>Residente *</label><select id="vmR"><option value="">— Seleccionar —</option></select></div>
+        <div class="fi ff">
+        <label>Residente *</label>
+        <input type="text" id="lupa_vmR" placeholder="🔍 Escribir para buscar..." oninput="lupaFiltrar('lupa_vmR','vmR')" style="border:1.5px solid var(--bo);border-radius:8px;padding:9px 12px;font-size:15px;width:100%;margin-bottom:4px">
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:4px"><button class="btn bxs" style="background:#444;color:white;white-space:nowrap" onclick="abrirQR('vmR')">📷 QR</button></div><select id="vmR" size="4" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px"><option value="">— Seleccionar —</option></select>
+      </div>
         <div class="fi"><label>Médico *</label><input id="vmM" type="text" placeholder="Dr. Nombre Apellido"></div>
         <div class="fi"><label>Especialidad</label><select id="vmEsp">
           <option>Médico general</option><option>Geriatra</option><option>Cardiólogo</option>
@@ -1104,7 +1132,11 @@ tr:hover td{background:var(--ac);}
     <div class="mh vs">💆 Terapia Individual <button class="mx" onclick="closeM('mTer')">✕</button></div>
     <div class="mb">
       <div class="fg">
-        <div class="fi"><label>Residente *</label><select id="terR"><option value="">— Seleccionar —</option></select></div>
+        <div class="fi ff">
+        <label>Residente *</label>
+        <input type="text" id="lupa_terR" placeholder="🔍 Escribir para buscar..." oninput="lupaFiltrar('lupa_terR','terR')" style="border:1.5px solid var(--bo);border-radius:8px;padding:9px 12px;font-size:15px;width:100%;margin-bottom:4px">
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:4px"><button class="btn bxs" style="background:#444;color:white;white-space:nowrap" onclick="abrirQR('terR')">📷 QR</button></div><select id="terR" size="4" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px"><option value="">— Seleccionar —</option></select>
+      </div>
         <div class="fi"><label>Tipo de terapia *</label><select id="terT">
           <option>Fisioterapia</option><option>Terapia ocupacional</option>
           <option>Psicología / Apoyo emocional</option><option>Terapia del habla</option>
@@ -1155,6 +1187,53 @@ tr:hover td{background:var(--ac);}
         <button class="btn bol" onclick="closeM('mPlan')">Cancelar</button>
         <button class="btn bna" onclick="savePlan()">💾 Agregar</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Permisos de Usuario -->
+<div class="mo" id="mPerms">
+  <div class="md" style="max-width:520px">
+    <div class="mh mo">🔐 Permisos de Usuario <button class="mx" onclick="closeM('mPerms')">✕</button></div>
+    <div class="mb">
+      <div id="permUserInfo" style="background:var(--gc);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:14px"></div>
+      <p style="font-size:12px;color:var(--gm);margin-bottom:10px">Marca los módulos que este usuario puede ver:</p>
+      <div id="permCheckboxes" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
+      <div style="margin-top:12px;padding:10px;background:var(--nc);border-radius:8px;font-size:12px;color:var(--na)">
+        ⚠️ Los cambios aplican la próxima vez que el usuario inicie sesión.
+      </div>
+      <div class="ab">
+        <button class="btn bol" onclick="closeM('mPerms')">Cancelar</button>
+        <button class="btn bmo" onclick="savePerms()">💾 Guardar Permisos</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Escanear QR -->
+<div class="mo" id="mQR">
+  <div class="md" style="max-width:380px">
+    <div class="mh am">📷 Escanear QR Paciente <button class="mx" onclick="cerrarQR()">✕</button></div>
+    <div class="mb" style="text-align:center">
+      <input type="hidden" id="qrTargetSelect">
+      <video id="qrVideo" style="width:100%;border-radius:8px;background:#000;max-height:300px"></video>
+      <canvas id="qrCanvas" style="display:none"></canvas>
+      <p id="qrMsg" style="margin-top:10px;font-size:13px;color:var(--gm)">Iniciando cámara...</p>
+      <button class="btn bra" style="margin-top:10px;width:100%" onclick="cerrarQR()">✕ Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Ver QR generado -->
+<div class="mo" id="mQRGen">
+  <div class="md" style="max-width:320px">
+    <div class="mh am">🏷️ Código QR del Paciente <button class="mx" onclick="closeM('mQRGen')">✕</button></div>
+    <div class="mb" style="text-align:center">
+      <div id="qrGenNombre" style="font-size:18px;font-weight:800;color:var(--am);margin-bottom:4px"></div>
+      <div id="qrGenHab" style="font-size:13px;color:var(--gm);margin-bottom:14px"></div>
+      <img id="qrGenImg" src="" style="width:200px;height:200px;border:2px solid var(--bo);border-radius:8px">
+      <p style="font-size:12px;color:var(--gm);margin-top:10px">Imprime o muestra este QR para identificar al paciente rápidamente.</p>
+      <button class="btn bam" style="margin-top:10px;width:100%" onclick="closeM('mQRGen')">✓ Cerrar</button>
     </div>
   </div>
 </div>
@@ -1431,7 +1510,7 @@ function rRes(filtro) {
     h += '<td>'+age(r.nacimiento)+'</td>';
     h += '<td>'+(r.diagnostico||'—')+'</td>';
     h += '<td><span class="badge '+bc+'">'+r.estado+'</span></td>';
-    h += '<td style="white-space:nowrap"><button class="btn bsm bol" onclick="goExp(\'+r.id+\')">📋 Exp.</button> <button class="btn bsm bmo" onclick="pdfRes(\'+r.id+\')">📄</button></td>';
+    h += '<td style="white-space:nowrap"><button class="btn bsm" style="background:#444;color:white" onclick="generarQRResidente(\'+r.id+\')">QR</button> <button class="btn bsm bol" onclick="goExp(\'+r.id+\')">📋</button> <button class="btn bsm" style="background:var(--na);color:white" onclick="editRes(\'+r.id+\')">✏️</button> <button class="btn bsm bmo" onclick="pdfRes(\'+r.id+\')">📄</button></td>';
     h += '</tr>';
   });
   tbody.innerHTML = h;
@@ -1545,7 +1624,8 @@ function rEvol() {
 }
 
 // ===== MEDICAMENTOS =====
-function openMed()  { pSel('mR'); var n=new Date(); document.getElementById('mH').value=n.toTimeString().slice(0,5); openM('mMed'); }
+function openMed()  { pSel('mR'); var n=new Date(); document.getElementById('mH').value=n.toTimeString().slice(0,5); // valor HH:MM
+  openM('mMed'); }
 function openSV()   { pSel('svR'); openM('mSV'); }
 function openAlim() { pSel('alR'); openM('mAlim'); }
 function openInc()  { pSel('inR'); openM('mInc'); }
@@ -1709,7 +1789,7 @@ function rUsr() {
   var h='';
   DB.usuarios.forEach(function(u){
     var ini=u.nombre.split(' ').map(function(x){ return x[0]; }).join('').substring(0,2).toUpperCase();
-    h+='<div class="uc"><div class="ua" style="background:'+cols[u.rol]+'">'+ini+'</div><div class="ui"><div class="un">'+u.nombre+'</div><div class="ur">'+rolL(u.rol)+' · @'+u.username+' · '+u.turno+'</div></div>'+(SES.rol==='admin'?'<div style="display:flex;gap:6px"><button class="btn bxs bmo" onclick="abrirPerms(\''+u.id+'\')">🔐 Permisos</button>'+(u.id!=='U1'?'<button class="btn bxs bra" onclick="delUsr(\''+u.id+'\')">🗑️</button>':'')+'</div>':'')+'</div>';
+    h+='<div class="uc"><div class="ua" style="background:'+cols[u.rol]+'">'+ini+'</div><div class="ui"><div class="un">'+u.nombre+'</div><div class="ur">'+rolL(u.rol)+' · @'+u.username+' · '+u.turno+' · PIN: '+(u.password?u.password.slice(-4):'????')+'</div></div>'+(SES.rol==='admin'?'<div style="display:flex;gap:6px"><button class="btn bxs bmo" onclick="abrirPerms(\''+u.id+'\')">🔐 Permisos</button>'+(u.id!=='U1'?'<button class="btn bxs bra" onclick="delUsr(\''+u.id+'\')">🗑️</button>':'')+'</div>':'')+'</div>';
   });
   div.innerHTML = h || '<div class="es"><div class="ei">👥</div><p>Sin usuarios.</p></div>';
 }
@@ -2905,6 +2985,200 @@ function saveSV() {
   _saveSVOrig();
   document.getElementById('svPUnit').value = 'kg';
   document.getElementById('svPConv').textContent = '';
+}
+
+// ===== LUPA FILTRO DE RESIDENTE =====
+function lupaFiltrar(inputId, selectId) {
+  var inp = document.getElementById(inputId);
+  var sel = document.getElementById(selectId);
+  if (!inp || !sel) return;
+  var f = inp.value.toLowerCase();
+  Array.from(sel.options).forEach(function(o, i) {
+    if (i === 0) return;
+    o.hidden = f ? !o.textContent.toLowerCase().includes(f) : false;
+  });
+}
+
+// ===== EDITAR RESIDENTE =====
+function editRes(id) {
+  var r = DB.residentes.find(function(x){ return x.id === id; });
+  if (!r) return;
+  // Llenar el modal con los datos del residente
+  document.getElementById('rN').value = r.nombre || '';
+  document.getElementById('rC').value = r.cedula || '';
+  document.getElementById('rF').value = r.nacimiento || '';
+  document.getElementById('rS').value = r.sexo || 'Masculino';
+  document.getElementById('rH').value = r.habitacion || '';
+  document.getElementById('rCm').value = r.cama || 'Individual';
+  document.getElementById('rI').value = r.ingreso || '';
+  document.getElementById('rPl').value = r.plan || 'Privado';
+  document.getElementById('rD').value = r.diagnostico || '';
+  document.getElementById('rE').value = r.estado || 'Activo';
+  document.getElementById('rO').value = r.obs || '';
+  // Nuevos campos
+  if (document.getElementById('rClasif')) document.getElementById('rClasif').value = r.clasif || '';
+  if (document.getElementById('rNivelCuido')) document.getElementById('rNivelCuido').value = r.nivelCuido || 'Cuidado básico';
+  if (document.getElementById('rMedicare')) document.getElementById('rMedicare').value = r.medicare || '';
+  if (document.getElementById('rMedicareID')) document.getElementById('rMedicareID').value = r.medicareID || '';
+  if (document.getElementById('rMedicaid')) document.getElementById('rMedicaid').value = r.medicaid || '';
+  if (document.getElementById('rMedicaidID')) document.getElementById('rMedicaidID').value = r.medicaidID || '';
+  if (document.getElementById('rCupones')) document.getElementById('rCupones').value = r.cupones || '';
+  if (document.getElementById('rCuponesRev')) document.getElementById('rCuponesRev').value = r.cuponesRev || '';
+  if (document.getElementById('rTANF')) document.getElementById('rTANF').value = r.tanf || '';
+  if (document.getElementById('rTANFRev')) document.getElementById('rTANFRev').value = r.tanfRev || '';
+  if (document.getElementById('rSSI')) document.getElementById('rSSI').value = r.ssi || '';
+  if (document.getElementById('rSSImonto')) document.getElementById('rSSImonto').value = r.ssiMonto || '';
+  if (document.getElementById('rPlanesNotas')) document.getElementById('rPlanesNotas').value = r.planesNotas || '';
+  if (document.getElementById('rRevMedica')) document.getElementById('rRevMedica').value = r.revMedica || '';
+  if (document.getElementById('rRevPlan')) document.getElementById('rRevPlan').value = r.revPlan || '';
+  if (document.getElementById('rRevEspec')) document.getElementById('rRevEspec').value = r.revEspec || '';
+  if (document.getElementById('rEspecialista')) document.getElementById('rEspecialista').value = r.especialista || '';
+  // Foto
+  if (r.foto) {
+    document.getElementById('rFotoImg').src = r.foto;
+    document.getElementById('rFotoImg').style.display = 'block';
+    document.getElementById('rFotoBox').style.display = 'none';
+    document.getElementById('rFotoInput')._b64 = r.foto;
+    if (document.getElementById('rFotoQuit')) document.getElementById('rFotoQuit').style.display = 'inline-flex';
+  }
+  // Cambiar botón de guardar para actualizar en vez de crear
+  var btnGuardar = document.querySelector('#mRes .btn.bvs');
+  if (btnGuardar) {
+    btnGuardar.textContent = '💾 Actualizar Residente';
+    btnGuardar.onclick = function(){ actualizarRes(id); };
+  }
+  openM('mRes');
+}
+
+function actualizarRes(id) {
+  var n = document.getElementById('rN').value.trim();
+  var h = document.getElementById('rH').value.trim();
+  if (!n || !h) { toast('⚠️ Nombre y habitación son obligatorios'); return; }
+  var idx = DB.residentes.findIndex(function(x){ return x.id === id; });
+  if (idx < 0) return;
+  var inp = document.getElementById('rFotoInput');
+  // Preservar datos existentes y actualizar
+  DB.residentes[idx] = Object.assign({}, DB.residentes[idx], {
+    foto: (inp._b64 || DB.residentes[idx].foto || ''),
+    nombre: n, cedula: document.getElementById('rC').value.trim(),
+    nacimiento: document.getElementById('rF').value,
+    sexo: document.getElementById('rS').value,
+    habitacion: h, cama: document.getElementById('rCm').value,
+    ingreso: document.getElementById('rI').value,
+    plan: document.getElementById('rPl').value,
+    diagnostico: document.getElementById('rD').value.trim(),
+    estado: document.getElementById('rE').value,
+    obs: document.getElementById('rO').value.trim(),
+    clasif: document.getElementById('rClasif') ? document.getElementById('rClasif').value : '',
+    nivelCuido: document.getElementById('rNivelCuido') ? document.getElementById('rNivelCuido').value : '',
+    medicare: document.getElementById('rMedicare') ? document.getElementById('rMedicare').value : '',
+    medicareID: document.getElementById('rMedicareID') ? document.getElementById('rMedicareID').value.trim() : '',
+    medicaid: document.getElementById('rMedicaid') ? document.getElementById('rMedicaid').value : '',
+    medicaidID: document.getElementById('rMedicaidID') ? document.getElementById('rMedicaidID').value.trim() : '',
+    cupones: document.getElementById('rCupones') ? document.getElementById('rCupones').value : '',
+    cuponesRev: document.getElementById('rCuponesRev') ? document.getElementById('rCuponesRev').value : '',
+    tanf: document.getElementById('rTANF') ? document.getElementById('rTANF').value : '',
+    tanfRev: document.getElementById('rTANFRev') ? document.getElementById('rTANFRev').value : '',
+    ssi: document.getElementById('rSSI') ? document.getElementById('rSSI').value : '',
+    ssiMonto: document.getElementById('rSSImonto') ? document.getElementById('rSSImonto').value : '',
+    planesNotas: document.getElementById('rPlanesNotas') ? document.getElementById('rPlanesNotas').value.trim() : '',
+    revMedica: document.getElementById('rRevMedica') ? document.getElementById('rRevMedica').value : '',
+    revPlan: document.getElementById('rRevPlan') ? document.getElementById('rRevPlan').value : '',
+    revEspec: document.getElementById('rRevEspec') ? document.getElementById('rRevEspec').value : '',
+    especialista: document.getElementById('rEspecialista') ? document.getElementById('rEspecialista').value.trim() : ''
+  });
+  sDB(); closeM('mRes'); rRes();
+  // Restaurar botón a "Nuevo"
+  var btnGuardar = document.querySelector('#mRes .btn.bvs');
+  if (btnGuardar) { btnGuardar.textContent = '💾 Registrar Residente'; btnGuardar.onclick = saveRes; }
+  qFoto();
+  toast('✅ Residente actualizado', 'vs');
+}
+
+// ===== QR - ESCANEAR PACIENTE =====
+function abrirQR(targetSelectId) {
+  // Verificar soporte de cámara
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    toast('⚠️ Tu dispositivo no soporta cámara. Escribe el nombre en la lupa.'); return;
+  }
+  // Mostrar modal QR
+  document.getElementById('qrTargetSelect').value = targetSelectId;
+  openM('mQR');
+  iniciarCamaraQR();
+}
+
+function iniciarCamaraQR() {
+  var video = document.getElementById('qrVideo');
+  navigator.mediaDevices.getUserMedia({video: {facingMode: 'environment'}})
+    .then(function(stream){
+      video.srcObject = stream;
+      video.play();
+      document.getElementById('qrMsg').textContent = 'Apunta al código QR del paciente...';
+      // Escanear cada 500ms usando canvas
+      window._qrStream = stream;
+      window._qrInterval = setInterval(function(){
+        scanQRFrame();
+      }, 500);
+    })
+    .catch(function(err){
+      document.getElementById('qrMsg').textContent = 'No se pudo acceder a la cámara: '+err.message;
+    });
+}
+
+function scanQRFrame() {
+  var video = document.getElementById('qrVideo');
+  var canvas = document.getElementById('qrCanvas');
+  if (!video.videoWidth) return;
+  canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+  var ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0);
+  // Usar BarcodeDetector si disponible
+  if ('BarcodeDetector' in window) {
+    var bd = new BarcodeDetector({formats:['qr_code']});
+    bd.detect(canvas).then(function(codes){
+      if (codes.length > 0) {
+        var val = codes[0].rawValue;
+        seleccionarPacienteQR(val);
+      }
+    }).catch(function(){});
+  }
+}
+
+function seleccionarPacienteQR(qrValue) {
+  // El QR contiene el ID del residente
+  var r = DB.residentes.find(function(x){ return x.id === qrValue || x.cedula === qrValue; });
+  if (!r) {
+    document.getElementById('qrMsg').textContent = '⚠️ Paciente no encontrado: '+qrValue;
+    return;
+  }
+  // Seleccionar en el select objetivo
+  var targetId = document.getElementById('qrTargetSelect').value;
+  var sel = document.getElementById(targetId);
+  if (sel) { sel.value = r.id; }
+  // Actualizar lupa si existe
+  var lupaId = 'lupa_'+targetId;
+  var lupa = document.getElementById(lupaId);
+  if (lupa) lupa.value = r.nombre;
+  cerrarQR();
+  toast('✅ Paciente seleccionado: '+r.nombre, 'vs');
+}
+
+function cerrarQR() {
+  if (window._qrStream) { window._qrStream.getTracks().forEach(function(t){t.stop();}); window._qrStream=null; }
+  if (window._qrInterval) { clearInterval(window._qrInterval); window._qrInterval=null; }
+  closeM('mQR');
+}
+
+// ===== GENERAR QR DEL PACIENTE =====
+function generarQRResidente(id) {
+  var r = DB.residentes.find(function(x){ return x.id===id; });
+  if (!r) return;
+  document.getElementById('qrGenNombre').textContent = r.nombre;
+  // QR con el ID del residente usando API pública
+  var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data='+encodeURIComponent(r.id);
+  document.getElementById('qrGenImg').src = qrUrl;
+  document.getElementById('qrGenHab').textContent = 'Hab. '+r.habitacion;
+  openM('mQRGen');
 }
 
 // ===== INIT =====
