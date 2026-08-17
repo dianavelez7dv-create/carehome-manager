@@ -148,16 +148,10 @@ tr:hover td{background:var(--ac);}
 .nom-total{display:flex;justify-content:space-between;font-size:15px;font-weight:800;padding:8px 0 0;margin-top:4px;color:var(--am);}
 .nom-overtime{color:var(--na);}
 .nom-bruto{color:var(--vs);}
-.res-buscador{position:relative;margin-bottom:0;}
-.res-buscador input{width:100%;border:1.5px solid var(--bo);border-radius:8px;padding:10px 12px 10px 36px;font-size:16px;font-family:inherit;background:var(--bl);}
-.res-buscador input:focus{outline:none;border-color:var(--az);background:var(--ac);}
-.res-buscador-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:18px;pointer-events:none;z-index:1;}
-.res-lista{position:absolute;top:calc(100% + 4px);left:0;right:0;background:white;border:1.5px solid var(--az);border-radius:8px;max-height:200px;overflow-y:auto;z-index:500;box-shadow:0 6px 20px rgba(0,0,0,.18);display:none;}
-.res-lista.abierta{display:block;}
-.res-item{padding:12px 14px;font-size:14px;cursor:pointer;border-bottom:1px solid var(--gc);}
-.res-item:hover{background:var(--ac);color:var(--am);font-weight:700;}
-.res-item:last-child{border-bottom:none;}
-.res-vacio{padding:12px 14px;font-size:13px;color:var(--gm);text-align:center;}
+.filtro-wrap{margin-bottom:6px;position:relative;}
+.filtro-inp{width:100%;border:1.5px solid var(--bo);border-radius:8px;padding:10px 12px 10px 36px;font-size:16px;font-family:inherit;background:var(--bl);}
+.filtro-inp:focus{outline:none;border-color:var(--az);background:var(--ac);}
+.filtro-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none;}
 #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--go);color:white;padding:11px 22px;border-radius:9px;font-size:14px;font-weight:600;transition:transform .3s;z-index:999;pointer-events:none;}
 #toast.on{transform:translateX(-50%) translateY(0);}
 #toast.vs{background:var(--vs);}
@@ -322,6 +316,7 @@ tr:hover td{background:var(--ac);}
         <div class="itb" onclick="inTab('exp','aler',this)">⚠️ Alergias</div>
         <div class="itb" onclick="inTab('exp','cont',this)">📞 Contactos</div>
         <div class="itb" onclick="inTab('exp','evol',this)">📝 Evolución</div>
+        <div class="itb" onclick="inTab('exp','planes',this)">📋 Planes y Beneficios</div>
       </div>
       <div class="is on exp" id="exp-datos"><div id="expDG" class="fg"></div></div>
       <div class="is exp" id="exp-hist">
@@ -355,7 +350,12 @@ tr:hover td{background:var(--ac);}
         </div>
         <div class="ab"><button class="btn bvs" onclick="saveCont()">💾 Guardar Contactos</button></div>
       </div>
-      <div class="is exp" id="exp-evol">
+      <div class="is exp" id="exp-planes">
+          <div class="fg" id="expPlanesContent">
+            <div class="es ff"><div class="ei">📋</div><p>Selecciona un residente.</p></div>
+          </div>
+        </div>
+        <div class="is exp" id="exp-evol">
         <div class="fg" style="margin-bottom:12px">
           <div class="fi ff"><label>Nueva nota de evolución</label><textarea id="evN" rows="4" placeholder="Escriba la nota médica..."></textarea></div>
           <div class="fi"><label>Médico / Responsable</label><input id="evM" type="text"></div>
@@ -608,7 +608,11 @@ tr:hover td{background:var(--ac);}
     <div style="text-align:center">
       <div class="fi filtro-emp" style="max-width:280px;margin:0 auto 12px">
         <label>Empleado</label>
-        <select id="pEmpSel"></select>
+        <div class="filtro-wrap" style="margin-bottom:4px">
+          <span class="filtro-ico">🔍</span>
+          <input id="fi_pEmpSel" class="filtro-inp" type="text" placeholder="Buscar empleado..." autocomplete="off" oninput="filtrarSelect('pEmpSel',this.value)">
+        </div>
+        <select id="pEmpSel" size="3" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px"></select>
       </div>
       <div id="pEmpNombre" style="display:none;font-size:16px;font-weight:700;color:var(--am);margin-bottom:12px;text-align:center"></div>
       <div class="fi" style="max-width:280px;margin:0 auto 12px">
@@ -743,6 +747,126 @@ tr:hover td{background:var(--ac);}
         <div class="fi ff"><label>Diagnóstico principal al ingreso</label><input id="rD" type="text"></div>
         <div class="fi"><label>Estado</label><select id="rE"><option>Activo</option><option>En observación</option><option>Hospitalizado</option><option>Egresado</option></select></div>
         <div class="fi"><label>Observación inicial</label><textarea id="rO" rows="2"></textarea></div>
+
+        <!-- CLASIFICACIÓN CLÍNICA -->
+        <div class="fi ff" style="margin-top:8px">
+          <label style="color:var(--mo)">🏷️ Clasificación Clínica</label>
+          <select id="rClasif">
+            <option value="">— Seleccionar —</option>
+            <option>Geriátrico regular</option>
+            <option>Geriátrico encamado</option>
+            <option>Psiquiátrico</option>
+            <option>Obesidad mórbida</option>
+            <option>Demencia / Alzheimer</option>
+            <option>Rehabilitación</option>
+            <option>Cuidados paliativos</option>
+            <option>Discapacidad física</option>
+            <option>Discapacidad intelectual</option>
+            <option>Múltiples condiciones</option>
+          </select>
+        </div>
+        <div class="fi ff"><label>Nivel de cuidado requerido</label>
+          <select id="rNivelCuido">
+            <option>Cuidado básico</option>
+            <option>Cuidado intermedio</option>
+            <option>Cuidado especializado</option>
+            <option>Cuidado intensivo / Total</option>
+          </select>
+        </div>
+
+        <!-- PLANES Y BENEFICIOS DEL GOBIERNO -->
+        <div class="fi ff" style="margin-top:8px">
+          <label style="color:var(--vs)">📋 Planes y Beneficios del Gobierno</label>
+        </div>
+
+        <div class="fi"><label>Medicare</label>
+          <select id="rMedicare">
+            <option value="">No aplica</option>
+            <option>Parte A (Hospital)</option>
+            <option>Parte B (Médico)</option>
+            <option>Parte A + B</option>
+            <option>Parte C (Medicare Advantage)</option>
+            <option>Parte D (Medicamentos)</option>
+            <option>Medicare Completo (A+B+D)</option>
+          </select>
+        </div>
+        <div class="fi"><label>ID / Número de Medicare</label>
+          <input id="rMedicareID" type="text" placeholder="Núm. de beneficiario">
+        </div>
+
+        <div class="fi"><label>Medicaid / Reforma</label>
+          <select id="rMedicaid">
+            <option value="">No aplica</option>
+            <option>Medicaid Estándar</option>
+            <option>Reforma de Salud PR</option>
+            <option>Triple-S Salud</option>
+            <option>MMM Healthcare</option>
+            <option>Molina Healthcare</option>
+            <option>MCS Classicare</option>
+          </select>
+        </div>
+        <div class="fi"><label>ID / Número de Medicaid</label>
+          <input id="rMedicaidID" type="text" placeholder="Núm. de tarjeta">
+        </div>
+
+        <div class="fi"><label>Cupones de Alimentos (PAN)</label>
+          <select id="rCupones">
+            <option value="">No aplica</option>
+            <option>Activo</option>
+            <option>Pendiente renovación</option>
+            <option>Suspendido</option>
+          </select>
+        </div>
+        <div class="fi"><label>Próxima revisión PAN</label>
+          <input id="rCuponesRev" type="date">
+        </div>
+
+        <div class="fi"><label>TANF / Asistencia económica</label>
+          <select id="rTANF">
+            <option value="">No aplica</option>
+            <option>Activo</option>
+            <option>Pendiente renovación</option>
+            <option>Suspendido</option>
+          </select>
+        </div>
+        <div class="fi"><label>Próxima revisión TANF</label>
+          <input id="rTANFRev" type="date">
+        </div>
+
+        <div class="fi"><label>SSI / SSDI</label>
+          <select id="rSSI">
+            <option value="">No aplica</option>
+            <option>SSI (Seguridad de Ingreso)</option>
+            <option>SSDI (Discapacidad)</option>
+            <option>Ambos</option>
+            <option>Pensión VA (Veterano)</option>
+          </select>
+        </div>
+        <div class="fi"><label>Monto mensual ($)</label>
+          <input id="rSSImonto" type="number" step="0.01" placeholder="0.00">
+        </div>
+
+        <div class="fi ff"><label>Otros beneficios / Notas de planes</label>
+          <textarea id="rPlanesNotas" rows="2" placeholder="Ej: Tiene representante de beneficios, fecha de recertificación..."></textarea>
+        </div>
+
+        <!-- PRÓXIMAS REVISIONES -->
+        <div class="fi ff" style="margin-top:8px">
+          <label style="color:var(--ra)">📅 Próximas Revisiones Médicas</label>
+        </div>
+        <div class="fi"><label>Próxima revisión médica</label>
+          <input id="rRevMedica" type="date">
+        </div>
+        <div class="fi"><label>Próxima revisión de plan</label>
+          <input id="rRevPlan" type="date">
+        </div>
+        <div class="fi"><label>Próxima cita especialista</label>
+          <input id="rRevEspec" type="date">
+        </div>
+        <div class="fi"><label>Tipo de especialista</label>
+          <input id="rEspecialista" type="text" placeholder="Ej: Cardiólogo, Neurólogo...">
+        </div>
+
       </div>
       <div class="ab">
         <button class="btn bol" onclick="closeM('mRes')">Cancelar</button>
@@ -1172,8 +1296,8 @@ function age(f) {
 function pSel(sid) {
   var sel = document.getElementById(sid);
   if (!sel) return;
-  var cur = sel.value, first = sel.options[0];
-  sel.innerHTML = ''; sel.appendChild(first);
+  var cur = sel.value;
+  sel.innerHTML = '<option value="">— Seleccionar —</option>';
   DB.residentes.forEach(function(r){
     var o = document.createElement('option');
     o.value = r.id;
@@ -1260,10 +1384,27 @@ function saveRes() {
     plan: document.getElementById('rPl').value,
     diagnostico: document.getElementById('rD').value.trim(),
     estado: document.getElementById('rE').value,
-    obs: document.getElementById('rO').value.trim()
+    obs: document.getElementById('rO').value.trim(),
+    clasif: document.getElementById('rClasif').value,
+    nivelCuido: document.getElementById('rNivelCuido').value,
+    medicare: document.getElementById('rMedicare').value,
+    medicareID: document.getElementById('rMedicareID').value.trim(),
+    medicaid: document.getElementById('rMedicaid').value,
+    medicaidID: document.getElementById('rMedicaidID').value.trim(),
+    cupones: document.getElementById('rCupones').value,
+    cuponesRev: document.getElementById('rCuponesRev').value,
+    tanf: document.getElementById('rTANF').value,
+    tanfRev: document.getElementById('rTANFRev').value,
+    ssi: document.getElementById('rSSI').value,
+    ssiMonto: document.getElementById('rSSImonto').value,
+    planesNotas: document.getElementById('rPlanesNotas').value.trim(),
+    revMedica: document.getElementById('rRevMedica').value,
+    revPlan: document.getElementById('rRevPlan').value,
+    revEspec: document.getElementById('rRevEspec').value,
+    especialista: document.getElementById('rEspecialista').value.trim()
   };
   DB.residentes.push(r); sDB(); closeM('mRes'); rRes();
-  ['rN','rC','rF','rH','rI','rD','rO'].forEach(function(i){ document.getElementById(i).value=''; });
+  ['rN','rC','rF','rH','rI','rD','rO','rMedicareID','rMedicaidID','rSSImonto','rPlanesNotas','rRevMedica','rRevPlan','rRevEspec','rEspecialista','rCuponesRev','rTANFRev'].forEach(function(i){ document.getElementById(i).value=''; });
   qFoto();
   toast('✅ Residente registrado', 'vs');
 }
@@ -1280,8 +1421,10 @@ function rRes(filtro) {
       : '<div class="res-ini">'+r.nombre.charAt(0).toUpperCase()+'</div>';
     h += '<tr>';
     h += '<td>'+av+'</td>';
+    var clasifBadge = r.clasif ? '<br><span class="badge bmo" style="font-size:10px">'+r.clasif+'</span>' : '';
+    var planesIcons = [r.medicare?'🏥':'', r.medicaid?'📋':'', r.cupones==='Activo'?'🛒':'', r.tanf==='Activo'?'💵':'', r.ssi?'🔵':''].filter(Boolean).join(' ');
     h += '<td><strong>'+r.habitacion+'</strong></td>';
-    h += '<td><strong>'+r.nombre+'</strong><br><span style="font-size:12px;color:var(--gm)">'+r.sexo+' · '+age(r.nacimiento)+'</span></td>';
+    h += '<td><strong>'+r.nombre+'</strong>'+clasifBadge+'<br><span style="font-size:12px;color:var(--gm)">'+r.sexo+' · '+age(r.nacimiento)+(planesIcons?' · '+planesIcons:'')+'</span></td>';
     h += '<td>'+age(r.nacimiento)+'</td>';
     h += '<td>'+(r.diagnostico||'—')+'</td>';
     h += '<td><span class="badge '+bc+'">'+r.estado+'</span></td>';
@@ -1335,6 +1478,28 @@ function loadExp() {
   document.getElementById('eMed').value = co.medico || '';
   document.getElementById('eSeg').value = co.seguro || '';
   rEvol();
+  // Cargar tab de planes
+  var pc = document.getElementById('expPlanesContent');
+  if (pc) {
+    pc.innerHTML =
+      '<div class="fi"><label>Clasificación Clínica</label><input type="text" value="'+(r.clasif||'—')+'" disabled></div>'+
+      '<div class="fi"><label>Nivel de cuidado</label><input type="text" value="'+(r.nivelCuido||'—')+'" disabled></div>'+
+      '<div class="fi"><label>Medicare</label><input type="text" value="'+(r.medicare||'No aplica')+'" disabled></div>'+
+      '<div class="fi"><label>Núm. Medicare</label><input type="text" value="'+(r.medicareID||'—')+'" disabled></div>'+
+      '<div class="fi"><label>Medicaid / Reforma</label><input type="text" value="'+(r.medicaid||'No aplica')+'" disabled></div>'+
+      '<div class="fi"><label>Núm. Medicaid</label><input type="text" value="'+(r.medicaidID||'—')+'" disabled></div>'+
+      '<div class="fi"><label>Cupones (PAN)</label><input type="text" value="'+(r.cupones||'No aplica')+'" disabled></div>'+
+      '<div class="fi"><label>Revisión PAN</label><input type="date" value="'+(r.cuponesRev||'')+'" disabled></div>'+
+      '<div class="fi"><label>TANF</label><input type="text" value="'+(r.tanf||'No aplica')+'" disabled></div>'+
+      '<div class="fi"><label>Revisión TANF</label><input type="date" value="'+(r.tanfRev||'')+'" disabled></div>'+
+      '<div class="fi"><label>SSI / SSDI</label><input type="text" value="'+(r.ssi||'No aplica')+'" disabled></div>'+
+      '<div class="fi"><label>Monto mensual</label><input type="text" value="'+(r.ssiMonto?'$'+r.ssiMonto:'—')+'" disabled></div>'+
+      '<div class="fi ff"><label>Notas de planes</label><textarea rows="2" disabled>'+(r.planesNotas||'')+'</textarea></div>'+
+      '<div class="fi"><label>Próxima revisión médica</label><input type="date" value="'+(r.revMedica||'')+'" disabled></div>'+
+      '<div class="fi"><label>Próxima revisión de plan</label><input type="date" value="'+(r.revPlan||'')+'" disabled></div>'+
+      '<div class="fi"><label>Próxima cita especialista</label><input type="date" value="'+(r.revEspec||'')+'" disabled></div>'+
+      '<div class="fi"><label>Especialista</label><input type="text" value="'+(r.especialista||'—')+'" disabled></div>';
+  }
 }
 function saveHist() {
   var id = document.getElementById('selExp').value; if (!id) return;
@@ -1377,11 +1542,11 @@ function rEvol() {
 }
 
 // ===== MEDICAMENTOS =====
-function openMed()  { pSel('mR'); mkBuscador('mR'); var n=new Date(); document.getElementById('mH').value=n.toTimeString().slice(0,5); openM('mMed'); }
-function openSV()   { pSel('svR'); mkBuscador('svR'); openM('mSV'); }
-function openAlim() { pSel('alR'); mkBuscador('alR'); openM('mAlim'); }
-function openInc()  { pSel('inR'); mkBuscador('inR'); openM('mInc'); }
-function openVis()  { pSel('viR'); mkBuscador('viR'); var n=new Date(); document.getElementById('viE').value=n.toTimeString().slice(0,5); openM('mVis'); }
+function openMed()  { pSel('mR'); var n=new Date(); document.getElementById('mH').value=n.toTimeString().slice(0,5); openM('mMed'); }
+function openSV()   { pSel('svR'); openM('mSV'); }
+function openAlim() { pSel('alR'); openM('mAlim'); }
+function openInc()  { pSel('inR'); openM('mInc'); }
+function openVis()  { pSel('viR'); var n=new Date(); document.getElementById('viE').value=n.toTimeString().slice(0,5); openM('mVis'); }
 function saveMed() {
   var rid=document.getElementById('mR').value, nom=document.getElementById('mN').value.trim();
   if (!rid||!nom) { toast('⚠️ Residente y medicamento obligatorios'); return; }
@@ -1643,7 +1808,7 @@ function pdfTurno() {
 }
 
 // ===== VISITAS MÉDICAS =====
-function openVM() { pSel('vmR'); mkBuscador('vmR'); openM('mVM'); }
+function openVM() { pSel('vmR'); openM('mVM'); }
 function saveVM() {
   var rid=document.getElementById('vmR').value, med=document.getElementById('vmM').value.trim();
   if (!rid||!med) { toast('⚠️ Residente y médico son obligatorios'); return; }
@@ -1675,8 +1840,8 @@ function rVM() {
   if (med) lista=lista.filter(function(v){ return v.medico===med; });
   // Poblar filtro de médicos
   var medSel=document.getElementById('fVMM');
-  var curMed=medSel.value, firstMed=medSel.options[0];
-  medSel.innerHTML=''; medSel.appendChild(firstMed);
+  var curMed=medSel.value;
+  medSel.innerHTML='<option value="">— Todos —</option>';
   var medicos=[...new Set(DB.visitasMed.map(function(v){ return v.medico; }))];
   medicos.forEach(function(m){ var o=document.createElement('option');o.value=m;o.textContent=m;medSel.appendChild(o); });
   if (curMed) medSel.value=curMed;
@@ -1718,7 +1883,7 @@ function rOM() {
 
 // ===== PLAN DE ACTIVIDADES =====
 function openAct2() { openM('mAct2'); }
-function openTer()  { pSel('terR'); mkBuscador('terR'); openM('mTer'); }
+function openTer()  { pSel('terR'); openM('mTer'); }
 function openPlan() { openM('mPlan'); }
 
 function saveAct2() {
@@ -1947,7 +2112,31 @@ function calcAlerts() {
     });
   }
 
-  // ── 7. CUMPLEAÑOS HOY O ESTA SEMANA ────────────────────
+  // ── 7. REVISIONES DE PLANES PRÓXIMAS ──────────────────
+  DB.residentes.forEach(function(r){
+    var revs = [
+      {fecha:r.cuponesRev, label:'Revisión PAN (Cupones)', res:r.nombre},
+      {fecha:r.tanfRev,    label:'Revisión TANF',          res:r.nombre},
+      {fecha:r.revMedica,  label:'Revisión médica',        res:r.nombre},
+      {fecha:r.revPlan,    label:'Revisión de plan',       res:r.nombre},
+      {fecha:r.revEspec,   label:'Cita: '+(r.especialista||'Especialista'), res:r.nombre},
+    ];
+    revs.forEach(function(rv){
+      if (!rv.fecha) return;
+      var diff = (new Date(rv.fecha) - new Date(now.toISOString().slice(0,10))) / 86400000;
+      if (diff < 0) {
+        crit.push({ico:'📅', titulo:rv.label+' VENCIDA — '+rv.res, detalle:'Fecha: '+rv.fecha, tipo:'crit'});
+      } else if (diff === 0) {
+        crit.push({ico:'📅', titulo:rv.label+' HOY — '+rv.res, detalle:'¡Hoy es el día!', tipo:'crit'});
+      } else if (diff <= 7) {
+        warn.push({ico:'📅', titulo:rv.label+' en '+Math.round(diff)+' días — '+rv.res, detalle:'Fecha: '+rv.fecha, tipo:'warn'});
+      } else if (diff <= 30) {
+        info.push({ico:'📅', titulo:rv.label+' en '+Math.round(diff)+' días — '+rv.res, detalle:'Fecha: '+rv.fecha, tipo:'info'});
+      }
+    });
+  });
+
+  // ── 8. CUMPLEAÑOS HOY O ESTA SEMANA ──
   var mesActual = now.getMonth()+1;
   var diaActual = now.getDate();
   DB.residentes.forEach(function(r){
@@ -2080,30 +2269,21 @@ function poblarSelectEmps() {
   var esAdmin = SES.rol === 'admin';
   ['pEmpSel','pRepEmp','nEmp'].forEach(function(sid){
     var sel = document.getElementById(sid); if (!sel) return;
-    var first = sel.options[0];
-    sel.innerHTML = ''; sel.appendChild(first);
+    sel.innerHTML = '<option value="">— Seleccionar —</option>';
     sel.disabled = false;
     DB.usuarios.forEach(function(u){
       var o = document.createElement('option');
       o.value = u.id; o.textContent = u.nombre+' ('+rolL(u.rol)+')';
       sel.appendChild(o);
     });
-    // Si no es admin, pre-seleccionar y bloquear visualmente sin disabled
+    // Si no es admin, pre-seleccionar su usuario
     if (!esAdmin) {
       sel.value = SES.id;
-      sel.style.pointerEvents = 'none';
-      sel.style.background = 'var(--gc)';
-      sel.style.color = 'var(--gm)';
-    } else {
-      sel.style.pointerEvents = '';
-      sel.style.background = '';
-      sel.style.color = '';
     }
   });
 
-  // Ocultar/mostrar filtros de empleado según rol
-  var filtrosEmp = document.querySelectorAll('.filtro-emp');
-  filtrosEmp.forEach(function(f){ f.style.display = esAdmin ? '' : 'none'; });
+  // Si no es admin, solo mostrar su propio nombre (sin ocultar el select)
+  // El select ya está pre-seleccionado arriba
 
   // Pre-seleccionar el propio usuario si no es admin
   if (!esAdmin) {
@@ -2691,98 +2871,12 @@ function savePerms() {
 }
 
 // ===== BUSCADOR DE RESIDENTE =====
-function mkBuscador(containerId, selectId) {
-  // Reemplazar el select por un buscador visual
-  var sel = document.getElementById(selectId);
-  var wrap = sel ? sel.closest('.fi') : null;
-  if (!sel || !wrap) return;
+// [removida: mkBuscador]
+// [removida: filtrarSel]
 
-  var bId = 'b_'+selectId;
-  var listId = 'bl_'+selectId;
 
-  // Ocultar select original pero mantenerlo para guardar el valor
-  sel.style.display = 'none';
 
-  // Crear buscador
-  var div = document.createElement('div');
-  div.style.position = 'relative';
-  div.innerHTML =
-    '<div class="sel-search-wrap">' +
-      '<span class="sel-search-ico">🔍</span>' +
-      '<input id="'+bId+'" class="sel-search" type="text" placeholder="Buscar residente..." autocomplete="off">' +
-    '</div>' +
-    '<div id="'+listId+'" class="sel-opts"></div>';
-  wrap.appendChild(div);
 
-  var input = document.getElementById(bId);
-  var list  = document.getElementById(listId);
-
-  function mostrarOpts(filtro) {
-    var opts = Array.from(sel.options).slice(1); // saltar el primer "— Seleccionar —"
-    var f = (filtro||'').toLowerCase();
-    var h = '';
-    var encontrados = opts.filter(function(o){
-      return !f || o.textContent.toLowerCase().includes(f);
-    });
-    if (!encontrados.length) {
-      h = '<div class="sel-opt-empty">Sin resultados</div>';
-    } else {
-      encontrados.forEach(function(o){
-        h += '<div class="sel-opt" data-val="'+o.value+'" data-txt="'+o.textContent+'">'+o.textContent+'</div>';
-      });
-    }
-    list.innerHTML = h;
-    list.style.display = 'block';
-    // Eventos de clic en opciones
-    list.querySelectorAll('.sel-opt').forEach(function(el){
-      el.addEventListener('click', function(){
-        sel.value = this.getAttribute('data-val');
-        input.value = this.getAttribute('data-txt');
-        list.style.display = 'none';
-        // Disparar change en el select original
-        sel.dispatchEvent(new Event('change'));
-      });
-    });
-  }
-
-  input.addEventListener('focus', function(){ mostrarOpts(this.value); });
-  input.addEventListener('input', function(){ mostrarOpts(this.value); });
-  document.addEventListener('click', function(e){
-    if (!div.contains(e.target) && e.target !== input) {
-      list.style.display = 'none';
-    }
-  });
-
-  // Limpiar buscador cuando se llame pSel
-  sel._clearBuscador = function() {
-    input.value = '';
-    list.style.display = 'none';
-  };
-}
-
-function initBuscadores() {
-  // Inicializar buscadores en todos los selects de residente de los modales
-  [
-    {c:'mRes_bus', s:'mR'},    // no aplica - mRes no tiene residente
-    {c:'sv_bus',  s:'svR'},
-    {c:'al_bus',  s:'alR'},
-    {c:'in_bus',  s:'inR'},
-    {c:'vi_bus',  s:'viR'},
-    {c:'vm_bus',  s:'vmR'},
-    {c:'ter_bus', s:'terR'},
-  ].forEach(function(pair){
-    mkBuscador(pair.c, pair.s);
-  });
-  mkBuscador('med_bus','mR'); // medicamento
-}
-
-// pSel extendido: también limpiar buscadores
-var _pSelOrig = pSel;
-function pSel(sid) {
-  _pSelOrig(sid);
-  var sel = document.getElementById(sid);
-  if (sel && sel._clearBuscador) sel._clearBuscador();
-}
 
 // ===== PESO KG/LB =====
 function convertirPeso() {
@@ -2823,7 +2917,8 @@ setInterval(calcAlerts, 300000);
 initPonchador(); // actualizar alertas cada 5 minutos
 </script>
 <script>
-if ('serviceWorker' in navigator) {
+// Registrar Service Worker solo en GitHub Pages
+if ('serviceWorker' in navigator && location.hostname !== 'www.claudeusercontent.com') {
   window.addEventListener('load', function() {
     navigator.serviceWorker.register('sw.js')
       .then(function(reg) { console.log('SW registrado:', reg.scope); })
