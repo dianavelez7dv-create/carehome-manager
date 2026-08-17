@@ -464,8 +464,16 @@ tr:hover td{background:var(--ac);}
     <div class="fg">
       <div class="fi"><label>Turno que entrega</label><select id="tEnt"><option>☀️ Día (7am–3pm)</option><option>🌤 Tarde (3pm–11pm)</option><option>🌙 Noche (11pm–7am)</option></select></div>
       <div class="fi"><label>Turno que recibe</label><select id="tRec"><option>🌤 Tarde (3pm–11pm)</option><option>🌙 Noche (11pm–7am)</option><option>☀️ Día (7am–3pm)</option></select></div>
-      <div class="fi"><label>Enfermera que entrega</label><input type="text" id="eEnt"></div>
-      <div class="fi"><label>Enfermera que recibe</label><input type="text" id="eRec"></div>
+      <div class="fi ff">
+      <label>Enfermera que entrega</label>
+      <input type="text" placeholder="🔍 Buscar..." oninput="lupaFiltrar(this.id,'tEnfE')" id="lupa_tEnfE" style="border:1.5px solid var(--bo);border-radius:8px;padding:8px 12px;font-size:15px;width:100%;margin-bottom:4px">
+      <select id="tEnfE" size="3" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px"><option value="">— Seleccionar —</option></select>
+    </div>
+      <div class="fi ff">
+      <label>Enfermera que recibe</label>
+      <input type="text" placeholder="🔍 Buscar..." oninput="lupaFiltrar(this.id,'tEnfR')" id="lupa_tEnfR" style="border:1.5px solid var(--bo);border-radius:8px;padding:8px 12px;font-size:15px;width:100%;margin-bottom:4px">
+      <select id="tEnfR" size="3" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px"><option value="">— Seleccionar —</option></select>
+    </div>
       <div class="fi ff"><label>Novedades del turno</label><textarea id="tNov" rows="4" placeholder="Medicaciones, cambios, incidentes del turno..."></textarea></div>
       <div class="fi"><label>Residentes en observación</label><textarea id="tResO" rows="3"></textarea></div>
       <div class="fi"><label>Medicamentos pendientes</label><textarea id="tMedP" rows="3"></textarea></div>
@@ -918,7 +926,11 @@ tr:hover td{background:var(--ac);}
         <input type="text" id="lupa_svR" placeholder="🔍 Escribir para buscar..." oninput="lupaFiltrar('lupa_svR','svR')" style="border:1.5px solid var(--bo);border-radius:8px;padding:9px 12px;font-size:15px;width:100%;margin-bottom:4px">
         <div style="display:flex;gap:6px;align-items:center;margin-bottom:4px"><button class="btn bxs" style="background:#444;color:white;white-space:nowrap" onclick="abrirQR('svR')">📷 QR</button></div><select id="svR" size="4" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px"><option value="">— Seleccionar —</option></select>
       </div>
-        <div class="fi"><label>Enfermera</label><input id="svE" type="text"></div>
+        <div class="fi ff">
+        <label>Registrado por</label>
+        <input type="text" placeholder="🔍 Buscar..." oninput="lupaFiltrar(this.id,'svE')" id="lupa_svE" style="border:1.5px solid var(--bo);border-radius:8px;padding:8px 12px;font-size:15px;width:100%;margin-bottom:4px">
+        <select id="svE" size="3" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px"><option value="">— Seleccionar —</option></select>
+      </div>
         <div class="fi"><label>TA Sistólica (mmHg)</label><input id="svS" type="number" placeholder="120"></div>
         <div class="fi"><label>TA Diastólica (mmHg)</label><input id="svDi" type="number" placeholder="80"></div>
         <div class="fi"><label>Frec. Cardíaca (lpm)</label><input id="svF" type="number" placeholder="72"></div>
@@ -1335,6 +1347,7 @@ function goTab(id, el) {
   if (id==='nomina') { poblarSelectEmps(); calcNomina(); }
   if (id==='usuarios') rUsr();
   if (id==='alertas') { calcAlerts(); }
+  if (id==='turno') { pSelEmps('tEnfE'); pSelEmps('tEnfR'); }
   if (id==='visitas_med') { pSel('fVMR'); rVM(); rOM(); }
   if (id==='plan_act') { pSel('fTerR'); rPA(); rTer(); rPlanSemanal(); }
 }
@@ -1375,6 +1388,23 @@ function age(f) {
   if (h.getMonth()<n.getMonth()||(h.getMonth()===n.getMonth()&&h.getDate()<n.getDate())) e--;
   return e+' años';
 }
+function pSelEmps(sid, roles) {
+  var sel = document.getElementById(sid);
+  if (!sel) return;
+  var cur = sel.value;
+  sel.innerHTML = '<option value="">— Seleccionar —</option>';
+  DB.usuarios.filter(function(u){
+    if (!roles) return true;
+    return roles.indexOf(u.rol) >= 0;
+  }).forEach(function(u){
+    var o = document.createElement('option');
+    o.value = u.nombre;
+    o.textContent = u.nombre + ' (' + rolL(u.rol) + ')';
+    sel.appendChild(o);
+  });
+  if (cur) sel.value = cur;
+}
+
 function pSel(sid) {
   var sel = document.getElementById(sid);
   if (!sel) return;
@@ -1626,7 +1656,11 @@ function rEvol() {
 // ===== MEDICAMENTOS =====
 function openMed()  { pSel('mR'); var n=new Date(); document.getElementById('mH').value=n.toTimeString().slice(0,5); // valor HH:MM
   openM('mMed'); }
-function openSV()   { pSel('svR'); openM('mSV'); }
+function openSV() {
+  pSel('svR');
+  pSelEmps('svE');
+  openM('mSV');
+}
 function openAlim() { pSel('alR'); openM('mAlim'); }
 function openInc()  { pSel('inR'); openM('mInc'); }
 function openVis()  { pSel('viR'); var n=new Date(); document.getElementById('viE').value=n.toTimeString().slice(0,5); openM('mVis'); }
@@ -1891,7 +1925,11 @@ function pdfTurno() {
 }
 
 // ===== VISITAS MÉDICAS =====
-function openVM() { pSel('vmR'); openM('mVM'); }
+function openVM() {
+  pSel('vmR');
+  var m = document.getElementById('mVM');
+  if (m) { m.classList.add('on'); }
+}
 function saveVM() {
   var rid=document.getElementById('vmR').value, med=document.getElementById('vmM').value.trim();
   if (!rid||!med) { toast('⚠️ Residente y médico son obligatorios'); return; }
@@ -1925,6 +1963,10 @@ function rVM() {
   var medSel=document.getElementById('fVMM');
   var curMed=medSel.value;
   medSel.innerHTML='<option value="">— Todos —</option>';
+  var medicos=[...new Set((DB.visitasMed||[]).map(function(v){return v.medico;}))].filter(Boolean).sort();
+  medicos.forEach(function(m){
+    var o=document.createElement('option'); o.value=m; o.textContent=m; medSel.appendChild(o);
+  });
   var medicos=[...new Set(DB.visitasMed.map(function(v){ return v.medico; }))];
   medicos.forEach(function(m){ var o=document.createElement('option');o.value=m;o.textContent=m;medSel.appendChild(o); });
   if (curMed) medSel.value=curMed;
@@ -2482,7 +2524,8 @@ function rEmpStatus() {
     h += '<div class="emp-av" style="background:'+cols[u.rol]+'">'+ini+'</div>';
     h += '<div class="emp-info">';
     h += '<div class="emp-nom">'+u.nombre+'</div>';
-    h += '<div class="emp-det">'+rolL(u.rol)+(u.turno?' · '+u.turno:'')+(horaEnt!=='—'?' · Entrada: '+horaEnt:'')+(horaSal!=='—'?' · Salida: '+horaSal:'')+(totalMin>0?' · ⏱ '+horas:'')+'</div>';
+    var pinVis = u.password ? 'PIN: <strong>'+u.password.slice(-4)+'</strong>' : '';
+    h += '<div class="emp-det">'+rolL(u.rol)+(u.turno?' · '+u.turno:'')+' · '+pinVis+(horaEnt!=='—'?' · Entrada: '+horaEnt:'')+(horaSal!=='—'?' · Salida: '+horaSal:'')+(totalMin>0?' · ⏱ '+horas:'')+'</div>';
     h += '</div>';
     h += '<span class="emp-status '+statusClass+'">'+statusTxt+'</span>';
     h += '</div>';
@@ -2895,18 +2938,28 @@ function abrirPerms(uid) {
     : (PERM[usr.rol] || []);
 
   // Generar checkboxes
-  var h = '';
+  var box = document.getElementById('permCheckboxes');
+  box.innerHTML = '';
   TODOS_MODULOS.forEach(function(m){
-    // Dashboard siempre activo y no desmarcable
     var fijo = m.id === 'dashboard';
     var checked = actuales.indexOf(m.id) >= 0 || fijo;
-    var dis = fijo ? 'disabled' : '';
-    h += '<label class="perm-check'+(checked?' activo':'')+(fijo?' deshabilitado':'')+'" onclick="togglePermCheck(this)">';
-    h += '<input type="checkbox" value="'+m.id+'" '+(checked?'checked':'')+' '+dis+'>';
-    h += '<span>'+m.label+'</span>';
-    h += '</label>';
+    var div = document.createElement('div');
+    div.style.cssText = 'display:flex;align-items:center;gap:8px;padding:10px;border:1.5px solid var(--bo);border-radius:8px;cursor:pointer;background:var(--bl)';
+    var cb = document.createElement('input');
+    cb.type = 'checkbox'; cb.value = m.id;
+    cb.checked = checked;
+    cb.disabled = fijo;
+    cb.style.cssText = 'width:20px;height:20px;accent-color:var(--mo);cursor:pointer;flex-shrink:0';
+    var lbl = document.createElement('span');
+    lbl.textContent = m.label;
+    lbl.style.cssText = 'font-size:14px;font-weight:600;cursor:pointer';
+    div.appendChild(cb);
+    div.appendChild(lbl);
+    div.addEventListener('click', function(e){
+      if (e.target !== cb && !cb.disabled) cb.checked = !cb.checked;
+    });
+    box.appendChild(div);
   });
-  document.getElementById('permCheckboxes').innerHTML = h;
   openM('mPerms');
 }
 
