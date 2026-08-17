@@ -255,6 +255,7 @@ tr:hover td{background:var(--ac);}
   <div class="nt" onclick="goTab('plan_act',this)">🎯 Plan de Actividades</div>
   <div class="nt tab-admin" onclick="goTab('ponchador',this)">⏱️ Ponchador</div>
   <div class="nt tab-admin" onclick="goTab('nomina',this)">💰 Nómina</div>
+  <div class="nt tab-admin" onclick="goTab('fallecidos',this)">✝ Fallecidos</div>
   <div class="nt tab-admin" onclick="goTab('usuarios',this)">👥 Usuarios</div>
 </div>
 
@@ -708,6 +709,19 @@ tr:hover td{background:var(--ac);}
     <!-- Totales generales -->
     <div id="nomTotales" style="margin-top:14px"></div>
   </div></div>
+</div>
+
+<!-- FALLECIDOS -->
+<div class="sec" id="tab-fallecidos">
+  <div class="card">
+    <div class="ch ra">✝ Registro de Fallecidos</div>
+    <div class="cb">
+      <div class="tw"><table>
+        <thead><tr><th>Nombre</th><th>Edad</th><th>Fecha fallec.</th><th>Causa</th><th>Lugar</th><th>Médico</th><th>Cert. #</th><th>Familiar</th><th>Obs.</th><th>PDF</th></tr></thead>
+        <tbody id="tFallecidos"></tbody>
+      </table></div>
+    </div>
+  </div>
 </div>
 </div><!-- /main -->
 
@@ -1222,6 +1236,40 @@ tr:hover td{background:var(--ac);}
   </div>
 </div>
 
+<!-- Modal: Registrar Fallecimiento -->
+<div class="mo" id="mFallecido">
+  <div class="md" style="max-width:500px">
+    <div class="mh ra">✝ Registrar Fallecimiento <button class="mx" onclick="closeM('mFallecido')">✕</button></div>
+    <div class="mb">
+      <div id="fallNombre" style="font-size:16px;font-weight:800;color:var(--ra);margin-bottom:14px;text-align:center"></div>
+      <div class="fg">
+        <div class="fi"><label>Fecha de fallecimiento *</label><input id="fallFecha" type="date"></div>
+        <div class="fi"><label>Hora</label><input id="fallHora" type="time"></div>
+        <div class="fi ff"><label>Causa de muerte</label><input id="fallCausa" type="text" placeholder="Ej: Paro cardíaco, Neumonía..."></div>
+        <div class="fi"><label>Lugar</label><select id="fallLugar">
+          <option>En el hogar</option>
+          <option>Hospital</option>
+          <option>Sala de emergencias</option>
+          <option>En traslado</option>
+          <option>Otro</option>
+        </select></div>
+        <div class="fi"><label>Médico que certifica</label><input id="fallMedico" type="text" placeholder="Dr. Nombre Apellido"></div>
+        <div class="fi"><label>Certificado de defunción #</label><input id="fallCert" type="text"></div>
+        <div class="fi"><label>Familiar notificado</label><input id="fallFamiliar" type="text" placeholder="Nombre del familiar contactado"></div>
+        <div class="fi"><label>Teléfono familiar</label><input id="fallTel" type="tel"></div>
+        <div class="fi ff"><label>Observaciones</label><textarea id="fallObs" rows="2"></textarea></div>
+      </div>
+      <div style="background:var(--rc);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--ra);margin-top:8px">
+        ⚠️ Esta acción moverá al residente al registro de fallecidos y lo inactivará del sistema.
+      </div>
+      <div class="ab">
+        <button class="btn bol" onclick="closeM('mFallecido')">Cancelar</button>
+        <button class="btn bra" onclick="registrarFallecido()">✝ Confirmar Fallecimiento</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Modal: Escanear QR -->
 <div class="mo" id="mQR">
   <div class="md" style="max-width:380px">
@@ -1282,13 +1330,13 @@ cDB();
 
 // ===== PERMISOS =====
 var PERM = {
-  admin:    ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','usuarios'],
+  admin:    ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','fallecidos','usuarios'],
   medico:   ['dashboard','residentes','expediente','medicamentos','signos','incidentes','graficas','alertas','visitas_med','plan_act'],
   enfermera:['dashboard','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act'],
   aux:      ['dashboard','alimentacion','actividades','visitas','turno','alertas','plan_act'],
   recepcion:['dashboard','residentes','visitas','alertas']
 };
-var TABS = ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','usuarios'];
+var TABS = ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','fallecidos','usuarios'];
 
 function applyPerm() {
   var ok = PERM[SES.rol] || [];
@@ -1346,6 +1394,7 @@ function goTab(id, el) {
   if (id==='graficas') { pSel('gfR'); allGraf(); }
   if (id==='ponchador') { poblarSelectEmps(); rEmpStatus(); rReporte(); }
   if (id==='nomina') { poblarSelectEmps(); calcNomina(); }
+  if (id==='fallecidos') rFallecidos();
   if (id==='usuarios') rUsr();
   if (id==='alertas') { calcAlerts(); }
   if (id==='turno') { pSelEmps('tEnfE'); pSelEmps('tEnfR'); }
@@ -1522,8 +1571,9 @@ function saveRes() {
   toast('✅ Residente registrado', 'vs');
 }
 function rRes(filtro) {
+  window._rIds = [];
   var tbody = document.getElementById('tRes');
-  var lista = DB.residentes.slice();
+  var lista = DB.residentes.filter(function(r){ return r.estado !== 'Fallecido'; });
   if (filtro) { var f=filtro.toLowerCase(); lista=lista.filter(function(r){ return r.nombre.toLowerCase().includes(f)||r.habitacion.toLowerCase().includes(f); }); }
   if (!lista.length) { tbody.innerHTML = em(7,'👴','Sin residentes. Agrega el primero.'); return; }
   var h = '';
@@ -1541,26 +1591,19 @@ function rRes(filtro) {
     h += '<td>'+age(r.nacimiento)+'</td>';
     h += '<td>'+(r.diagnostico||'—')+'</td>';
     h += '<td><span class="badge '+bc+'">'+r.estado+'</span></td>';
-    h += '<td style="white-space:nowrap">';
-    h += '<button class="btn bsm" style="background:#444;color:white" data-id="'+r.id+'" data-act="qr">QR</button> ';
-    h += '<button class="btn bsm bol" data-id="'+r.id+'" data-act="exp">📋</button> ';
-    h += '<button class="btn bsm" style="background:var(--na);color:white" data-id="'+r.id+'" data-act="edit">✏️</button> ';
-    h += '<button class="btn bsm bmo" data-id="'+r.id+'" data-act="pdf">📄</button>';
+    var i = window._rIds.length;
+    window._rIds.push(r.id);
+    h += '<td style="white-space:nowrap;display:flex;gap:4px;flex-wrap:wrap;padding:6px 4px">';
+    h += '<button class="btn bsm" style="background:#444;color:white" onclick="generarQRResidente(window._rIds['+i+'])">QR</button>';
+    h += '<button class="btn bsm bol" onclick="goExp(window._rIds['+i+'])">📋</button>';
+    h += '<button class="btn bsm" style="background:#E67E22;color:white" onclick="editRes(window._rIds['+i+'])">✏️</button>';
+    h += '<button class="btn bsm bmo" onclick="pdfRes(window._rIds['+i+'])">📄</button>';
+    h += '<button class="btn bsm" style="background:#888;color:white" onclick="inactivarRes(window._rIds['+i+'])">⏸</button>';
+    h += '<button class="btn bsm bra" onclick="confirmarFallecido(window._rIds['+i+'])">✝</button>';
     h += '</td>';
     h += '</tr>';
   });
   tbody.innerHTML = h;
-  // Delegación de eventos para botones de residentes
-  tbody.addEventListener('click', function(e) {
-    var btn = e.target.closest('button[data-act]');
-    if (!btn) return;
-    var id = btn.getAttribute('data-id');
-    var act = btn.getAttribute('data-act');
-    if (act === 'qr')   generarQRResidente(id);
-    if (act === 'exp')  goExp(id);
-    if (act === 'edit') editRes(id);
-    if (act === 'pdf')  pdfRes(id);
-  });
 }
 function goExp(id) {
   goTab('expediente', document.querySelectorAll('.nt')[2]);
@@ -3248,6 +3291,135 @@ function generarQRResidente(id) {
   document.getElementById('qrGenImg').src = qrUrl;
   document.getElementById('qrGenHab').textContent = 'Hab. '+r.habitacion;
   openM('mQRGen');
+}
+
+// ===== INACTIVAR / FALLECIDOS =====
+function inactivarRes(id) {
+  var r = DB.residentes.find(function(x){ return x.id===id; });
+  if (!r) return;
+  if (!confirm('¿Inactivar a '+r.nombre+'? Quedará en el sistema pero no aparecerá en las listas activas.')) return;
+  r.estado = 'Inactivo';
+  sDB(); rRes(); calcAlerts();
+  toast('⏸ '+r.nombre+' inactivado', 'vs');
+}
+
+function confirmarFallecido(id) {
+  var r = DB.residentes.find(function(x){ return x.id===id; });
+  if (!r) return;
+  window._fallId = id;
+  document.getElementById('fallNombre').textContent = r.nombre;
+  var hoy = new Date();
+  document.getElementById('fallFecha').value = hoy.toISOString().slice(0,10);
+  var hh=hoy.getHours(),mm=hoy.getMinutes();
+  document.getElementById('fallHora').value = String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0');
+  ['fallCausa','fallCert','fallFamiliar','fallTel','fallObs'].forEach(function(i){ document.getElementById(i).value=''; });
+  openM('mFallecido');
+}
+
+function registrarFallecido() {
+  var id = window._fallId;
+  var r = DB.residentes.find(function(x){ return x.id===id; });
+  if (!r) return;
+  var fecha = document.getElementById('fallFecha').value;
+  if (!fecha) { toast('⚠️ Ingresa la fecha de fallecimiento'); return; }
+  if (!DB.fallecidos) DB.fallecidos = [];
+  // Hora en 12h
+  var horaRaw = document.getElementById('fallHora').value;
+  var horaDisplay = horaRaw;
+  if (horaRaw) {
+    var hp = horaRaw.split(':'), hh = parseInt(hp[0]), mm = hp[1];
+    var ap = hh>=12?'PM':'AM'; hh=hh%12; if(!hh)hh=12;
+    horaDisplay = String(hh).padStart(2,'0')+':'+mm+' '+ap;
+  }
+  DB.fallecidos.push({
+    id: 'F'+Date.now(),
+    residenteId: id,
+    nombre: r.nombre,
+    nacimiento: r.nacimiento,
+    sexo: r.sexo,
+    habitacion: r.habitacion,
+    diagnostico: r.diagnostico || '',
+    fecha: fecha,
+    hora: horaDisplay,
+    causa: document.getElementById('fallCausa').value.trim(),
+    lugar: document.getElementById('fallLugar').value,
+    medico: document.getElementById('fallMedico').value.trim(),
+    certificado: document.getElementById('fallCert').value.trim(),
+    familiar: document.getElementById('fallFamiliar').value.trim(),
+    telFamiliar: document.getElementById('fallTel').value.trim(),
+    obs: document.getElementById('fallObs').value.trim(),
+    registrado: fh()
+  });
+  // Marcar residente como fallecido
+  r.estado = 'Fallecido';
+  r.fechaFallecido = fecha;
+  sDB();
+  closeM('mFallecido');
+  rRes();
+  rFallecidos();
+  calcAlerts();
+  toast('✝ Fallecimiento registrado — '+r.nombre, 'vs');
+}
+
+function rFallecidos() {
+  var tbody = document.getElementById('tFallecidos');
+  if (!tbody) return;
+  var lista = (DB.fallecidos||[]).slice().reverse();
+  if (!lista.length) { tbody.innerHTML = '<tr><td colspan="10">'+em(10,'✝','Sin registros de fallecidos.')+'</td></tr>'; return; }
+  var h = '';
+  lista.forEach(function(f, i) {
+    window._fIds = window._fIds || [];
+    window._fIds[i] = f.id;
+    h += '<tr>';
+    h += '<td><strong>'+f.nombre+'</strong><br><span style="font-size:11px;color:var(--gm)">'+f.sexo+(f.habitacion?' · Hab.'+f.habitacion:'')+'</span></td>';
+    h += '<td>'+age(f.nacimiento)+'</td>';
+    h += '<td><strong>'+f.fecha+'</strong>'+(f.hora?'<br><span style="font-size:11px">'+f.hora+'</span>':'')+'</td>';
+    h += '<td>'+(f.causa||'—')+'</td>';
+    h += '<td>'+(f.lugar||'—')+'</td>';
+    h += '<td>'+(f.medico||'—')+'</td>';
+    h += '<td>'+(f.certificado||'—')+'</td>';
+    h += '<td>'+(f.familiar||'—')+(f.telFamiliar?'<br><span style="font-size:11px">'+f.telFamiliar+'</span>':'')+'</td>';
+    h += '<td>'+(f.obs||'—')+'</td>';
+    h += '<td><button class="btn bsm bmo" onclick="pdfFallecido(window._fIds['+i+'])">📄</button></td>';
+    h += '</tr>';
+  });
+  tbody.innerHTML = h;
+}
+
+function pdfFallecido(fid) {
+  var JP = window.jspdf ? window.jspdf.jsPDF : null;
+  if (!JP) { toast('⚠️ Cargando PDF...'); setTimeout(function(){ pdfFallecido(fid); },1500); return; }
+  var f = (DB.fallecidos||[]).find(function(x){ return x.id===fid; });
+  if (!f) return;
+  var doc = new JP(), y = 28;
+  doc.setFillColor(139,0,0); doc.rect(0,0,210,20,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(13); doc.setFont(undefined,'bold');
+  doc.text('CareHome Manager — Registro de Fallecimiento',14,13);
+  doc.setFontSize(8); doc.setFont(undefined,'normal');
+  doc.text('Generado: '+fh(),196,13,'right');
+  doc.setTextColor(40,40,40);
+  doc.setFontSize(14); doc.setFont(undefined,'bold'); doc.setTextColor(139,0,0);
+  doc.text('✝  '+f.nombre, 14, y); y+=8;
+  doc.setFontSize(10); doc.setFont(undefined,'normal'); doc.setTextColor(40,40,40);
+  var rows = [
+    ['Fecha de fallecimiento:', f.fecha+(f.hora?' a las '+f.hora:'')],
+    ['Causa de muerte:', f.causa||'—'],
+    ['Lugar:', f.lugar||'—'],
+    ['Médico que certifica:', f.medico||'—'],
+    ['Certificado de defunción #:', f.certificado||'—'],
+    ['Familiar notificado:', f.familiar||'—'],
+    ['Teléfono familiar:', f.telFamiliar||'—'],
+    ['Diagnóstico previo:', f.diagnostico||'—'],
+    ['Observaciones:', f.obs||'—'],
+    ['Registrado por sistema:', f.registrado],
+  ];
+  rows.forEach(function(row){
+    doc.setFont(undefined,'bold'); doc.text(row[0],14,y);
+    doc.setFont(undefined,'normal'); doc.text(row[1]||'—',80,y);
+    y+=7;
+  });
+  doc.save('Fallecimiento_'+f.nombre.replace(/ /g,'_')+'.pdf');
+  toast('📄 PDF generado','vs');
 }
 
 // ===== INIT =====
