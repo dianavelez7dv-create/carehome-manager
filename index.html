@@ -3937,17 +3937,19 @@ function initCompras() {
 function renderDeptoTabs() {
   var div = document.getElementById('deptoTabs');
   if (!div) return;
-  var h = '<div class="depto-btn'+(!_deptoActivo?' activo':'')+'" onclick="selDepto('',this)">📋 Todos</div>';
+  window._dIds = [''];
+  var h = '<div class="depto-btn'+(!_deptoActivo?' activo':'')+'" onclick="selDepto(window._dIds[0],this)">\u2139\ufe0f Todos</div>';
   DEPTOS.forEach(function(d){
+    var i = window._dIds.length;
+    window._dIds.push(d);
     var count = (DB.compras||[]).filter(function(x){ return x.depto===d && x.estado==='Pendiente'; }).length;
     var urgente = (DB.compras||[]).some(function(x){ return x.depto===d && x.urgente && x.estado==='Pendiente'; });
-    h += '<div class="depto-btn'+(d===_deptoActivo?' activo':'')+'" onclick="selDepto(''+d.replace(/'/g,"\'")+"',this)">";
-    h += d+(count>0?'<span class="depto-count">'+(urgente?'🔴':'')+count+'</span>':'');
+    h += '<div class="depto-btn'+(d===_deptoActivo?' activo':'')+'" onclick="selDepto(window._dIds['+i+'],this)">';
+    h += d+(count>0?'<span class="depto-count">'+(urgente?'\uD83D\uDD34':'')+count+'</span>':'');
     h += '</div>';
   });
   div.innerHTML = h;
 }
-
 function selDepto(d, btn) {
   _deptoActivo = d;
   document.querySelectorAll('.depto-btn').forEach(function(b){ b.classList.remove('activo'); });
@@ -4187,12 +4189,15 @@ function poblarDirectos() {
   var div = document.getElementById('directoLista');
   if (!div) return;
   var h = '';
+  window._dmUsers = [];
   DB.usuarios.filter(function(u){ return u.id !== SES.id; }).forEach(function(u){
     var cid = 'dm_'+[SES.id,u.id].sort().join('_');
+    var i = window._dmUsers.length;
+    window._dmUsers.push({id:u.id, nombre:u.nombre});
     var noLeidos = (DB.mensajes||[]).filter(function(m){
       return m.canal===cid && m.autorId!==SES.id && !m.leido;
     }).length;
-    h += '<div class="canal-btn" id="btn_'+cid+'" onclick="selDireto(''+u.id+'',''+u.nombre+'',this)">';
+    h += '<div class="canal-btn" id="btn_'+cid+'" onclick="selDireto(window._dmUsers['+i+'].id,window._dmUsers['+i+'].nombre,this)">';
     h += '<span>👤 '+u.nombre.split(' ')[0]+'</span>';
     if (noLeidos>0) h += '<span class="badge-msg">'+noLeidos+'</span>';
     h += '</div>';
