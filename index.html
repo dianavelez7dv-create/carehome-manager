@@ -4373,10 +4373,10 @@ function rTareas() {
     h += '<div class="tarea-meta">Creado por: '+t.creadoPor+' · '+t.ts+'</div>';
     h += '<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">';
     if (t.estado!=='Completada') {
-      h += '<button class="btn bsm bvs" onclick="cambiarEstadoTarea(window._tIds['+i+'],'Completada')">✅ Completar</button>';
-      if (t.estado==='Pendiente') h += '<button class="btn bsm bna" onclick="cambiarEstadoTarea(window._tIds['+i+'],'En progreso')">▶ En progreso</button>';
+      h += '<button class="btn bsm bvs" onclick="cambiarEstadoTarea(window._tIds['+i+'],\'Completada\')">\u2705 Completar</button>';
+      if (t.estado==='Pendiente') h += '<button class="btn bsm bna" onclick="cambiarEstadoTarea(window._tIds['+i+'],\'En progreso\')">\u25b6 En progreso</button>';
     } else {
-      h += '<button class="btn bsm bol" onclick="cambiarEstadoTarea(window._tIds['+i+'],'Pendiente')">↩ Reabrir</button>';
+      h += '<button class="btn bsm bol" onclick="cambiarEstadoTarea(window._tIds['+i+'],\'Pendiente\')">\u21a9 Reabrir</button>';
     }
     if (SES.rol==='admin') h += '<button class="btn bsm bra" onclick="eliminarTarea(window._tIds['+i+'])">🗑️</button>';
     h += '</div></div>';
