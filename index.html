@@ -140,6 +140,39 @@ tr:hover td{background:var(--ac);}
 .emp-status{font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;}
 .emp-in{background:var(--vc);color:var(--vs);}.emp-out{background:var(--rc);color:var(--ra);}.emp-off{background:var(--gc);color:var(--gm);}
 .reporte-fila-nom{font-weight:700;}.reporte-horas{font-size:13px;color:var(--am);font-weight:700;}
+.msg-burbuja{max-width:75%;padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.4;position:relative;word-break:break-word;}
+.msg-yo{background:var(--am);color:white;border-bottom-right-radius:4px;align-self:flex-end;}
+.msg-otro{background:var(--gc);color:var(--go);border-bottom-left-radius:4px;align-self:flex-start;}
+.msg-broadcast{background:#FFF3CD;color:#856404;border:1px solid #FFD54F;border-radius:10px;align-self:center;text-align:center;max-width:90%;}
+.msg-remitente{font-size:11px;font-weight:700;opacity:.7;margin-bottom:3px;}
+.msg-hora{font-size:10px;opacity:.6;margin-top:3px;text-align:right;}
+.msg-area{display:flex;flex-direction:column;gap:8px;padding:12px;height:320px;overflow-y:auto;background:var(--ac);border-radius:10px;margin-bottom:10px;}
+.tarea-card{background:var(--bl);border:1.5px solid var(--bo);border-radius:10px;padding:12px 14px;margin-bottom:8px;}
+.tarea-card.vencida{border-color:var(--ra);background:#FFF5F5;}
+.tarea-card.completada{opacity:.6;border-color:var(--vs);}
+.tarea-titulo{font-weight:700;font-size:14px;}
+.tarea-meta{font-size:12px;color:var(--gm);margin-top:3px;}
+.tarea-prioridad-alta{color:var(--ra);font-weight:700;}
+.tarea-prioridad-media{color:var(--na);font-weight:700;}
+.tarea-prioridad-baja{color:var(--gm);}
+.online-dot{width:9px;height:9px;border-radius:50%;background:#2ecc71;display:inline-block;margin-right:4px;}
+.canal-btn{padding:8px 12px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;border:1.5px solid var(--bo);background:var(--bl);margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.canal-btn.activo{background:var(--am);color:white;border-color:var(--am);}
+.badge-msg{background:var(--ra);color:white;border-radius:10px;padding:1px 6px;font-size:10px;font-weight:800;margin-left:auto;}
+.depto-tab{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.depto-btn{padding:8px 14px;border-radius:20px;border:1.5px solid var(--bo);background:var(--bl);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;}
+.depto-btn.activo{background:var(--am);color:white;border-color:var(--am);}
+.depto-btn .depto-count{background:rgba(0,0,0,.15);border-radius:10px;padding:1px 6px;font-size:11px;}
+.item-compra{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--gc);}
+.item-compra:last-child{border-bottom:none;}
+.item-compra.comprado{opacity:.5;}
+.item-compra input[type=checkbox]{width:20px;height:20px;accent-color:var(--vs);cursor:pointer;flex-shrink:0;}
+.item-compra .item-nombre{flex:1;font-size:14px;font-weight:600;}
+.item-compra.comprado .item-nombre{text-decoration:line-through;color:var(--gm);}
+.item-compra .item-cant{font-size:12px;color:var(--am);font-weight:700;white-space:nowrap;}
+.item-compra .item-nota{font-size:11px;color:var(--gm);}
+.item-compra .item-precio{font-size:12px;color:var(--vs);font-weight:700;white-space:nowrap;}
+.urgente-tag{background:var(--rc);color:var(--ra);font-size:10px;font-weight:700;border-radius:6px;padding:2px 6px;margin-left:4px;}
 .nom-resumen{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:18px;}
 .nom-card{background:var(--bl);border-radius:10px;border:1px solid var(--bo);padding:14px;box-shadow:0 2px 8px rgba(26,58,92,.07);}
 .nom-emp{font-weight:700;font-size:14px;color:var(--go);margin-bottom:2px;}
@@ -255,6 +288,9 @@ tr:hover td{background:var(--ac);}
   <div class="nt" onclick="goTab('plan_act',this)">🎯 Plan de Actividades</div>
   <div class="nt tab-admin" onclick="goTab('ponchador',this)">⏱️ Ponchador</div>
   <div class="nt tab-admin" onclick="goTab('nomina',this)">💰 Nómina</div>
+  <div class="nt" onclick="goTab('cuarentena',this)">🔴 Cuarentena</div>
+  <div class="nt" onclick="goTab('mensajes',this)">💬 Mensajes</div>
+  <div class="nt" onclick="goTab('compras',this)">🛒 Compras</div>
   <div class="nt tab-admin" onclick="goTab('fallecidos',this)">✝ Fallecidos</div>
   <div class="nt tab-admin" onclick="goTab('usuarios',this)">👥 Usuarios</div>
 </div>
@@ -723,6 +759,210 @@ tr:hover td{background:var(--ac);}
       </table></div>
     </div>
   </div>
+</div>
+
+<!-- CUARENTENA -->
+<div class="sec" id="tab-cuarentena">
+
+  <!-- Panel de estado actual -->
+  <div class="card">
+    <div class="ch ra">🔴 Pacientes en Cuarentena / Aislamiento</div>
+    <div class="cb">
+      <div style="display:flex;gap:9px;margin-bottom:14px;flex-wrap:wrap;align-items:flex-end">
+        <div class="fi" style="flex:1;min-width:180px">
+          <label>Filtrar por tipo</label>
+          <select id="fCuarTipo" onchange="rCuarentena()">
+            <option value="">— Todos —</option>
+            <option>COVID-19</option>
+            <option>Influenza</option>
+            <option>Gastroenteritis</option>
+            <option>MRSA</option>
+            <option>C. difficile</option>
+            <option>Sarna</option>
+            <option>Conjuntivitis</option>
+            <option>Precaución respiratoria</option>
+            <option>Precaución de contacto</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div class="fi" style="flex:1;min-width:120px">
+          <label>Estado</label>
+          <select id="fCuarEst" onchange="rCuarentena()">
+            <option value="">— Todos —</option>
+            <option>Activo</option>
+            <option>Levantado</option>
+          </select>
+        </div>
+        <button class="btn bra" onclick="openCuarentena()">🔴 Iniciar Cuarentena</button>
+      </div>
+
+      <!-- Contador activos -->
+      <div id="cuarResumen" style="margin-bottom:12px"></div>
+
+      <div class="tw"><table>
+        <thead><tr>
+          <th>Paciente</th><th>Hab.</th><th>Tipo</th><th>Motivo</th>
+          <th>Inicio</th><th>Alta estimada</th><th>Estado</th>
+          <th>Médico</th><th>Precauciones</th><th>Acciones</th>
+        </tr></thead>
+        <tbody id="tCuarentena"></tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- Protocolo de aislamiento -->
+  <div class="card">
+    <div class="ch" style="background:#7B2D8B">📋 Protocolo de Aislamiento</div>
+    <div class="cb">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">
+        <div style="background:#FFF0F0;border-radius:10px;padding:14px;border:1.5px solid #FFB3B3">
+          <div style="font-size:16px;font-weight:800;color:#C0392B;margin-bottom:6px">🔴 Cuarentena Estricta</div>
+          <ul style="font-size:13px;color:#555;padding-left:18px;margin:0;line-height:1.8">
+            <li>Habitación privada o cohorte</li>
+            <li>EPP completo al entrar</li>
+            <li>Guantes y bata siempre</li>
+            <li>Mascarilla N95 o quirúrgica</li>
+            <li>Lavado de manos al salir</li>
+            <li>Sin visitas o con EPP</li>
+          </ul>
+        </div>
+        <div style="background:#FFF8E1;border-radius:10px;padding:14px;border:1.5px solid #FFD54F">
+          <div style="font-size:16px;font-weight:800;color:#F57F17;margin-bottom:6px">🟡 Precaución de Contacto</div>
+          <ul style="font-size:13px;color:#555;padding-left:18px;margin:0;line-height:1.8">
+            <li>Guantes al contacto directo</li>
+            <li>Bata si hay riesgo de salpicadura</li>
+            <li>Equipo dedicado al paciente</li>
+            <li>Limpieza reforzada del cuarto</li>
+            <li>Lavado de manos estricto</li>
+          </ul>
+        </div>
+        <div style="background:#E8F4FD;border-radius:10px;padding:14px;border:1.5px solid #90CAF9">
+          <div style="font-size:16px;font-weight:800;color:#1565C0;margin-bottom:6px">🔵 Precaución Respiratoria</div>
+          <ul style="font-size:13px;color:#555;padding-left:18px;margin:0;line-height:1.8">
+            <li>Mascarilla al entrar al cuarto</li>
+            <li>Puerta cerrada</li>
+            <li>Ventilación adecuada</li>
+            <li>Paciente con mascarilla si tolera</li>
+            <li>Limitar traslados</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MENSAJES Y TAREAS -->
+<div class="sec" id="tab-mensajes">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+
+    <!-- MENSAJERÍA -->
+    <div class="card" style="grid-column:1/-1">
+      <div class="ch am">💬 Mensajería del Equipo</div>
+      <div class="cb">
+        <div style="display:grid;grid-template-columns:180px 1fr;gap:12px">
+
+          <!-- Canales -->
+          <div>
+            <div style="font-size:12px;font-weight:700;color:var(--gm);margin-bottom:8px;text-transform:uppercase">Canales</div>
+            <div id="canalesLista">
+              <div class="canal-btn activo" onclick="selCanal('general',this)">📢 General</div>
+              <div class="canal-btn" onclick="selCanal('enfermeria',this)">💉 Enfermería</div>
+              <div class="canal-btn" onclick="selCanal('medicos',this)">🩺 Médicos</div>
+              <div class="canal-btn" onclick="selCanal('admin',this)">👑 Administración</div>
+              <div class="canal-btn" onclick="selCanal('urgente',this)">🚨 Urgente</div>
+            </div>
+            <div style="margin-top:12px;font-size:12px;font-weight:700;color:var(--gm);text-transform:uppercase">Directo</div>
+            <div id="directoLista" style="margin-top:6px"></div>
+          </div>
+
+          <!-- Chat -->
+          <div style="display:flex;flex-direction:column">
+            <div style="font-size:13px;font-weight:700;color:var(--am);margin-bottom:8px" id="canalTitulo">📢 General</div>
+            <div class="msg-area" id="msgArea"></div>
+            <div style="display:flex;gap:8px;align-items:flex-end">
+              <textarea id="msgTexto" rows="2" placeholder="Escribe un mensaje..." style="flex:1;border:1.5px solid var(--bo);border-radius:8px;padding:9px 12px;font-size:15px;resize:none;font-family:inherit"></textarea>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <button class="btn bam" onclick="enviarMensaje()" style="padding:10px 14px">📤</button>
+                <button class="btn" style="background:#E67E22;color:white;padding:10px 14px;font-size:11px" onclick="enviarBroadcast()">📢</button>
+              </div>
+            </div>
+            <div style="font-size:11px;color:var(--gm);margin-top:4px">📤 Enviar · 📢 Anuncio a todos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAREAS -->
+    <div class="card">
+      <div class="ch" style="background:#7B2D8B">✅ Mis Tareas</div>
+      <div class="cb">
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+          <select id="fTareaEst" onchange="rTareas()" style="flex:1;border:1.5px solid var(--bo);border-radius:8px;padding:8px 10px;font-size:14px">
+            <option value="">— Todas —</option>
+            <option value="Pendiente">Pendientes</option>
+            <option value="En progreso">En progreso</option>
+            <option value="Completada">Completadas</option>
+          </select>
+          <button class="btn" style="background:#7B2D8B;color:white" onclick="openTarea()">➕ Nueva Tarea</button>
+        </div>
+        <div id="tareasLista"></div>
+      </div>
+    </div>
+
+    <!-- TABLERO ADMIN -->
+    <div class="card" id="tableroAdmin" style="display:none">
+      <div class="ch ra">📋 Tablero de Tareas — Equipo</div>
+      <div class="cb">
+        <div class="tw"><table>
+          <thead><tr><th>Tarea</th><th>Asignado a</th><th>Prioridad</th><th>Vence</th><th>Estado</th><th>Acc.</th></tr></thead>
+          <tbody id="tTareasAdmin"></tbody>
+        </table></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- COMPRAS -->
+<div class="sec" id="tab-compras">
+
+  <!-- Encabezado con resumen -->
+  <div class="card">
+    <div class="ch am">🛒 Listas de Compras por Departamento</div>
+    <div class="cb">
+
+      <!-- Filtros de departamento -->
+      <div class="depto-tab" id="deptoTabs"></div>
+
+      <!-- Barra de acciones -->
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:flex-end">
+        <div class="fi" style="flex:1;min-width:160px">
+          <label>Filtrar</label>
+          <select id="fCompraEst" onchange="rCompras()">
+            <option value="">— Todos —</option>
+            <option value="Pendiente">Pendientes</option>
+            <option value="Comprado">Comprados</option>
+            <option value="Urgente">Urgentes</option>
+          </select>
+        </div>
+        <button class="btn bam" onclick="openCompra()">➕ Agregar Artículo</button>
+        <button class="btn" style="background:#2D6A4F;color:white" onclick="marcarTodosComprados()">✅ Marcar seleccionados</button>
+        <button class="btn bmo" onclick="pdfListaCompras()">📄 Exportar PDF</button>
+        <button class="btn bra" onclick="limpiarComprados()">🗑️ Limpiar comprados</button>
+      </div>
+
+      <!-- Resumen por departamento -->
+      <div id="compraResumen" style="margin-bottom:14px"></div>
+
+      <!-- Lista de artículos -->
+      <div id="compraLista" style="border:1px solid var(--bo);border-radius:10px;overflow:hidden;background:var(--bl)"></div>
+
+      <!-- Total estimado -->
+      <div id="compraTotalDiv" style="margin-top:10px;text-align:right"></div>
+    </div>
+  </div>
+
 </div>
 </div><!-- /main -->
 
@@ -1237,6 +1477,174 @@ tr:hover td{background:var(--ac);}
   </div>
 </div>
 
+<!-- Modal: Iniciar Cuarentena -->
+<div class="mo" id="mCuarentena">
+  <div class="md" style="max-width:540px">
+    <div class="mh ra">🔴 Iniciar Cuarentena / Aislamiento <button class="mx" onclick="closeM('mCuarentena')">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="fi ff">
+          <label>Paciente *</label>
+          <input type="text" id="lupa_cuarR" placeholder="🔍 Buscar paciente..." oninput="lupaFiltrar('lupa_cuarR','cuarR')" style="border:1.5px solid var(--bo);border-radius:8px;padding:9px 12px;font-size:15px;width:100%;margin-bottom:4px">
+          <select id="cuarR" size="4" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px"><option value="">— Seleccionar —</option></select>
+        </div>
+        <div class="fi"><label>Tipo de aislamiento *</label>
+          <select id="cuarTipo">
+            <option>COVID-19</option>
+            <option>Influenza</option>
+            <option>Gastroenteritis</option>
+            <option>MRSA</option>
+            <option>C. difficile</option>
+            <option>Sarna</option>
+            <option>Conjuntivitis</option>
+            <option>Precaución respiratoria</option>
+            <option>Precaución de contacto</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div class="fi ff"><label>Motivo / Síntomas *</label>
+          <textarea id="cuarMotivo" rows="2" placeholder="Ej: Fiebre, tos, resultado positivo COVID-19..."></textarea>
+        </div>
+        <div class="fi"><label>Fecha de inicio *</label><input id="cuarInicio" type="date"></div>
+        <div class="fi"><label>Alta estimada</label><input id="cuarAlta" type="date"></div>
+        <div class="fi"><label>Médico que ordena</label><input id="cuarMedico" type="text" placeholder="Dr. Nombre Apellido"></div>
+        <div class="fi ff"><label>Precauciones específicas</label>
+          <textarea id="cuarPrec" rows="2" placeholder="Ej: EPP completo, habitación 101 privada, sin visitas..."></textarea>
+        </div>
+        <div class="fi"><label>Ubicación / Cuarto asignado</label>
+          <input id="cuarUbic" type="text" placeholder="Ej: Hab. 101 — aislamiento">
+        </div>
+        <div class="fi"><label>Nivel de aislamiento</label>
+          <select id="cuarNivel">
+            <option>🔴 Cuarentena estricta</option>
+            <option>🟡 Precaución de contacto</option>
+            <option>🔵 Precaución respiratoria</option>
+            <option>🟢 Observación</option>
+          </select>
+        </div>
+      </div>
+      <div class="ab">
+        <button class="btn bol" onclick="closeM('mCuarentena')">Cancelar</button>
+        <button class="btn bra" onclick="saveCuarentena()">🔴 Iniciar Aislamiento</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Levantar Cuarentena -->
+<div class="mo" id="mLevantarCuar">
+  <div class="md" style="max-width:420px">
+    <div class="mh" style="background:#0D7A5F">✅ Levantar Cuarentena <button class="mx" onclick="closeM('mLevantarCuar')">✕</button></div>
+    <div class="mb">
+      <div id="levantarNombre" style="font-size:16px;font-weight:800;color:var(--am);margin-bottom:14px;text-align:center"></div>
+      <div class="fg">
+        <div class="fi"><label>Fecha de alta *</label><input id="levantarFecha" type="date"></div>
+        <div class="fi"><label>Médico que autoriza</label><input id="levantarMedico" type="text" placeholder="Dr. Nombre Apellido"></div>
+        <div class="fi ff"><label>Observaciones de alta</label>
+          <textarea id="levantarObs" rows="2" placeholder="Ej: Resultado negativo, sin síntomas por 72h..."></textarea>
+        </div>
+      </div>
+      <div class="ab">
+        <button class="btn bol" onclick="closeM('mLevantarCuar')">Cancelar</button>
+        <button class="btn bvs" onclick="levantarCuarentena()">✅ Levantar Aislamiento</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Agregar Artículo de Compra -->
+<div class="mo" id="mCompra">
+  <div class="md" style="max-width:480px">
+    <div class="mh am">🛒 Agregar Artículo <button class="mx" onclick="closeM('mCompra')">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="fi ff"><label>Artículo *</label>
+          <input id="compraItem" type="text" placeholder="Ej: Guantes de nitrilo talla M...">
+        </div>
+        <div class="fi"><label>Departamento *</label>
+          <select id="compraDepto">
+            <option>🏥 Enfermería</option>
+            <option>🍽️ Cocina / Alimentación</option>
+            <option>🧹 Limpieza</option>
+            <option>💊 Farmacia / Medicamentos</option>
+            <option>🛠️ Mantenimiento</option>
+            <option>🏢 Administración</option>
+            <option>🧴 Higiene personal</option>
+            <option>👕 Ropa / Lencería</option>
+            <option>📦 Suministros generales</option>
+          </select>
+        </div>
+        <div class="fi"><label>Cantidad</label>
+          <input id="compraCant" type="text" placeholder="Ej: 2 cajas, 1 galón, 50 unidades...">
+        </div>
+        <div class="fi"><label>Precio estimado ($)</label>
+          <input id="compraPrecio" type="number" step="0.01" min="0" placeholder="0.00">
+        </div>
+        <div class="fi"><label>Proveedor / Tienda sugerida</label>
+          <input id="compraProveedor" type="text" placeholder="Ej: Costco, Farmacia X...">
+        </div>
+        <div class="fi ff"><label>Notas adicionales</label>
+          <input id="compraNota" type="text" placeholder="Ej: Marca específica, alergia sin latex...">
+        </div>
+        <div class="fi" style="display:flex;align-items:center;gap:10px">
+          <input type="checkbox" id="compraUrgente" style="width:20px;height:20px;accent-color:var(--ra)">
+          <label for="compraUrgente" style="font-weight:700;color:var(--ra);cursor:pointer">🔴 Urgente — Se necesita hoy</label>
+        </div>
+      </div>
+      <div class="ab">
+        <button class="btn bol" onclick="closeM('mCompra')">Cancelar</button>
+        <button class="btn bam" onclick="saveCompra()">✅ Agregar a la lista</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Nueva Tarea -->
+<div class="mo" id="mTarea">
+  <div class="md" style="max-width:480px">
+    <div class="mh" style="background:#7B2D8B">✅ Nueva Tarea <button class="mx" onclick="closeM('mTarea')">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="fi ff"><label>Título de la tarea *</label>
+          <input id="tareaTitle" type="text" placeholder="Ej: Revisar medicamentos del turno noche...">
+        </div>
+        <div class="fi ff"><label>Descripción</label>
+          <textarea id="tareaDesc" rows="2" placeholder="Detalles de la tarea..."></textarea>
+        </div>
+        <div class="fi"><label>Asignada a</label>
+          <select id="tareaAsig"><option value="">— Todos / General —</option></select>
+        </div>
+        <div class="fi"><label>Prioridad</label>
+          <select id="tareaPrior">
+            <option value="Alta">🔴 Alta</option>
+            <option value="Media" selected>🟡 Media</option>
+            <option value="Baja">🟢 Baja</option>
+          </select>
+        </div>
+        <div class="fi"><label>Fecha límite</label>
+          <input id="tareaFecha" type="date">
+        </div>
+        <div class="fi"><label>Categoría</label>
+          <select id="tareatCat">
+            <option>Medicamentos</option>
+            <option>Cuidado del paciente</option>
+            <option>Limpieza</option>
+            <option>Administrativo</option>
+            <option>Mantenimiento</option>
+            <option>Enfermería</option>
+            <option>Reunión</option>
+            <option>Otro</option>
+          </select>
+        </div>
+      </div>
+      <div class="ab">
+        <button class="btn bol" onclick="closeM('mTarea')">Cancelar</button>
+        <button class="btn" style="background:#7B2D8B;color:white" onclick="saveTarea()">✅ Crear Tarea</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Modal: Comedor QR -->
 <div class="mo" id="mComedor">
   <div class="md" style="max-width:420px">
@@ -1386,13 +1794,13 @@ cDB();
 
 // ===== PERMISOS =====
 var PERM = {
-  admin:    ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','fallecidos','usuarios'],
-  medico:   ['dashboard','residentes','expediente','medicamentos','signos','incidentes','graficas','alertas','visitas_med','plan_act'],
-  enfermera:['dashboard','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act'],
-  aux:      ['dashboard','alimentacion','actividades','visitas','turno','alertas','plan_act'],
-  recepcion:['dashboard','residentes','visitas','alertas']
+  admin:    ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','cuarentena','mensajes','compras','fallecidos','usuarios'],
+  medico:   ['dashboard','residentes','expediente','medicamentos','signos','incidentes','graficas','alertas','visitas_med','plan_act','cuarentena','mensajes'],
+  enfermera:['dashboard','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','cuarentena','mensajes','compras'],
+  aux:      ['dashboard','alimentacion','actividades','visitas','turno','alertas','plan_act','cuarentena','mensajes','compras'],
+  recepcion:['dashboard','residentes','visitas','alertas','mensajes','compras']
 };
-var TABS = ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','fallecidos','usuarios'];
+var TABS = ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','cuarentena','mensajes','compras','fallecidos','usuarios'];
 
 function applyPerm() {
   var ok = PERM[SES.rol] || [];
@@ -1450,6 +1858,9 @@ function goTab(id, el) {
   if (id==='graficas') { pSel('gfR'); allGraf(); }
   if (id==='ponchador') { poblarSelectEmps(); rEmpStatus(); rReporte(); }
   if (id==='nomina') { poblarSelectEmps(); calcNomina(); }
+  if (id==='compras') initCompras();
+  if (id==='mensajes') initMensajes();
+  if (id==='cuarentena') rCuarentena();
   if (id==='fallecidos') rFallecidos();
   if (id==='usuarios') rUsr();
   if (id==='alertas') { calcAlerts(); }
@@ -2431,6 +2842,27 @@ function calcAlerts() {
   }
 
   // ── RENDERIZAR ──────────────────────────────────────────
+  // ── COMPRAS URGENTES ───────────────────────────────
+  var comprasUrg = (DB.compras||[]).filter(function(x){ return x.urgente && x.estado==='Pendiente'; });
+  if (comprasUrg.length>0) {
+    warn.push({ico:'🛒',titulo:comprasUrg.length+' artículo(s) de compra urgente pendiente(s)',
+      detalle:comprasUrg.map(function(x){ return x.nombre+' ('+x.depto+')'; }).join(', '),tipo:'warn'});
+  }
+
+  // ── CUARENTENAS ACTIVAS ────────────────────────────
+  var cuarActivas = (DB.cuarentenas||[]).filter(function(q){ return q.estado==='Activo'; });
+  if (cuarActivas.length > 0) {
+    warn.push({ico:'🔴', titulo:cuarActivas.length+' paciente(s) en cuarentena activa',
+      detalle:cuarActivas.map(function(q){ return q.nombre+' ('+q.tipo+')'; }).join(', '), tipo:'warn'});
+  }
+  // Alta estimada vencida
+  cuarActivas.forEach(function(q){
+    if (!q.alta) return;
+    var diff = (new Date(q.alta) - new Date(now.toISOString().slice(0,10))) / 86400000;
+    if (diff < 0) warn.push({ico:'🔴',titulo:'Alta de cuarentena vencida — '+q.nombre,detalle:'Fecha estimada: '+q.alta,tipo:'warn'});
+    else if (diff === 0) info.push({ico:'🔴',titulo:'Alta de cuarentena HOY — '+q.nombre,detalle:q.tipo,tipo:'info'});
+  });
+
   // ── EMPLEADOS SIN PONCHE HOY ────────────────────────
   var hoyPonch = now.toISOString().slice(0,10);
   var conEntrada = (DB.ponches||[]).filter(function(p){ return p.fecha===hoyPonch && p.tipo==='entrada'; }).map(function(p){ return p.userId; });
@@ -2451,6 +2883,7 @@ function calcAlerts() {
   if (dentroAhora.length>0) {
     ok.push({ico:'🟢',titulo:dentroAhora.length+' empleado(s) dentro ahora',detalle:dentroAhora.map(function(u){ return u.nombre; }).join(', '),tipo:'ok'});
   }
+  contarNoLeidos();
   var total = crit.length + warn.length;
   renderAlertBlock('aCrit', crit, 'crit');
   renderAlertBlock('aWarn', warn, 'warn');
@@ -3483,6 +3916,712 @@ function pdfFallecido(fid) {
     y+=7;
   });
   doc.save('Fallecimiento_'+f.nombre.replace(/ /g,'_')+'.pdf');
+  toast('📄 PDF generado','vs');
+}
+
+// ===== COMPRAS =====
+var _deptoActivo = '';
+
+var DEPTOS = [
+  '🏥 Enfermería','🍽️ Cocina / Alimentación','🧹 Limpieza',
+  '💊 Farmacia / Medicamentos','🛠️ Mantenimiento','🏢 Administración',
+  '🧴 Higiene personal','👕 Ropa / Lencería','📦 Suministros generales'
+];
+
+function initCompras() {
+  if (!DB.compras) DB.compras = [];
+  renderDeptoTabs();
+  rCompras();
+}
+
+function renderDeptoTabs() {
+  var div = document.getElementById('deptoTabs');
+  if (!div) return;
+  var h = '<div class="depto-btn'+(!_deptoActivo?' activo':'')+'" onclick="selDepto('',this)">📋 Todos</div>';
+  DEPTOS.forEach(function(d){
+    var count = (DB.compras||[]).filter(function(x){ return x.depto===d && x.estado==='Pendiente'; }).length;
+    var urgente = (DB.compras||[]).some(function(x){ return x.depto===d && x.urgente && x.estado==='Pendiente'; });
+    h += '<div class="depto-btn'+(d===_deptoActivo?' activo':'')+'" onclick="selDepto(''+d.replace(/'/g,"\'")+"',this)">";
+    h += d+(count>0?'<span class="depto-count">'+(urgente?'🔴':'')+count+'</span>':'');
+    h += '</div>';
+  });
+  div.innerHTML = h;
+}
+
+function selDepto(d, btn) {
+  _deptoActivo = d;
+  document.querySelectorAll('.depto-btn').forEach(function(b){ b.classList.remove('activo'); });
+  btn.classList.add('activo');
+  rCompras();
+}
+
+function openCompra() {
+  document.getElementById('compraItem').value = '';
+  document.getElementById('compraCant').value = '';
+  document.getElementById('compraPrecio').value = '';
+  document.getElementById('compraProveedor').value = '';
+  document.getElementById('compraNota').value = '';
+  document.getElementById('compraUrgente').checked = false;
+  if (_deptoActivo) document.getElementById('compraDepto').value = _deptoActivo;
+  openM('mCompra');
+}
+
+function saveCompra() {
+  var item = document.getElementById('compraItem').value.trim();
+  if (!item) { toast('⚠️ Escribe el nombre del artículo'); return; }
+  if (!DB.compras) DB.compras = [];
+  DB.compras.push({
+    id: 'C'+Date.now(),
+    nombre: item,
+    depto: document.getElementById('compraDepto').value,
+    cantidad: document.getElementById('compraCant').value.trim(),
+    precio: parseFloat(document.getElementById('compraPrecio').value)||0,
+    proveedor: document.getElementById('compraProveedor').value.trim(),
+    nota: document.getElementById('compraNota').value.trim(),
+    urgente: document.getElementById('compraUrgente').checked,
+    estado: 'Pendiente',
+    creadoPor: SES.nombre,
+    ts: fh()
+  });
+  sDB();
+  closeM('mCompra');
+  renderDeptoTabs();
+  rCompras();
+  toast('✅ Artículo agregado a la lista','vs');
+}
+
+function rCompras() {
+  var div = document.getElementById('compraLista');
+  var resDiv = document.getElementById('compraResumen');
+  var totDiv = document.getElementById('compraTotalDiv');
+  if (!div) return;
+
+  var est = document.getElementById('fCompraEst') ? document.getElementById('fCompraEst').value : '';
+  var lista = (DB.compras||[]).filter(function(x){
+    if (_deptoActivo && x.depto !== _deptoActivo) return false;
+    if (est==='Pendiente' && x.estado!=='Pendiente') return false;
+    if (est==='Comprado'  && x.estado!=='Comprado')  return false;
+    if (est==='Urgente'   && (!x.urgente||x.estado!=='Pendiente')) return false;
+    return true;
+  });
+
+  // Resumen por depto
+  if (resDiv) {
+    var deptos = {};
+    (DB.compras||[]).forEach(function(x){
+      if (x.estado==='Pendiente') {
+        if (!deptos[x.depto]) deptos[x.depto]={total:0,urgente:0};
+        deptos[x.depto].total++;
+        if (x.urgente) deptos[x.depto].urgente++;
+      }
+    });
+    var pendTotal = (DB.compras||[]).filter(function(x){ return x.estado==='Pendiente'; }).length;
+    var urgTotal  = (DB.compras||[]).filter(function(x){ return x.urgente&&x.estado==='Pendiente'; }).length;
+    resDiv.innerHTML = pendTotal===0
+      ? '<div style="background:#D8F3DC;border-radius:8px;padding:10px 14px;color:#1B4332;font-weight:700">✅ Todas las compras están al día</div>'
+      : '<div style="background:var(--nc);border-radius:8px;padding:10px 14px;color:var(--na);font-weight:700">🛒 '+pendTotal+' artículo(s) pendientes'+(urgTotal?' · 🔴 '+urgTotal+' urgentes':'')+'</div>';
+  }
+
+  if (!lista.length) {
+    div.innerHTML = '<div class="es"><div class="ei">🛒</div><p>Sin artículos en esta lista.</p></div>';
+    if (totDiv) totDiv.innerHTML = '';
+    return;
+  }
+
+  // Agrupar por departamento
+  var grupos = {};
+  lista.forEach(function(x){
+    if (!grupos[x.depto]) grupos[x.depto] = [];
+    grupos[x.depto].push(x);
+  });
+
+  window._cIds = [];
+  var h = '';
+  var totalEst = 0;
+
+  Object.keys(grupos).sort().forEach(function(depto){
+    var items = grupos[depto];
+    var pendDepto = items.filter(function(x){ return x.estado==='Pendiente'; }).length;
+    h += '<div style="background:var(--gc);padding:8px 12px;font-weight:700;font-size:13px;color:var(--am)">'+depto+' <span style="font-weight:400;color:var(--gm)">'+pendDepto+' pendientes</span></div>';
+    items.forEach(function(x){
+      var i = window._cIds.length;
+      window._cIds[i] = x.id;
+      totalEst += (x.precio||0);
+      h += '<div class="item-compra'+(x.estado==='Comprado'?' comprado':'')+'" id="ic_'+x.id+'">';
+      h += '<input type="checkbox" '+(x.estado==='Comprado'?'checked':'')+' onchange="toggleCompra(window._cIds['+i+'],this.checked)">';
+      h += '<div style="flex:1">';
+      h += '<div class="item-nombre">'+x.nombre+(x.urgente&&x.estado==='Pendiente'?'<span class="urgente-tag">URGENTE</span>':'')+'</div>';
+      h += '<div class="item-nota">'+(x.cantidad?'Cant: '+x.cantidad+' ':'')+(x.proveedor?'· '+x.proveedor+' ':'')+(x.nota?'· '+x.nota:'')+'</div>';
+      h += '<div style="font-size:11px;color:var(--gm)">'+x.creadoPor+' · '+x.ts+'</div>';
+      h += '</div>';
+      if (x.precio) h += '<div class="item-precio">$'+x.precio.toFixed(2)+'</div>';
+      h += '<button class="btn bsm bra" onclick="eliminarCompra(window._cIds['+i+'])">🗑️</button>';
+      h += '</div>';
+    });
+  });
+
+  div.innerHTML = h;
+  if (totDiv && totalEst>0) {
+    totDiv.innerHTML = '<strong style="color:var(--am)">Total estimado: $'+totalEst.toFixed(2)+'</strong>';
+  } else if (totDiv) {
+    totDiv.innerHTML = '';
+  }
+}
+
+function toggleCompra(id, checked) {
+  var x = (DB.compras||[]).find(function(c){ return c.id===id; });
+  if (!x) return;
+  x.estado = checked ? 'Comprado' : 'Pendiente';
+  x.compradoPor = checked ? SES.nombre : '';
+  x.compradoTs  = checked ? fh() : '';
+  sDB();
+  renderDeptoTabs();
+  rCompras();
+}
+
+function eliminarCompra(id) {
+  if (!confirm('¿Eliminar este artículo?')) return;
+  DB.compras = (DB.compras||[]).filter(function(x){ return x.id!==id; });
+  sDB(); renderDeptoTabs(); rCompras();
+  toast('🗑️ Artículo eliminado');
+}
+
+function marcarTodosComprados() {
+  var checkboxes = document.querySelectorAll('#compraLista input[type=checkbox]:not(:checked)');
+  if (!checkboxes.length) { toast('⚠️ No hay artículos pendientes visibles'); return; }
+  var count = 0;
+  checkboxes.forEach(function(cb){
+    cb.checked = true;
+    // Encontrar el id del artículo
+    var wrap = cb.closest('.item-compra');
+    if (!wrap) return;
+    var id = wrap.id.replace('ic_','');
+    var x = (DB.compras||[]).find(function(c){ return c.id===id; });
+    if (x) { x.estado='Comprado'; x.compradoPor=SES.nombre; x.compradoTs=fh(); count++; }
+  });
+  sDB(); renderDeptoTabs(); rCompras();
+  toast('✅ '+count+' artículo(s) marcados como comprados','vs');
+}
+
+function limpiarComprados() {
+  var n = (DB.compras||[]).filter(function(x){ return x.estado==='Comprado'; }).length;
+  if (!n) { toast('⚠️ No hay artículos comprados'); return; }
+  if (!confirm('¿Eliminar los '+n+' artículos ya comprados?')) return;
+  DB.compras = (DB.compras||[]).filter(function(x){ return x.estado!=='Comprado'; });
+  sDB(); renderDeptoTabs(); rCompras();
+  toast('🗑️ '+n+' artículos comprados eliminados');
+}
+
+function pdfListaCompras() {
+  var JP = window.jspdf ? window.jspdf.jsPDF : null;
+  if (!JP) { toast('⚠️ Cargando PDF...'); setTimeout(pdfListaCompras,1500); return; }
+  var doc = new JP(), y = 28;
+  doc.setFillColor(26,58,92); doc.rect(0,0,210,20,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(13); doc.setFont(undefined,'bold');
+  doc.text('CareHome Manager — Lista de Compras',14,13);
+  doc.setFontSize(8); doc.setFont(undefined,'normal');
+  doc.text('Generado: '+fh(),196,13,'right');
+  doc.setTextColor(40,40,40);
+
+  var lista = (DB.compras||[]).filter(function(x){
+    if (_deptoActivo && x.depto!==_deptoActivo) return false;
+    return true;
+  });
+
+  var grupos = {};
+  lista.forEach(function(x){
+    if (!grupos[x.depto]) grupos[x.depto]=[];
+    grupos[x.depto].push(x);
+  });
+
+  var totalEst = 0;
+  Object.keys(grupos).sort().forEach(function(depto){
+    if (y>250){doc.addPage();y=20;}
+    doc.setFontSize(11); doc.setFont(undefined,'bold'); doc.setTextColor(26,58,92);
+    doc.text(depto,14,y); y+=7;
+    doc.setFontSize(9); doc.setFont(undefined,'normal'); doc.setTextColor(40,40,40);
+    grupos[depto].forEach(function(x,i){
+      if (y>270){doc.addPage();y=20;}
+      if(i%2===0){doc.setFillColor(245,248,252);doc.rect(14,y-4,182,7,'F');}
+      var est = x.estado==='Comprado'?'[✓]':'[ ]';
+      var txt = est+' '+(x.urgente?'🔴 ':'')+x.nombre+(x.cantidad?' — '+x.cantidad:'');
+      doc.text(txt.substring(0,55),16,y);
+      if(x.proveedor) doc.text(x.proveedor.substring(0,25),130,y);
+      if(x.precio){doc.text('$'+x.precio.toFixed(2),185,y,'right'); totalEst+=x.precio;}
+      y+=7;
+    });
+    y+=3;
+  });
+
+  if(totalEst>0){
+    doc.setFont(undefined,'bold'); doc.setTextColor(26,58,92);
+    doc.text('Total estimado: $'+totalEst.toFixed(2),185,y,'right');
+  }
+  doc.save('Lista_Compras'+((_deptoActivo?'_'+_deptoActivo.replace(/[^a-zA-Z]/g,''):'')).substring(0,30)+'.pdf');
+  toast('📄 PDF generado','vs');
+}
+
+// ===== MENSAJERÍA =====
+var _canalActivo = 'general';
+var _directoUsuario = null;
+
+var CANAL_NOMBRES = {
+  general:'📢 General', enfermeria:'💉 Enfermería',
+  medicos:'🩺 Médicos', admin:'👑 Administración', urgente:'🚨 Urgente'
+};
+
+function initMensajes() {
+  if (!DB.mensajes) DB.mensajes = [];
+  if (!DB.tareas)   DB.tareas   = [];
+  poblarDirectos();
+  rMensajes();
+  rTareas();
+  if (SES.rol === 'admin') {
+    var t = document.getElementById('tableroAdmin');
+    if (t) t.style.display = '';
+    rTareasAdmin();
+  }
+}
+
+function poblarDirectos() {
+  var div = document.getElementById('directoLista');
+  if (!div) return;
+  var h = '';
+  DB.usuarios.filter(function(u){ return u.id !== SES.id; }).forEach(function(u){
+    var cid = 'dm_'+[SES.id,u.id].sort().join('_');
+    var noLeidos = (DB.mensajes||[]).filter(function(m){
+      return m.canal===cid && m.autorId!==SES.id && !m.leido;
+    }).length;
+    h += '<div class="canal-btn" id="btn_'+cid+'" onclick="selDireto(''+u.id+'',''+u.nombre+'',this)">';
+    h += '<span>👤 '+u.nombre.split(' ')[0]+'</span>';
+    if (noLeidos>0) h += '<span class="badge-msg">'+noLeidos+'</span>';
+    h += '</div>';
+  });
+  div.innerHTML = h;
+}
+
+function selCanal(canal, btn) {
+  _canalActivo = canal;
+  _directoUsuario = null;
+  document.querySelectorAll('.canal-btn').forEach(function(b){ b.classList.remove('activo'); });
+  btn.classList.add('activo');
+  document.getElementById('canalTitulo').textContent = CANAL_NOMBRES[canal] || canal;
+  rMensajes();
+}
+
+function selDireto(uid, nombre, btn) {
+  _directoUsuario = uid;
+  _canalActivo = 'dm_'+[SES.id, uid].sort().join('_');
+  document.querySelectorAll('.canal-btn').forEach(function(b){ b.classList.remove('activo'); });
+  btn.classList.add('activo');
+  document.getElementById('canalTitulo').textContent = '💬 '+nombre;
+  // Marcar como leídos
+  (DB.mensajes||[]).forEach(function(m){
+    if (m.canal===_canalActivo && m.autorId!==SES.id) m.leido=true;
+  });
+  sDB();
+  rMensajes();
+  poblarDirectos();
+}
+
+function rMensajes() {
+  var area = document.getElementById('msgArea');
+  if (!area) return;
+  var msgs = (DB.mensajes||[]).filter(function(m){ return m.canal===_canalActivo; });
+  if (!msgs.length) {
+    area.innerHTML = '<div style="text-align:center;color:var(--gm);font-size:13px;margin:auto">Sin mensajes aún. ¡Sé el primero en escribir!</div>';
+    return;
+  }
+  var h = '';
+  msgs.forEach(function(m){
+    var esYo = m.autorId === SES.id;
+    var esBroadcast = m.tipo === 'broadcast';
+    var cls = esBroadcast ? 'msg-broadcast' : (esYo ? 'msg-yo' : 'msg-otro');
+    h += '<div style="display:flex;flex-direction:column;align-items:'+(esBroadcast?'center':esYo?'flex-end':'flex-start')+'">';
+    h += '<div class="msg-burbuja '+cls+'">';
+    if (!esYo || esBroadcast) h += '<div class="msg-remitente">'+m.autor+(esBroadcast?' — 📢 Anuncio':'')+'</div>';
+    h += m.texto;
+    h += '<div class="msg-hora">'+m.hora+'</div>';
+    h += '</div></div>';
+  });
+  area.innerHTML = h;
+  area.scrollTop = area.scrollHeight;
+}
+
+function enviarMensaje() {
+  var txt = document.getElementById('msgTexto').value.trim();
+  if (!txt) return;
+  if (!DB.mensajes) DB.mensajes = [];
+  DB.mensajes.push({
+    id: 'M'+Date.now(),
+    canal: _canalActivo,
+    autorId: SES.id,
+    autor: SES.nombre,
+    texto: txt,
+    hora: fh(),
+    leido: false,
+    tipo: 'normal'
+  });
+  document.getElementById('msgTexto').value = '';
+  sDB();
+  rMensajes();
+}
+
+function enviarBroadcast() {
+  var txt = document.getElementById('msgTexto').value.trim();
+  if (!txt) { toast('⚠️ Escribe el anuncio primero'); return; }
+  if (!DB.mensajes) DB.mensajes = [];
+  // Enviar a todos los canales principales
+  ['general','enfermeria','medicos','admin'].forEach(function(canal){
+    DB.mensajes.push({
+      id: 'M'+Date.now()+canal,
+      canal: canal,
+      autorId: SES.id,
+      autor: SES.nombre,
+      texto: '📢 '+txt,
+      hora: fh(),
+      leido: false,
+      tipo: 'broadcast'
+    });
+  });
+  document.getElementById('msgTexto').value = '';
+  sDB();
+  rMensajes();
+  toast('📢 Anuncio enviado a todos los canales','vs');
+}
+
+// ===== TAREAS =====
+function openTarea() {
+  pSelEmps('tareaAsig');
+  document.getElementById('tareaTitle').value = '';
+  document.getElementById('tareaDesc').value = '';
+  document.getElementById('tareaFecha').value = '';
+  openM('mTarea');
+}
+
+function saveTarea() {
+  var title = document.getElementById('tareaTitle').value.trim();
+  if (!title) { toast('⚠️ Escribe el título de la tarea'); return; }
+  if (!DB.tareas) DB.tareas = [];
+  var asigSel = document.getElementById('tareaAsig');
+  var asigNom = asigSel.options[asigSel.selectedIndex] ? asigSel.options[asigSel.selectedIndex].textContent : 'Todos';
+  DB.tareas.push({
+    id: 'T'+Date.now(),
+    titulo: title,
+    desc: document.getElementById('tareaDesc').value.trim(),
+    asignadoNombre: asigSel.value || 'Todos',
+    categoria: document.getElementById('tareatCat').value,
+    prioridad: document.getElementById('tareaPrior').value,
+    fecha: document.getElementById('tareaFecha').value,
+    estado: 'Pendiente',
+    creadoPor: SES.nombre,
+    creadoId: SES.id,
+    ts: fh()
+  });
+  sDB();
+  closeM('mTarea');
+  rTareas();
+  if (SES.rol==='admin') rTareasAdmin();
+  // Notificar via mensaje en canal general
+  if (!DB.mensajes) DB.mensajes = [];
+  DB.mensajes.push({
+    id:'M'+Date.now(), canal:'general',
+    autorId:SES.id, autor:SES.nombre,
+    texto:'✅ Nueva tarea creada: <strong>'+title+'</strong>'+(asigSel.value?' → '+asigSel.value:''),
+    hora:fh(), leido:false, tipo:'sistema'
+  });
+  sDB();
+  toast('✅ Tarea creada','vs');
+}
+
+function rTareas() {
+  var div = document.getElementById('tareasLista');
+  if (!div) return;
+  var est = document.getElementById('fTareaEst') ? document.getElementById('fTareaEst').value : '';
+  var hoy = new Date().toISOString().slice(0,10);
+  // Ver mis tareas + tareas para todos
+  var lista = (DB.tareas||[]).filter(function(t){
+    var mia = !t.asignadoNombre || t.asignadoNombre==='Todos' || t.asignadoNombre===SES.nombre;
+    if (!mia) return false;
+    if (est && t.estado!==est) return false;
+    return true;
+  }).slice().reverse();
+
+  if (!lista.length) {
+    div.innerHTML = '<div class="es"><div class="ei">✅</div><p>Sin tareas pendientes.</p></div>';
+    return;
+  }
+  window._tIds = [];
+  var h = '';
+  lista.forEach(function(t,i){
+    window._tIds[i] = t.id;
+    var vencida = t.fecha && t.fecha < hoy && t.estado!=='Completada';
+    var cls = t.estado==='Completada' ? 'completada' : vencida ? 'vencida' : '';
+    var pCls = t.prioridad==='Alta' ? 'tarea-prioridad-alta' : t.prioridad==='Media' ? 'tarea-prioridad-media' : 'tarea-prioridad-baja';
+    h += '<div class="tarea-card '+cls+'">';
+    h += '<div style="display:flex;justify-content:space-between;align-items:flex-start">';
+    h += '<div class="tarea-titulo">'+t.titulo+'</div>';
+    h += '<span class="'+pCls+'">'+t.prioridad+'</span>';
+    h += '</div>';
+    if (t.desc) h += '<div style="font-size:13px;color:var(--gm);margin-top:4px">'+t.desc+'</div>';
+    h += '<div class="tarea-meta">'+t.categoria+(t.fecha?' · Vence: '+t.fecha:'')+(vencida?' 🔴 VENCIDA':'')+'</div>';
+    h += '<div class="tarea-meta">Creado por: '+t.creadoPor+' · '+t.ts+'</div>';
+    h += '<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">';
+    if (t.estado!=='Completada') {
+      h += '<button class="btn bsm bvs" onclick="cambiarEstadoTarea(window._tIds['+i+'],'Completada')">✅ Completar</button>';
+      if (t.estado==='Pendiente') h += '<button class="btn bsm bna" onclick="cambiarEstadoTarea(window._tIds['+i+'],'En progreso')">▶ En progreso</button>';
+    } else {
+      h += '<button class="btn bsm bol" onclick="cambiarEstadoTarea(window._tIds['+i+'],'Pendiente')">↩ Reabrir</button>';
+    }
+    if (SES.rol==='admin') h += '<button class="btn bsm bra" onclick="eliminarTarea(window._tIds['+i+'])">🗑️</button>';
+    h += '</div></div>';
+  });
+  div.innerHTML = h;
+}
+
+function rTareasAdmin() {
+  var tbody = document.getElementById('tTareasAdmin');
+  if (!tbody) return;
+  var hoy = new Date().toISOString().slice(0,10);
+  var lista = (DB.tareas||[]).slice().reverse();
+  if (!lista.length) { tbody.innerHTML='<tr><td colspan="6">Sin tareas.</td></tr>'; return; }
+  window._tAIds = [];
+  var h = '';
+  lista.forEach(function(t,i){
+    window._tAIds[i] = t.id;
+    var vencida = t.fecha && t.fecha<hoy && t.estado!=='Completada';
+    var pColor = t.prioridad==='Alta'?'bra':t.prioridad==='Media'?'bna':'bol';
+    h += '<tr style="background:'+(vencida?'#FFF5F5':t.estado==='Completada'?'#F9FFF9':'')+'">'; 
+    h += '<td><strong>'+t.titulo+'</strong>'+(t.desc?'<br><span style="font-size:11px;color:var(--gm)">'+t.desc+'</span>':'')+'</td>';
+    h += '<td>'+(t.asignadoNombre||'Todos')+'</td>';
+    h += '<td><span class="badge '+pColor+'">'+t.prioridad+'</span></td>';
+    h += '<td>'+(t.fecha||'—')+(vencida?' 🔴':'')+'</td>';
+    h += '<td><span class="badge '+(t.estado==='Completada'?'bvs':t.estado==='En progreso'?'bna':'bmo')+'">'+t.estado+'</span></td>';
+    h += '<td><button class="btn bsm bra" onclick="eliminarTarea(window._tAIds['+i+'])">🗑️</button></td>';
+    h += '</tr>';
+  });
+  tbody.innerHTML = h;
+}
+
+function cambiarEstadoTarea(id, nuevoEstado) {
+  var t = (DB.tareas||[]).find(function(x){ return x.id===id; });
+  if (!t) return;
+  t.estado = nuevoEstado;
+  t.ultimoCambio = fh();
+  sDB(); rTareas();
+  if (SES.rol==='admin') rTareasAdmin();
+  toast(nuevoEstado==='Completada'?'✅ Tarea completada':'▶ Tarea actualizada','vs');
+}
+
+function eliminarTarea(id) {
+  if (!confirm('¿Eliminar esta tarea?')) return;
+  DB.tareas = (DB.tareas||[]).filter(function(x){ return x.id!==id; });
+  sDB(); rTareas();
+  if (SES.rol==='admin') rTareasAdmin();
+  toast('🗑️ Tarea eliminada');
+}
+
+// Contador de mensajes no leídos en el nav
+function contarNoLeidos() {
+  if (!SES || !DB.mensajes) return;
+  var n = DB.mensajes.filter(function(m){
+    return m.autorId!==SES.id && !m.leido &&
+      (m.canal==='general'||m.canal==='urgente'||
+       m.canal.startsWith('dm_')&&m.canal.includes(SES.id));
+  }).length;
+  // Buscar el tab de mensajes
+  document.querySelectorAll('.nt').forEach(function(el){
+    if (el.textContent.includes('Mensajes')) {
+      el.innerHTML = n>0 ? '💬 Mensajes <span style="background:#e74c3c;color:white;border-radius:10px;padding:1px 6px;font-size:10px">'+n+'</span>' : '💬 Mensajes';
+    }
+  });
+}
+
+// ===== CUARENTENA =====
+function openCuarentena() {
+  openM('mCuarentena');
+  setTimeout(function(){
+    pSel('cuarR');
+    var l = document.getElementById('lupa_cuarR');
+    if (l) l.value = '';
+    var hoy = new Date().toISOString().slice(0,10);
+    document.getElementById('cuarInicio').value = hoy;
+    document.getElementById('cuarAlta').value = '';
+    document.getElementById('cuarMotivo').value = '';
+    document.getElementById('cuarMedico').value = '';
+    document.getElementById('cuarPrec').value = '';
+    document.getElementById('cuarUbic').value = '';
+  }, 50);
+}
+
+function saveCuarentena() {
+  var rid = document.getElementById('cuarR').value;
+  var motivo = document.getElementById('cuarMotivo').value.trim();
+  var inicio = document.getElementById('cuarInicio').value;
+  if (!rid) { toast('⚠️ Selecciona un paciente'); return; }
+  if (!motivo) { toast('⚠️ Ingresa el motivo'); return; }
+  if (!inicio) { toast('⚠️ Ingresa la fecha de inicio'); return; }
+
+  var r = DB.residentes.find(function(x){ return x.id === rid; });
+  if (!r) return;
+
+  if (!DB.cuarentenas) DB.cuarentenas = [];
+  DB.cuarentenas.push({
+    id: 'CQ'+Date.now(),
+    residenteId: rid,
+    nombre: r.nombre,
+    habitacion: r.habitacion,
+    tipo: document.getElementById('cuarTipo').value,
+    nivel: document.getElementById('cuarNivel').value,
+    motivo: motivo,
+    inicio: inicio,
+    alta: document.getElementById('cuarAlta').value,
+    medico: document.getElementById('cuarMedico').value.trim(),
+    precauciones: document.getElementById('cuarPrec').value.trim(),
+    ubicacion: document.getElementById('cuarUbic').value.trim(),
+    estado: 'Activo',
+    registrado: fh()
+  });
+  // Marcar residente en cuarentena
+  r.enCuarentena = true;
+  r.tipoCuarentena = document.getElementById('cuarTipo').value;
+  sDB();
+  closeM('mCuarentena');
+  rCuarentena();
+  calcAlerts();
+  toast('🔴 Cuarentena iniciada — '+r.nombre, 'vs');
+}
+
+function rCuarentena() {
+  if (!DB.cuarentenas) DB.cuarentenas = [];
+  var tbody = document.getElementById('tCuarentena');
+  if (!tbody) return;
+
+  var tipo = document.getElementById('fCuarTipo') ? document.getElementById('fCuarTipo').value : '';
+  var est  = document.getElementById('fCuarEst')  ? document.getElementById('fCuarEst').value  : '';
+
+  var lista = DB.cuarentenas.filter(function(q){
+    if (tipo && q.tipo !== tipo) return false;
+    if (est  && q.estado !== est)  return false;
+    return true;
+  }).slice().reverse();
+
+  // Resumen
+  var activos = DB.cuarentenas.filter(function(q){ return q.estado==='Activo'; }).length;
+  var res = document.getElementById('cuarResumen');
+  if (res) {
+    res.innerHTML = activos > 0
+      ? '<div style="background:#FFF0F0;border:1.5px solid #FFB3B3;border-radius:8px;padding:10px 16px;color:#C0392B;font-weight:700;font-size:14px">🔴 '+activos+' paciente(s) en aislamiento activo</div>'
+      : '<div style="background:#D8F3DC;border:1.5px solid #74C69D;border-radius:8px;padding:10px 16px;color:#1B4332;font-weight:700;font-size:14px">✅ Sin pacientes en aislamiento activo</div>';
+  }
+
+  if (!lista.length) {
+    tbody.innerHTML = '<tr><td colspan="10">'+em(10,'🔴','Sin registros de cuarentena.')+'</td></tr>';
+    return;
+  }
+
+  window._cqIds = [];
+  var h = '';
+  lista.forEach(function(q, i){
+    window._cqIds[i] = q.id;
+    var activo = q.estado === 'Activo';
+    var nivelColor = q.nivel && q.nivel.includes('🔴') ? '#C0392B' : q.nivel && q.nivel.includes('🟡') ? '#F57F17' : q.nivel && q.nivel.includes('🔵') ? '#1565C0' : '#2D6A4F';
+    // Días en cuarentena
+    var dias = '';
+    if (q.inicio) {
+      var diff = Math.floor((new Date() - new Date(q.inicio)) / 86400000);
+      dias = diff + ' día(s)';
+    }
+    h += '<tr style="background:'+(activo?'#FFF5F5':'#F9FFF9')+'">';
+    h += '<td><strong>'+q.nombre+'</strong><br><span style="font-size:11px;color:var(--gm)">'+dias+'</span></td>';
+    h += '<td>'+q.habitacion+'<br><span style="font-size:11px;color:var(--gm)">'+(q.ubicacion||'')+'</span></td>';
+    h += '<td><strong style="color:'+nivelColor+'">'+q.tipo+'</strong><br><span style="font-size:11px">'+q.nivel+'</span></td>';
+    h += '<td style="font-size:12px">'+(q.motivo||'—')+'</td>';
+    h += '<td>'+q.inicio+'</td>';
+    h += '<td>'+(q.alta||'—')+'</td>';
+    h += '<td><span class="badge '+(activo?'bra':'bvs')+'">'+q.estado+'</span></td>';
+    h += '<td style="font-size:12px">'+(q.medico||'—')+'</td>';
+    h += '<td style="font-size:12px">'+(q.precauciones||'—')+'</td>';
+    h += '<td style="white-space:nowrap">';
+    if (activo) {
+      h += '<button class="btn bsm bvs" onclick="abrirLevantarCuar(window._cqIds['+i+'])">✅ Levantar</button> ';
+    }
+    h += '<button class="btn bsm bmo" onclick="pdfCuarentena(window._cqIds['+i+'])">📄</button>';
+    h += '</td>';
+    h += '</tr>';
+  });
+  tbody.innerHTML = h;
+}
+
+var _cqLevantarId = null;
+function abrirLevantarCuar(cid) {
+  var q = (DB.cuarentenas||[]).find(function(x){ return x.id===cid; });
+  if (!q) return;
+  _cqLevantarId = cid;
+  document.getElementById('levantarNombre').textContent = q.nombre + ' — ' + q.tipo;
+  document.getElementById('levantarFecha').value = new Date().toISOString().slice(0,10);
+  document.getElementById('levantarMedico').value = q.medico || '';
+  document.getElementById('levantarObs').value = '';
+  openM('mLevantarCuar');
+}
+
+function levantarCuarentena() {
+  var q = (DB.cuarentenas||[]).find(function(x){ return x.id===_cqLevantarId; });
+  if (!q) return;
+  var fecha = document.getElementById('levantarFecha').value;
+  if (!fecha) { toast('⚠️ Ingresa la fecha de alta'); return; }
+  q.estado = 'Levantado';
+  q.fechaAlta = fecha;
+  q.medicoAlta = document.getElementById('levantarMedico').value.trim();
+  q.obsAlta = document.getElementById('levantarObs').value.trim();
+  q.altaRegistrada = fh();
+  // Actualizar residente
+  var r = DB.residentes.find(function(x){ return x.id===q.residenteId; });
+  if (r) { r.enCuarentena = false; r.tipoCuarentena = ''; }
+  sDB();
+  closeM('mLevantarCuar');
+  rCuarentena();
+  calcAlerts();
+  toast('✅ Cuarentena levantada — '+q.nombre, 'vs');
+}
+
+function pdfCuarentena(cid) {
+  var JP = window.jspdf ? window.jspdf.jsPDF : null;
+  if (!JP) { toast('⚠️ Cargando PDF...'); setTimeout(function(){ pdfCuarentena(cid); },1500); return; }
+  var q = (DB.cuarentenas||[]).find(function(x){ return x.id===cid; });
+  if (!q) return;
+  var doc = new JP(), y = 28;
+  doc.setFillColor(192,57,43); doc.rect(0,0,210,20,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(13); doc.setFont(undefined,'bold');
+  doc.text('CareHome Manager — Registro de Cuarentena',14,13);
+  doc.setFontSize(8); doc.setFont(undefined,'normal');
+  doc.text('Generado: '+fh(),196,13,'right');
+  doc.setTextColor(40,40,40);
+  doc.setFontSize(14); doc.setFont(undefined,'bold'); doc.setTextColor(192,57,43);
+  doc.text(q.nombre, 14, y); y+=8;
+  doc.setFontSize(10); doc.setFont(undefined,'normal'); doc.setTextColor(40,40,40);
+  [
+    ['Tipo de aislamiento:', q.tipo],
+    ['Nivel:', q.nivel],
+    ['Habitación:', q.habitacion+(q.ubicacion?' / '+q.ubicacion:'')],
+    ['Motivo / Síntomas:', q.motivo||'—'],
+    ['Fecha de inicio:', q.inicio],
+    ['Alta estimada:', q.alta||'—'],
+    ['Estado:', q.estado],
+    ['Médico que ordena:', q.medico||'—'],
+    ['Precauciones:', q.precauciones||'—'],
+    ['Registrado:', q.registrado],
+    ['Fecha de alta real:', q.fechaAlta||'—'],
+    ['Médico que da alta:', q.medicoAlta||'—'],
+    ['Obs. de alta:', q.obsAlta||'—'],
+  ].forEach(function(row){
+    doc.setFont(undefined,'bold'); doc.text(row[0],14,y);
+    doc.setFont(undefined,'normal');
+    var lines = doc.splitTextToSize(row[1]||'—', 115);
+    doc.text(lines, 90, y);
+    y += 7 * lines.length;
+  });
+  doc.save('Cuarentena_'+q.nombre.replace(/ /g,'_')+'.pdf');
   toast('📄 PDF generado','vs');
 }
 
