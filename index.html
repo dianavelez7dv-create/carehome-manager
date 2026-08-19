@@ -302,6 +302,12 @@ tr:hover td{background:var(--ac);}
   <div class="nt" onclick="goTab('compras',this)">🛒 Compras</div>
   <div class="nt tab-admin" onclick="goTab('fallecidos',this)">✝ Fallecidos</div>
   <div class="nt tab-admin" onclick="goTab('usuarios',this)">👥 Usuarios</div>
+  <div class="nt" onclick="goTab('guia',this)">📖 Guía</div>
+  <div style="flex:1;min-width:8px"></div>
+  <div style="display:flex;align-items:center;gap:6px;padding:0 8px;flex-shrink:0">
+    <span id="sesionInfo" style="font-size:11px;color:var(--gm);white-space:nowrap;display:none"></span>
+    <button onclick="cerrarSesion()" style="background:var(--ra);color:white;border:none;border-radius:8px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">🚪 Salir</button>
+  </div>
 </div>
 
 <div class="main">
@@ -2105,7 +2111,9 @@ function doLogin() {
   document.getElementById('hNom').textContent = usr.nombre;
   document.getElementById('hRol').textContent = rolL(usr.rol);
   applyPerm();
-mostrarSesionInfo();
+  mostrarSesionInfo();
+  var si = document.getElementById('sesionInfo');
+  if (si) si.style.display = '';
 // Iniciar timer de inactividad
 resetTimeout();
 ['click','keydown','touchstart','mousemove'].forEach(function(ev){
@@ -2652,7 +2660,7 @@ function rUsr() {
   var h='';
   DB.usuarios.forEach(function(u){
     var ini=u.nombre.split(' ').map(function(x){ return x[0]; }).join('').substring(0,2).toUpperCase();
-    h+='<div class="uc"><div class="ua" style="background:'+cols[u.rol]+'">'+ini+'</div><div class="ui"><div class="un">'+u.nombre+'</div><div class="ur">'+rolL(u.rol)+' · @'+u.username+' · '+u.turno+' · PIN: '+(u.password?u.password.slice(-4):'????')+'</div></div>'+(SES.rol==='admin'?'<div style="display:flex;gap:6px"><button class="btn bxs bmo" onclick="abrirPerms(\''+u.id+'\')">🔐 Permisos</button>'+(u.id!=='U1'?'<button class="btn bxs bra" onclick="delUsr(\''+u.id+'\')">🗑️</button>':'')+'</div>':'')+'</div>';
+    h+='<div class="uc"><div class="ua" style="background:'+cols[u.rol]+'">'+ini+'</div><div class="ui"><div class="un">'+u.nombre+'</div><div class="ur">'+rolL(u.rol)+' · @'+u.username+' · '+u.turno+'</div></div>'+(SES.rol==='admin'?'<div style="display:flex;gap:6px"><button class="btn bxs bmo" onclick="abrirPerms(\''+u.id+'\')">🔐 Permisos</button>'+(u.id!=='U1'?'<button class="btn bxs bra" onclick="delUsr(\''+u.id+'\')">🗑️</button>':'')+'</div>':'')+'</div>';
   });
   div.innerHTML = h || '<div class="es"><div class="ei">👥</div><p>Sin usuarios.</p></div>';
 }
@@ -5061,8 +5069,8 @@ function cerrarComedorQR() {
 // ===== CIERRE DE SESIÓN Y TIMEOUT =====
 var _timeoutTimer = null;
 var _timeoutWarn = null;
-var _TIMEOUT_MS = 30 * 60 * 1000;  // 30 minutos
-var _WARN_MS = 28 * 60 * 1000;     // advertencia a los 28 min
+var _TIMEOUT_MS = 15 * 60 * 1000;  // 15 minutos
+var _WARN_MS = 13 * 60 * 1000;     // advertencia a los 13 min
 
 function resetTimeout() {
   clearTimeout(_timeoutTimer);
