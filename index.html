@@ -444,7 +444,7 @@ tr:hover td{background:var(--ac);}
   <div class="card"><div class="ch vs">💊 Medicamentos</div><div class="cb">
     <div style="display:flex;gap:9px;margin-bottom:14px;flex-wrap:wrap;align-items:flex-end">
       <div class="fi" style="flex:1;min-width:180px"><label>Filtrar por residente</label><select id="fMedR"><option value="">— Todos —</option></select></div>
-      <button class="btn bvs" onclick="openM('mMed')">➕ Registrar Medicamento</button>
+      <button class="btn bvs" onclick="openMedConRes()">➕ Registrar Medicamento</button>
       <button class="btn bmo" onclick="pdfMed()">📄 PDF</button>
     </div>
     <div class="tw"><table>
@@ -2652,6 +2652,29 @@ function openMed() {
     pSel('mR');
     var li = document.getElementById('lupa_mR');
     if (li) li.value = '';
+  }, 50);
+}
+
+function openMedConRes() {
+  // Pre-seleccionar el residente del filtro si hay uno seleccionado
+  var filtroRid = document.getElementById('fMedR') ? document.getElementById('fMedR').value : '';
+  openM('mMed');
+  var n = new Date();
+  document.getElementById('mH').value = n.toTimeString().slice(0,5);
+  setTimeout(function(){
+    pSel('mR');
+    // Si había un residente seleccionado en el filtro, pre-seleccionarlo
+    if (filtroRid) {
+      var sel = document.getElementById('mR');
+      if (sel) sel.value = filtroRid;
+      // Actualizar la lupa con el nombre del residente
+      var r = DB.residentes.find(function(x){ return x.id===filtroRid; });
+      var li = document.getElementById('lupa_mR');
+      if (li && r) li.value = r.nombre + ' (Hab. ' + r.habitacion + ')';
+    } else {
+      var li2 = document.getElementById('lupa_mR');
+      if (li2) li2.value = '';
+    }
   }, 50);
 }
 function openSV() {
