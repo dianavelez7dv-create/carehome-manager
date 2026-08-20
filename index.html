@@ -188,6 +188,15 @@ tr:hover td{background:var(--ac);}
 .perm-check:hover{border-color:var(--mo);background:var(--mc);}
 .perm-check input[type=checkbox]{width:18px;height:18px;accent-color:var(--mo);cursor:pointer;}
 .perm-check label{font-size:13px;font-weight:600;cursor:pointer;}
+.audit-row{display:flex;gap:10px;padding:9px 12px;border-bottom:1px solid var(--gc);font-size:13px;align-items:center;}
+.audit-row:last-child{border-bottom:none;}
+.audit-row:hover{background:var(--ac);}
+.audit-ico{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.audit-det{flex:1;}
+.audit-ts{font-size:11px;color:var(--gm);white-space:nowrap;}
+.reporte-kpi{background:var(--bl);border:1.5px solid var(--bo);border-radius:10px;padding:16px;text-align:center;}
+.reporte-kpi-val{font-size:28px;font-weight:800;color:var(--am);}
+.reporte-kpi-lbl{font-size:12px;color:var(--gm);margin-top:2px;}
 .guia-seccion{margin-bottom:20px;}
 .guia-seccion h3{font-size:15px;font-weight:800;color:var(--am);border-bottom:2px solid var(--am);padding-bottom:6px;margin-bottom:10px;}
 .guia-mod{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;}
@@ -300,6 +309,8 @@ tr:hover td{background:var(--ac);}
   <div class="nt" onclick="goTab('cuarentena',this)">🔴 Cuarentena</div>
   <div class="nt" onclick="goTab('mensajes',this)">💬 Mensajes</div>
   <div class="nt" onclick="goTab('compras',this)">🛒 Compras</div>
+  <div class="nt tab-admin" onclick="goTab('auditoria',this)">📋 Auditoría</div>
+  <div class="nt tab-admin" onclick="goTab('reportes',this)">📊 Reportes</div>
   <div class="nt tab-admin" onclick="goTab('fallecidos',this)">✝ Fallecidos</div>
   <div class="nt tab-admin" onclick="goTab('usuarios',this)">👥 Usuarios</div>
   <div class="nt" onclick="goTab('guia',this)">📖 Guía</div>
@@ -1020,7 +1031,7 @@ tr:hover td{background:var(--ac);}
           <div class="guia-card">
             <div class="guia-card-ico">⏱️</div>
             <div class="guia-card-titulo">Cierre automático</div>
-            <div class="guia-card-desc">La sesión se cierra automáticamente después de <strong>30 minutos</strong> sin actividad para proteger la información de los pacientes. Una advertencia aparecerá 2 minutos antes.</div>
+            <div class="guia-card-desc">La sesión se cierra automáticamente después de <strong>15 minutos</strong> de inactividad para proteger la información de los pacientes. Una advertencia aparecerá 2 minutos antes.</div>
           </div>
         </div>
       </div>
@@ -1229,6 +1240,56 @@ tr:hover td{background:var(--ac);}
         </div>
       </div>
 
+      <!-- AUDITORÍA Y REPORTES -->
+      <div class="guia-seccion">
+        <h3>📋 Auditoría y Reportes</h3>
+        <div class="guia-mod">
+          <div class="guia-card">
+            <div class="guia-card-ico">📋</div>
+            <div class="guia-card-titulo">Auditoría</div>
+            <div class="guia-card-desc">
+              Registro automático de todas las acciones del sistema:<br>
+              • Inicio y cierre de sesión<br>
+              • Registros de residentes, medicamentos, incidentes<br>
+              • Cuarentenas, fallecidos, ponches<br>
+              Filtrable por tipo, usuario y fecha. Exportable en PDF. El sistema guarda los últimos <strong>1,000 registros</strong>.
+            </div>
+          </div>
+          <div class="guia-card">
+            <div class="guia-card-ico">📊</div>
+            <div class="guia-card-titulo">Reportes</div>
+            <ol class="guia-card-pasos">
+              <li>Selecciona el período: Hoy / Semana / Mes</li>
+              <li>Los KPIs se actualizan automáticamente</li>
+              <li>Ver estadísticas de residentes, medicamentos, incidentes, signos, cuarentenas y asistencia</li>
+              <li>Exporta el reporte completo en PDF con todos los datos</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEGURIDAD -->
+      <div class="guia-seccion">
+        <h3>🔒 Seguridad y Sesión</h3>
+        <div class="guia-mod">
+          <div class="guia-card">
+            <div class="guia-card-ico">⏰</div>
+            <div class="guia-card-titulo">Cierre automático</div>
+            <div class="guia-card-desc">La sesión se cierra automáticamente después de <strong>15 minutos</strong> de inactividad. A los 13 minutos aparece una advertencia. Presiona <strong>"Seguir activo"</strong> si estás presente.</div>
+          </div>
+          <div class="guia-card">
+            <div class="guia-card-ico">🚪</div>
+            <div class="guia-card-titulo">Cerrar sesión</div>
+            <div class="guia-card-desc">Usa el botón <strong>🚪 Salir</strong> en la barra superior para cerrar tu sesión de forma segura. Siempre cierra sesión cuando termines tu turno o dejes el dispositivo.</div>
+          </div>
+          <div class="guia-card">
+            <div class="guia-card-ico">🔐</div>
+            <div class="guia-card-titulo">Permisos personalizados</div>
+            <div class="guia-card-desc">El admin puede personalizar qué pestañas ve cada empleado en <strong>👥 Usuarios → 🔐 Permisos</strong>. Los cambios aplican la próxima vez que el empleado inicia sesión.</div>
+          </div>
+        </div>
+      </div>
+
       <!-- CONSEJOS -->
       <div style="background:var(--nc);border-radius:10px;padding:14px 16px;border:1px solid var(--na)">
         <div style="font-weight:800;color:var(--na);margin-bottom:8px">💡 Consejos importantes</div>
@@ -1242,6 +1303,103 @@ tr:hover td{background:var(--ac);}
         </ul>
       </div>
 
+    </div>
+  </div>
+</div>
+
+<!-- AUDITORÍA -->
+<div class="sec" id="tab-auditoria">
+  <div class="card">
+    <div class="ch" style="background:#1A3A5C">📋 Registro de Auditoría</div>
+    <div class="cb">
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:flex-end">
+        <div class="fi" style="flex:1;min-width:140px"><label>Tipo</label>
+          <select id="fAudTipo" onchange="rAuditoria()">
+            <option value="">— Todos —</option>
+            <option>Login</option>
+            <option>Logout</option>
+            <option>Residente</option>
+            <option>Medicamento</option>
+            <option>Signos Vitales</option>
+            <option>Incidente</option>
+            <option>Visita Médica</option>
+            <option>Cuarentena</option>
+            <option>Fallecido</option>
+            <option>Usuario</option>
+            <option>Ponche</option>
+            <option>Compra</option>
+          </select>
+        </div>
+        <div class="fi" style="flex:1;min-width:140px"><label>Usuario</label>
+          <select id="fAudUser" onchange="rAuditoria()">
+            <option value="">— Todos —</option>
+          </select>
+        </div>
+        <div class="fi" style="width:140px"><label>Fecha</label>
+          <input id="fAudFecha" type="date" onchange="rAuditoria()">
+        </div>
+        <button class="btn bmo" onclick="pdfAuditoria()">📄 Exportar PDF</button>
+        <button class="btn bra" onclick="if(confirm('¿Limpiar registros de auditoría mayores a 30 días?')) limpiarAuditoria()">🗑️ Limpiar</button>
+      </div>
+      <div id="auditResumen" style="margin-bottom:10px"></div>
+      <div style="border:1px solid var(--bo);border-radius:10px;overflow:hidden;max-height:500px;overflow-y:auto" id="auditLista"></div>
+    </div>
+  </div>
+</div>
+
+<!-- REPORTES -->
+<div class="sec" id="tab-reportes">
+  <div class="card">
+    <div class="ch am">📊 Reportes del Sistema</div>
+    <div class="cb">
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:flex-end">
+        <div class="fi" style="width:160px"><label>Período</label>
+          <select id="rRepPer" onchange="rReportes()">
+            <option value="hoy">Hoy</option>
+            <option value="semana">Esta semana</option>
+            <option value="mes" selected>Este mes</option>
+          </select>
+        </div>
+        <button class="btn bmo" onclick="pdfReporteGeneral()">📄 Reporte Completo PDF</button>
+      </div>
+
+      <!-- KPIs -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:20px" id="repKPIs"></div>
+
+      <!-- Secciones de reporte -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+
+        <div class="card" style="margin:0">
+          <div class="ch vs" style="font-size:13px">👴 Residentes</div>
+          <div class="cb" id="repResidentes"></div>
+        </div>
+
+        <div class="card" style="margin:0">
+          <div class="ch" style="background:#7B2D8B;font-size:13px">💊 Medicamentos</div>
+          <div class="cb" id="repMedicamentos"></div>
+        </div>
+
+        <div class="card" style="margin:0">
+          <div class="ch ra" style="font-size:13px">🚨 Incidentes</div>
+          <div class="cb" id="repIncidentes"></div>
+        </div>
+
+        <div class="card" style="margin:0">
+          <div class="ch" style="background:#0D7A5F;font-size:13px">📈 Signos Vitales</div>
+          <div class="cb" id="repSignos"></div>
+        </div>
+
+        <div class="card" style="margin:0">
+          <div class="ch ra" style="font-size:13px">🔴 Cuarentenas</div>
+          <div class="cb" id="repCuarentenas"></div>
+        </div>
+
+        <div class="card" style="margin:0">
+          <div class="ch" style="background:#1A3A5C;font-size:13px">⏱️ Asistencia</div>
+          <div class="cb" id="repAsistencia"></div>
+        </div>
+
+      </div>
     </div>
   </div>
 </div>
@@ -2086,13 +2244,13 @@ cDB();
 
 // ===== PERMISOS =====
 var PERM = {
-  admin:    ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','cuarentena','mensajes','compras','guia','fallecidos','usuarios'],
+  admin:    ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','cuarentena','mensajes','compras','guia','auditoria','reportes','fallecidos','usuarios'],
   medico:   ['dashboard','residentes','expediente','medicamentos','signos','incidentes','graficas','alertas','visitas_med','plan_act','cuarentena','mensajes','guia'],
   enfermera:['dashboard','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','cuarentena','mensajes','compras','guia'],
   aux:      ['dashboard','alimentacion','actividades','visitas','turno','alertas','plan_act','cuarentena','mensajes','compras','guia'],
   recepcion:['dashboard','residentes','visitas','alertas','mensajes','compras','guia']
 };
-var TABS = ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','cuarentena','mensajes','compras','guia','fallecidos','usuarios'];
+var TABS = ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','cuarentena','mensajes','compras','guia','auditoria','reportes','fallecidos','usuarios'];
 
 function applyPerm() {
   var ok = PERM[SES.rol] || [];
@@ -2162,6 +2320,8 @@ function goTab(id, el) {
   if (id==='mensajes') initMensajes();
   if (id==='cuarentena') rCuarentena();
   if (id==='guia') {}  // solo mostrar HTML
+  if (id==='auditoria') rAuditoria();
+  if (id==='reportes') rReportes();
   if (id==='fallecidos') rFallecidos();
   if (id==='usuarios') rUsr();
   if (id==='alertas') { calcAlerts(); }
@@ -2507,6 +2667,7 @@ function saveMed() {
   var m={id:'M'+Date.now(),ts:fh(),fecha:new Date().toISOString().slice(0,10),residenteId:rid,enfermera:document.getElementById('mE').value.trim(),nombre:nom,dosis:document.getElementById('mD').value.trim(),via:document.getElementById('mV').value,hora:document.getElementById('mH').value,estado:document.getElementById('mEst').value,obs:document.getElementById('mO').value.trim()};
   DB.medicamentos.push(m); sDB(); closeM('mMed'); rMed();
   ['mE','mN','mD','mO'].forEach(function(i){ document.getElementById(i).value=''; });
+  logAudit('Medicamento','Medicamento registrado: '+document.getElementById('mM').value);
   toast('✅ Medicamento registrado','vs');
 }
 function rMed() {
@@ -3348,6 +3509,7 @@ function ponchar(tipo) {
   calcAlerts();
 
   var emoji = tipo==='entrada' ? '✅' : '🔴';
+  logAudit('Ponche',tipo.toUpperCase()+' registrado',usr.nombre+' a las '+hora);
   toast(emoji+' '+usr.nombre+' — '+tipo.toUpperCase()+' registrada a las '+hora, 'vs');
 }
 
@@ -3998,6 +4160,7 @@ function actualizarRes(id) {
     especialista: document.getElementById('rEspecialista') ? document.getElementById('rEspecialista').value.trim() : ''
   });
   sDB(); closeM('mRes'); rRes();
+  logAudit('Residente','Nuevo residente registrado',n);
   // Restaurar botón a "Nuevo"
   var btnGuardar = document.querySelector('#mRes .btn.bvs');
   if (btnGuardar) { btnGuardar.textContent = '💾 Registrar Residente'; btnGuardar.onclick = saveRes; }
@@ -4156,6 +4319,7 @@ function registrarFallecido() {
   rRes();
   rFallecidos();
   calcAlerts();
+  logAudit('Fallecido','Fallecimiento registrado',r.nombre);
   toast('✝ Fallecimiento registrado — '+r.nombre, 'vs');
 }
 
@@ -4795,6 +4959,7 @@ function saveCuarentena() {
   closeM('mCuarentena');
   rCuarentena();
   calcAlerts();
+  logAudit('Cuarentena','Cuarentena iniciada: '+document.getElementById('cuarTipo').value,r.nombre);
   toast('🔴 Cuarentena iniciada — '+r.nombre, 'vs');
 }
 
@@ -5066,6 +5231,311 @@ function cerrarComedorQR() {
   }
 }
 
+// ===== AUDITORÍA =====
+function logAudit(tipo, detalle, extra) {
+  if (!DB.auditoria) DB.auditoria = [];
+  DB.auditoria.push({
+    id: 'A'+Date.now(),
+    tipo: tipo,
+    detalle: detalle,
+    extra: extra||'',
+    usuario: SES ? SES.nombre : 'Sistema',
+    usuarioRol: SES ? SES.rol : '',
+    ts: fh(),
+    raw: new Date().toISOString()
+  });
+  // Guardar solo los últimos 1000 registros
+  if (DB.auditoria.length > 1000) DB.auditoria = DB.auditoria.slice(-1000);
+  sDB();
+}
+
+function rAuditoria() {
+  var lista_div = document.getElementById('auditLista');
+  var res_div   = document.getElementById('auditResumen');
+  if (!lista_div) return;
+  if (!DB.auditoria) DB.auditoria = [];
+
+  // Poblar filtro de usuarios
+  var fAU = document.getElementById('fAudUser');
+  if (fAU && fAU.options.length <= 1) {
+    var users = [...new Set(DB.auditoria.map(function(a){ return a.usuario; }))].sort();
+    users.forEach(function(u){ var o=document.createElement('option'); o.value=u; o.textContent=u; fAU.appendChild(o); });
+  }
+
+  var tipo  = document.getElementById('fAudTipo')  ? document.getElementById('fAudTipo').value  : '';
+  var user  = document.getElementById('fAudUser')  ? document.getElementById('fAudUser').value  : '';
+  var fecha = document.getElementById('fAudFecha') ? document.getElementById('fAudFecha').value : '';
+
+  var lista = DB.auditoria.filter(function(a){
+    if (tipo  && a.tipo    !== tipo)  return false;
+    if (user  && a.usuario !== user)  return false;
+    if (fecha && !a.ts.includes(fecha.split('-').reverse().join('/'))) return false;
+    return true;
+  }).slice().reverse();
+
+  // Resumen
+  var cols = {Login:'#0D7A5F',Logout:'#607D8B',Residente:'#1A3A5C',Medicamento:'#7B2D8B',
+    'Signos Vitales':'#E67E22',Incidente:'#C0392B','Visita Médica':'#2980B9',
+    Cuarentena:'#C0392B',Fallecido:'#555',Usuario:'#1A3A5C',Ponche:'#0D7A5F',Compra:'#2D6A4F'};
+
+  if (res_div) {
+    res_div.innerHTML = '<div style="font-size:12px;color:var(--gm)"><strong>'+lista.length+'</strong> registros encontrados · Total en sistema: <strong>'+(DB.auditoria.length)+'</strong></div>';
+  }
+
+  if (!lista.length) {
+    lista_div.innerHTML = '<div class="es"><div class="ei">📋</div><p>Sin registros de auditoría.</p></div>';
+    return;
+  }
+
+  var h = '';
+  lista.forEach(function(a){
+    var col = cols[a.tipo] || '#607D8B';
+    h += '<div class="audit-row">';
+    h += '<div class="audit-ico" style="background:'+col+'20;color:'+col+'">'+tipoIco(a.tipo)+'</div>';
+    h += '<div class="audit-det">';
+    h += '<div style="font-weight:600">'+a.tipo+' — <span style="color:var(--gm)">'+a.usuario+'</span></div>';
+    h += '<div style="color:var(--go)">'+a.detalle+(a.extra?' · <em>'+a.extra+'</em>':'')+'</div>';
+    h += '</div>';
+    h += '<div class="audit-ts">'+a.ts+'</div>';
+    h += '</div>';
+  });
+  lista_div.innerHTML = h;
+}
+
+function tipoIco(tipo) {
+  var m = {Login:'🔑',Logout:'🚪',Residente:'👴',Medicamento:'💊','Signos Vitales':'📈',
+    Incidente:'🚨','Visita Médica':'🩺',Cuarentena:'🔴',Fallecido:'✝',
+    Usuario:'👤',Ponche:'⏱️',Compra:'🛒'};
+  return m[tipo]||'📋';
+}
+
+function limpiarAuditoria() {
+  var corte = new Date(); corte.setDate(corte.getDate()-30);
+  var antes = (DB.auditoria||[]).length;
+  DB.auditoria = (DB.auditoria||[]).filter(function(a){
+    return new Date(a.raw) >= corte;
+  });
+  sDB(); rAuditoria();
+  toast('🗑️ Eliminados '+(antes-DB.auditoria.length)+' registros mayores a 30 días');
+}
+
+function pdfAuditoria() {
+  var JP = window.jspdf ? window.jspdf.jsPDF : null;
+  if (!JP) { toast('⚠️ Cargando PDF...'); setTimeout(pdfAuditoria,1500); return; }
+  var doc = new JP(), y = 28;
+  doc.setFillColor(26,58,92); doc.rect(0,0,210,20,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(13); doc.setFont(undefined,'bold');
+  doc.text('CareHome Manager — Auditoría',14,13);
+  doc.setFontSize(8); doc.setFont(undefined,'normal');
+  doc.text('Generado: '+fh(),196,13,'right');
+  doc.setTextColor(40,40,40);
+
+  var lista = (DB.auditoria||[]).slice().reverse();
+  doc.setFontSize(8); doc.setFont(undefined,'bold'); doc.setFillColor(26,58,92);
+  doc.setTextColor(255,255,255); doc.rect(14,y,182,6,'F');
+  ['TIPO','USUARIO','DETALLE','FECHA'].forEach(function(h,i){
+    doc.text(h,[16,40,80,170][i],y+4);
+  });
+  y+=8; doc.setTextColor(40,40,40); doc.setFont(undefined,'normal');
+
+  lista.forEach(function(a,i){
+    if(y>275){doc.addPage();y=20;}
+    if(i%2===0){doc.setFillColor(245,248,252);doc.rect(14,y-3,182,6,'F');}
+    doc.text((a.tipo||'').substring(0,12),16,y);
+    doc.text((a.usuario||'').substring(0,16),40,y);
+    doc.text((a.detalle||'').substring(0,40),80,y);
+    doc.text((a.ts||'').substring(0,18),170,y);
+    y+=6;
+  });
+  doc.save('Auditoria_CareHome.pdf');
+  toast('📄 PDF generado','vs');
+}
+
+// ===== REPORTES =====
+function rReportes() {
+  var per = document.getElementById('rRepPer') ? document.getElementById('rRepPer').value : 'mes';
+  var hoy = new Date();
+  var desde = new Date();
+  if (per==='hoy') { desde = new Date(hoy.toISOString().slice(0,10)); }
+  else if (per==='semana') { desde.setDate(hoy.getDate()-6); }
+  else { desde = new Date(hoy.getFullYear(), hoy.getMonth(), 1); }
+  var desdeStr = desde.toISOString().slice(0,10);
+  var hastaStr = hoy.toISOString().slice(0,10);
+
+  function enRango(ts) {
+    if (!ts) return false;
+    var d = ts.split('/').length===3 ? ts.split('/').reverse().join('-') : ts.slice(0,10);
+    return d >= desdeStr && d <= hastaStr;
+  }
+
+  // KPIs
+  var resActivos  = DB.residentes.filter(function(r){ return r.estado==='Activo'||r.estado==='En observación'; }).length;
+  var resFallec   = (DB.fallecidos||[]).filter(function(f){ return f.fecha>=desdeStr&&f.fecha<=hastaStr; }).length;
+  var medAdm      = (DB.medicamentos||[]).filter(function(m){ return m.estado==='Administrado'&&enRango(m.ts); }).length;
+  var incTotal    = (DB.incidentes||[]).filter(function(i){ return enRango(i.ts); }).length;
+  var incGraves   = (DB.incidentes||[]).filter(function(i){ return enRango(i.ts)&&i.gravedad&&i.gravedad.includes('Grave'); }).length;
+  var cuarActivos = (DB.cuarentenas||[]).filter(function(q){ return q.estado==='Activo'; }).length;
+  var visitasMed  = (DB.visitasMed||[]).filter(function(v){ return enRango(v.ts); }).length;
+  var svRegistros = (DB.signos||[]).filter(function(s){ return enRango(s.ts); }).length;
+
+  var kpis = [
+    {val:resActivos,  lbl:'Residentes activos',   color:'#1A3A5C'},
+    {val:medAdm,      lbl:'Medicamentos dados',    color:'#7B2D8B'},
+    {val:svRegistros, lbl:'Signos registrados',    color:'#0D7A5F'},
+    {val:incTotal,    lbl:'Incidentes',            color:'#E67E22'},
+    {val:incGraves,   lbl:'Incidentes graves',     color:'#C0392B'},
+    {val:visitasMed,  lbl:'Visitas médicas',       color:'#2980B9'},
+    {val:cuarActivos, lbl:'En cuarentena',         color:'#C0392B'},
+    {val:resFallec,   lbl:'Fallecidos en período', color:'#555'},
+  ];
+  var kDiv = document.getElementById('repKPIs');
+  if (kDiv) kDiv.innerHTML = kpis.map(function(k){
+    return '<div class="reporte-kpi"><div class="reporte-kpi-val" style="color:'+k.color+'">'+k.val+'</div><div class="reporte-kpi-lbl">'+k.lbl+'</div></div>';
+  }).join('');
+
+  // Residentes
+  var rDiv = document.getElementById('repResidentes');
+  if (rDiv) {
+    var byEst = {}; DB.residentes.forEach(function(r){ byEst[r.estado]=(byEst[r.estado]||0)+1; });
+    var byClasif = {}; DB.residentes.forEach(function(r){ if(r.clasif) byClasif[r.clasif]=(byClasif[r.clasif]||0)+1; });
+    var h = '<table style="width:100%;font-size:12px">';
+    h += '<tr><th style="text-align:left">Estado</th><th>Total</th></tr>';
+    Object.keys(byEst).forEach(function(k){ h+='<tr><td>'+k+'</td><td>'+byEst[k]+'</td></tr>'; });
+    h += '<tr><td colspan="2" style="padding-top:6px;font-weight:700;color:var(--am)">Por clasificación</td></tr>';
+    Object.keys(byClasif).forEach(function(k){ h+='<tr><td>'+k+'</td><td>'+byClasif[k]+'</td></tr>'; });
+    h += '</table>';
+    rDiv.innerHTML = h || '<div class="es"><div class="ei">👴</div><p>Sin datos.</p></div>';
+  }
+
+  // Medicamentos
+  var mDiv = document.getElementById('repMedicamentos');
+  if (mDiv) {
+    var meds = (DB.medicamentos||[]).filter(function(m){ return enRango(m.ts); });
+    var byEst2 = {}; meds.forEach(function(m){ byEst2[m.estado]=(byEst2[m.estado]||0)+1; });
+    var topMeds = {}; meds.forEach(function(m){ if(m.medicamento) topMeds[m.medicamento]=(topMeds[m.medicamento]||0)+1; });
+    var sortedMeds = Object.keys(topMeds).sort(function(a,b){ return topMeds[b]-topMeds[a]; }).slice(0,5);
+    var h2 = '<table style="width:100%;font-size:12px">';
+    h2 += '<tr><th style="text-align:left">Estado</th><th>Total</th></tr>';
+    Object.keys(byEst2).forEach(function(k){ h2+='<tr><td>'+k+'</td><td>'+byEst2[k]+'</td></tr>'; });
+    if (sortedMeds.length) {
+      h2 += '<tr><td colspan="2" style="padding-top:6px;font-weight:700;color:var(--am)">Top medicamentos</td></tr>';
+      sortedMeds.forEach(function(k){ h2+='<tr><td>'+k+'</td><td>'+topMeds[k]+'</td></tr>'; });
+    }
+    h2 += '</table>';
+    mDiv.innerHTML = h2 || '<p style="color:var(--gm);font-size:13px">Sin registros en este período.</p>';
+  }
+
+  // Incidentes
+  var iDiv = document.getElementById('repIncidentes');
+  if (iDiv) {
+    var incs = (DB.incidentes||[]).filter(function(i){ return enRango(i.ts); });
+    var byTipo = {}; incs.forEach(function(i){ if(i.tipo) byTipo[i.tipo]=(byTipo[i.tipo]||0)+1; });
+    var byGrav = {}; incs.forEach(function(i){ if(i.gravedad) byGrav[i.gravedad]=(byGrav[i.gravedad]||0)+1; });
+    var h3 = '<table style="width:100%;font-size:12px">';
+    h3 += '<tr><th style="text-align:left">Tipo</th><th>Total</th></tr>';
+    Object.keys(byTipo).forEach(function(k){ h3+='<tr><td>'+k+'</td><td>'+byTipo[k]+'</td></tr>'; });
+    h3 += '<tr><td colspan="2" style="padding-top:6px;font-weight:700;color:var(--am)">Por gravedad</td></tr>';
+    Object.keys(byGrav).forEach(function(k){ h3+='<tr><td>'+k+'</td><td>'+byGrav[k]+'</td></tr>'; });
+    h3 += '</table>';
+    iDiv.innerHTML = incs.length ? h3 : '<p style="color:var(--gm);font-size:13px">Sin incidentes en este período.</p>';
+  }
+
+  // Signos vitales - alertas
+  var sDiv = document.getElementById('repSignos');
+  if (sDiv) {
+    var svs = (DB.signos||[]).filter(function(s){ return enRango(s.ts); });
+    var alertas = svs.filter(function(s){
+      return (s.tas&&parseInt(s.tas)>160)||(s.tad&&parseInt(s.tad)>100)||
+             (s.glucosa&&parseInt(s.glucosa)>250)||(s.spo2&&parseInt(s.spo2)<92);
+    }).length;
+    sDiv.innerHTML = '<table style="width:100%;font-size:12px">'+
+      '<tr><td>Total registros</td><td>'+svs.length+'</td></tr>'+
+      '<tr><td>Con valores en alerta</td><td style="color:var(--ra);font-weight:700">'+alertas+'</td></tr>'+
+      '<tr><td>Promedio TA sistólica</td><td>'+(svs.length?Math.round(svs.reduce(function(a,s){ return a+(parseInt(s.tas)||0); },0)/svs.length):'—')+'</td></tr>'+
+      '<tr><td>Promedio glucosa</td><td>'+(svs.filter(function(s){return s.glucosa;}).length?Math.round(svs.filter(function(s){return s.glucosa;}).reduce(function(a,s){ return a+(parseInt(s.glucosa)||0); },0)/svs.filter(function(s){return s.glucosa;}).length):'—')+'</td></tr>'+
+      '</table>';
+  }
+
+  // Cuarentenas
+  var cDiv = document.getElementById('repCuarentenas');
+  if (cDiv) {
+    var cuars = (DB.cuarentenas||[]);
+    var byTipoC = {}; cuars.forEach(function(q){ byTipoC[q.tipo]=(byTipoC[q.tipo]||0)+1; });
+    var h4 = '<table style="width:100%;font-size:12px">';
+    h4 += '<tr><td>Total registradas</td><td>'+cuars.length+'</td></tr>';
+    h4 += '<tr><td>Activas ahora</td><td style="color:var(--ra);font-weight:700">'+cuars.filter(function(q){return q.estado==='Activo';}).length+'</td></tr>';
+    h4 += '<tr><td>Levantadas</td><td style="color:var(--vs)">'+cuars.filter(function(q){return q.estado==='Levantado';}).length+'</td></tr>';
+    Object.keys(byTipoC).forEach(function(k){ h4+='<tr><td style="color:var(--gm)">'+k+'</td><td>'+byTipoC[k]+'</td></tr>'; });
+    h4 += '</table>';
+    cDiv.innerHTML = h4;
+  }
+
+  // Asistencia empleados
+  var aDiv = document.getElementById('repAsistencia');
+  if (aDiv) {
+    var ponches = (DB.ponches||[]).filter(function(p){ return p.fecha>=desdeStr&&p.fecha<=hastaStr; });
+    var byEmp = {}; ponches.forEach(function(p){ if(!byEmp[p.nombre]) byEmp[p.nombre]=0; if(p.tipo==='entrada') byEmp[p.nombre]++; });
+    var h5 = '<table style="width:100%;font-size:12px"><tr><th style="text-align:left">Empleado</th><th>Días</th></tr>';
+    Object.keys(byEmp).sort().forEach(function(k){ h5+='<tr><td>'+k+'</td><td>'+byEmp[k]+'</td></tr>'; });
+    h5 += '</table>';
+    aDiv.innerHTML = Object.keys(byEmp).length ? h5 : '<p style="color:var(--gm);font-size:13px">Sin registros de ponche.</p>';
+  }
+}
+
+function pdfReporteGeneral() {
+  var JP = window.jspdf ? window.jspdf.jsPDF : null;
+  if (!JP) { toast('⚠️ Cargando PDF...'); setTimeout(pdfReporteGeneral,1500); return; }
+  var per = document.getElementById('rRepPer') ? document.getElementById('rRepPer').value : 'mes';
+  var perLabel = {hoy:'Hoy',semana:'Esta semana',mes:'Este mes'}[per];
+  var doc = new JP(), y=28;
+  doc.setFillColor(26,58,92); doc.rect(0,0,210,20,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(13); doc.setFont(undefined,'bold');
+  doc.text('CareHome Manager — Reporte General',14,13);
+  doc.setFontSize(8); doc.setFont(undefined,'normal');
+  doc.text('Período: '+perLabel+' · Generado: '+fh(),196,13,'right');
+  doc.setTextColor(40,40,40);
+
+  var sections = [
+    {id:'repKPIs', titulo:'Indicadores Clave'},
+    {id:'repResidentes', titulo:'Residentes'},
+    {id:'repMedicamentos', titulo:'Medicamentos'},
+    {id:'repIncidentes', titulo:'Incidentes'},
+    {id:'repSignos', titulo:'Signos Vitales'},
+    {id:'repCuarentenas', titulo:'Cuarentenas'},
+    {id:'repAsistencia', titulo:'Asistencia de Personal'},
+  ];
+
+  sections.forEach(function(sec){
+    if(y>240){doc.addPage();y=20;}
+    doc.setFontSize(11); doc.setFont(undefined,'bold'); doc.setTextColor(26,58,92);
+    doc.text(sec.titulo, 14, y); y+=7;
+    doc.setFont(undefined,'normal'); doc.setTextColor(40,40,40); doc.setFontSize(9);
+    var el = document.getElementById(sec.id);
+    if (el) {
+      var rows = el.querySelectorAll('tr');
+      rows.forEach(function(row){
+        if(y>275){doc.addPage();y=20;}
+        var cells = row.querySelectorAll('td,th');
+        var texts = Array.from(cells).map(function(td){ return td.textContent.trim().substring(0,35); });
+        texts.forEach(function(t,i){ doc.text(t, 14+i*65, y); });
+        y+=6;
+      });
+      // KPIs como texto
+      var kpis2 = el.querySelectorAll('.reporte-kpi');
+      kpis2.forEach(function(k){
+        if(y>275){doc.addPage();y=20;}
+        var val = k.querySelector('.reporte-kpi-val');
+        var lbl = k.querySelector('.reporte-kpi-lbl');
+        if(val&&lbl) { doc.text(lbl.textContent+': '+val.textContent, 14, y); y+=6; }
+      });
+    }
+    y+=4;
+  });
+
+  doc.save('Reporte_CareHome_'+perLabel.replace(/ /g,'_')+'.pdf');
+  toast('📄 Reporte PDF generado','vs');
+}
+
 // ===== CIERRE DE SESIÓN Y TIMEOUT =====
 var _timeoutTimer = null;
 var _timeoutWarn = null;
@@ -5097,6 +5567,7 @@ function cerrarSesion(auto) {
   clearTimeout(_timeoutTimer);
   clearTimeout(_timeoutWarn);
   // Limpiar sesión
+  logAudit('Logout','Cierre de sesión'+(auto?' (inactividad)':''));
   SES = {};
   localStorage.removeItem('chses');
   // Mostrar login
