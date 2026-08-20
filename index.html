@@ -2818,10 +2818,31 @@ function delUsr(id) {
 function rUsr() {
   var div=document.getElementById('listUsr'); if (!div) return;
   var cols={admin:'#1A3A5C',medico:'#7B2D8B',enfermera:'#0D7A5F',aux:'#E67E22',recepcion:'#607D8B'};
+  window._uIds = [];
   var h='';
   DB.usuarios.forEach(function(u){
+    var i = window._uIds.length;
+    window._uIds.push(u.id);
     var ini=u.nombre.split(' ').map(function(x){ return x[0]; }).join('').substring(0,2).toUpperCase();
-    h+='<div class="uc"><div class="ua" style="background:'+cols[u.rol]+'">'+ini+'</div><div class="ui"><div class="un">'+u.nombre+'</div><div class="ur">'+rolL(u.rol)+' · @'+u.username+' · '+u.turno+'</div></div>'+(SES.rol==='admin'?'<div style="display:flex;gap:6px"><button class="btn bxs bmo" onclick="abrirPerms(\''+u.id+'\')">🔐 Permisos</button>'+(u.id!=='U1'?'<button class="btn bxs bra" onclick="delUsr(\''+u.id+'\')">🗑️</button>':'')+'</div>':'')+'</div>';
+    var tieneCustom = u.permCustom && u.permCustom.length>0;
+    var permBadge = tieneCustom
+      ? '<span style="font-size:11px;background:var(--mc);color:var(--mo);border-radius:10px;padding:2px 7px;margin-left:6px">🔐 Permisos custom</span>'
+      : '<span style="font-size:11px;color:var(--gm);margin-left:6px">Permisos de rol</span>';
+    var salario = u.salario ? ' · $'+parseFloat(u.salario).toFixed(2)+'/h' : '';
+    h += '<div class="uc">';
+    h += '<div class="ua" style="background:'+cols[u.rol]+'">'+ini+'</div>';
+    h += '<div class="ui">';
+    h += '<div class="un">'+u.nombre+'</div>';
+    h += '<div class="ur">'+rolL(u.rol)+' · @'+u.username+' · '+u.turno+salario+'</div>';
+    h += '<div>'+permBadge+'</div>';
+    h += '</div>';
+    if (SES.rol==='admin') {
+      h += '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">';
+      h += '<button class="btn bxs bmo" onclick="abrirPerms(window._uIds['+i+'])">🔐 Permisos</button>';
+      if (u.id!=='U1') h += '<button class="btn bxs bra" onclick="delUsr(window._uIds['+i+'])">🗑️</button>';
+      h += '</div>';
+    }
+    h += '</div>';
   });
   div.innerHTML = h || '<div class="es"><div class="ei">👥</div><p>Sin usuarios.</p></div>';
 }
