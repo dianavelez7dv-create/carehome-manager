@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="CareHome">
 <meta name="theme-color" content="#1A3A5C">
-<title>CareHome Manager v3</title>
+<title>CareHome Manager v4</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -27,7 +27,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--gc);color:var(
 .hu b{font-size:13px;}
 .boutl{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:white;padding:6px 10px;border-radius:7px;font-size:12px;cursor:pointer;font-weight:600;}
 .nav{background:var(--bl);border-bottom:2px solid var(--bo);display:flex;overflow-x:auto;scrollbar-width:none;position:relative;}
-.nav-salir{position:sticky;right:0;background:var(--bl);border-left:1px solid var(--bo);padding:0 8px;display:flex;align-items:center;gap:6px;flex-shrink:0;z-index:10;}
+.nav-salir{position:sticky;right:0;background:var(--bl);border-left:2px solid var(--bo);padding:0 10px;display:flex;align-items:center;gap:6px;flex-shrink:0;z-index:10;min-width:80px;}
 .nav::-webkit-scrollbar{display:none;}
 .nt{padding:13px 14px;font-size:13px;font-weight:600;color:var(--gm);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;display:flex;align-items:center;gap:5px;flex-shrink:0;}
 .nt:hover{color:var(--az);background:var(--ac);}
@@ -2652,6 +2652,9 @@ tr:hover td{background:var(--ac);}
 var DB = {
   residentes:[], medicamentos:[], signos:[], alimentacion:[],
   actividades:[], incidentes:[], visitas:[], turnos:[], expedientes:{},
+  fallecidos:[], cuarentenas:[], ponches:[], aseos:[], auditoria:[],
+  empDocs:{}, empMemos:{}, compras:[], mensajes:[], tareas:[],
+  visitasMed:[], planAct:[], terapias:[], planSemanal:[],
   usuarios:[
     {id:'U1',nombre:'Administrador',username:'admin',password:'admin123',rol:'admin',turno:'Rotativo'},
     {id:'U2',nombre:'Dr. García',username:'medico',password:'med123',rol:'medico',turno:'Día'},
@@ -2668,9 +2671,15 @@ function cDB() {
   if (!s) return;
   try {
     var d = JSON.parse(s);
-    ['residentes','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turnos','expedientes'].forEach(function(k){ if(d[k]) DB[k]=d[k]; });
+    // Todas las tablas de la app
+    ['residentes','medicamentos','signos','alimentacion','actividades',
+     'incidentes','visitas','turnos','expedientes',
+     'fallecidos','cuarentenas','ponches','aseos','auditoria',
+     'empDocs','empMemos','compras','mensajes','tareas',
+     'visitasMed','planAct','terapias','planSemanal'
+    ].forEach(function(k){ if(d[k]) DB[k]=d[k]; });
     if (d.usuarios && d.usuarios.length > 5) DB.usuarios = d.usuarios;
-  } catch(e) {}
+  } catch(e) { console.error('cDB error:', e); }
 }
 function sDB() { localStorage.setItem('chdb4', JSON.stringify(DB)); }
 cDB();
@@ -7069,6 +7078,12 @@ function syncAlergiasExpediente(rid) {
 }
 
 // ===== INIT =====
+// Garantizar que todas las tablas existen
+['fallecidos','cuarentenas','ponches','aseos','auditoria','compras','mensajes','tareas','visitasMed','planAct','terapias','planSemanal'].forEach(function(k){
+  if (!DB[k]) DB[k] = [];
+});
+if (!DB.empDocs)  DB.empDocs  = {};
+if (!DB.empMemos) DB.empMemos = {};
 document.getElementById('viE').value = new Date().toTimeString().slice(0,5);
 if (!DB.visitasMed) DB.visitasMed=[];
 if (!DB.planAct) DB.planAct=[];
