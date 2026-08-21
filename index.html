@@ -3131,7 +3131,12 @@ function openVis()  { openM('mVis'); var n=new Date(); document.getElementById('
 function saveMed() {
   var rid=document.getElementById('mR').value, nom=document.getElementById('mN').value.trim();
   if (!rid||!nom) { toast('⚠️ Residente y medicamento obligatorios'); return; }
-  var m={id:'M'+Date.now(),ts:fh(),fecha:new Date().toISOString().slice(0,10),residenteId:rid,enfermera:document.getElementById('mE').value.trim(),nombre:nom,dosis:document.getElementById('mD').value.trim(),via:document.getElementById('mV').value,hora:document.getElementById('mH').value,estado:document.getElementById('mEst').value,obs:document.getElementById('mO').value.trim()};
+  var m={id:'M'+Date.now(),ts:fh(),fecha:new Date().toISOString().slice(0,10),residenteId:rid,enfermera:(function(){
+    var pin=document.getElementById('mE')?document.getElementById('mE').value.trim():'';
+    if(!pin) return '';
+    var emp=DB.usuarios.find(function(u){ return u.password&&u.password.slice(-4)===pin; });
+    return emp?emp.nombre:pin;
+  })(),nombre:nom,dosis:document.getElementById('mD').value.trim(),via:document.getElementById('mV').value,hora:document.getElementById('mH').value,estado:document.getElementById('mEst').value,obs:document.getElementById('mO').value.trim()};
   DB.medicamentos.push(m); sDB(); closeM('mMed'); rMed();
   ['mE','mN','mD','mO'].forEach(function(i){ document.getElementById(i).value=''; });
   logAudit('Medicamento','Medicamento registrado: '+document.getElementById('mM').value);
