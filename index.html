@@ -173,6 +173,15 @@ tr:hover td{background:var(--ac);}
 .item-compra .item-nota{font-size:11px;color:var(--gm);}
 .item-compra .item-precio{font-size:12px;color:var(--vs);font-weight:700;white-space:nowrap;}
 .urgente-tag{background:var(--rc);color:var(--ra);font-size:10px;font-weight:700;border-radius:6px;padding:2px 6px;margin-left:4px;}
+.ded-tabla{width:100%;font-size:12px;border-collapse:collapse;margin-top:8px;}
+.ded-tabla td{padding:5px 8px;border-bottom:1px solid var(--gc);}
+.ded-tabla tr:last-child td{border-bottom:none;}
+.ded-tabla .ded-lbl{color:var(--gm);}
+.ded-tabla .ded-val{text-align:right;font-weight:600;}
+.ded-tabla .ded-sub{text-align:right;color:var(--ra);font-weight:700;}
+.ded-tabla .ded-neto{text-align:right;color:var(--vs);font-weight:800;font-size:14px;}
+.ded-tabla .ded-hdr{background:var(--gc);font-weight:700;font-size:11px;text-transform:uppercase;color:var(--gm);}
+.ded-toggle{font-size:11px;color:var(--am);cursor:pointer;margin-top:4px;text-decoration:underline;}
 .nom-resumen{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:18px;}
 .nom-card{background:var(--bl);border-radius:10px;border:1px solid var(--bo);padding:14px;box-shadow:0 2px 8px rgba(26,58,92,.07);}
 .nom-emp{font-weight:700;font-size:14px;color:var(--go);margin-bottom:2px;}
@@ -188,6 +197,54 @@ tr:hover td{background:var(--ac);}
 .perm-check:hover{border-color:var(--mo);background:var(--mc);}
 .perm-check input[type=checkbox]{width:18px;height:18px;accent-color:var(--mo);cursor:pointer;}
 .perm-check label{font-size:13px;font-weight:600;cursor:pointer;}
+.doc-req{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--gc);}
+.doc-req:last-child{border-bottom:none;}
+.doc-req-ico{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.doc-req-info{flex:1;}
+.doc-req-nom{font-size:13px;font-weight:700;}
+.doc-req-det{font-size:11px;color:var(--gm);}
+.doc-badge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:10px;white-space:nowrap;}
+.doc-ok{background:var(--vc);color:var(--vs);}
+.doc-pend{background:#FFF3CD;color:#856404;}
+.doc-venc{background:var(--rc);color:var(--ra);}
+.doc-falt{background:var(--gc);color:var(--gm);}
+.memo-card{background:var(--bl);border:1.5px solid var(--bo);border-radius:10px;padding:12px 14px;margin-bottom:8px;}
+.memo-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
+.memo-tipo{font-size:11px;font-weight:700;padding:2px 8px;border-radius:8px;}
+.memo-advert{background:#FFF3CD;color:#856404;}
+.memo-correc{background:var(--rc);color:var(--ra);}
+.memo-recono{background:var(--vc);color:var(--vs);}
+.memo-info{background:var(--ac);color:var(--am);}
+.memo-body{font-size:13px;color:var(--go);margin-bottom:6px;}
+.memo-firma{font-size:11px;color:var(--gm);font-style:italic;}
+.emp-selector-card{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--bo);border-radius:10px;cursor:pointer;margin-bottom:6px;background:var(--bl);}
+.emp-selector-card:hover,.emp-selector-card.sel{background:var(--ac);border-color:var(--am);}
+.emp-selector-card.sel{border-width:2px;}
+.aseo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin-bottom:14px;}
+.aseo-card{background:var(--bl);border:1.5px solid var(--bo);border-radius:10px;padding:0;overflow:hidden;}
+.aseo-card-hdr{padding:10px 14px;font-weight:700;font-size:13px;display:flex;align-items:center;gap:8px;}
+.aseo-card-body{padding:10px 14px;}
+.aseo-check{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--gc);cursor:pointer;}
+.aseo-check:last-child{border-bottom:none;}
+.aseo-check input[type=checkbox]{width:20px;height:20px;accent-color:var(--vs);flex-shrink:0;}
+.aseo-check label{font-size:13px;cursor:pointer;flex:1;}
+.aseo-check.hecho label{text-decoration:line-through;color:var(--gm);}
+.aseo-resumen{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-bottom:14px;}
+.aseo-res-card{background:var(--bl);border-radius:8px;border:1px solid var(--bo);padding:10px;display:flex;gap:10px;align-items:center;}
+.aseo-res-foto{width:40px;height:40px;border-radius:50%;object-fit:cover;background:var(--gc);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.aseo-res-info{flex:1;min-width:0;}
+.aseo-res-nom{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.aseo-res-pct{font-size:11px;color:var(--gm);}
+.aseo-barra{height:5px;border-radius:3px;background:var(--gc);margin-top:3px;}
+.aseo-barra-fill{height:5px;border-radius:3px;background:var(--vs);}
+.pin-emp-wrap{background:var(--ac);border:1.5px solid var(--bo);border-radius:10px;padding:10px 12px;margin-bottom:6px;}
+.pin-emp-row{display:flex;gap:8px;align-items:center;}
+.pin-emp-input{border:1.5px solid var(--bo);border-radius:8px;padding:9px 12px;font-size:18px;letter-spacing:6px;width:100px;text-align:center;font-family:inherit;}
+.pin-emp-input:focus{outline:none;border-color:var(--az);}
+.pin-emp-result{flex:1;padding:8px 12px;border-radius:8px;font-size:13px;font-weight:600;}
+.pin-emp-ok{background:var(--vc);color:var(--vs);}
+.pin-emp-err{background:var(--rc);color:var(--ra);}
+.pin-emp-idle{background:var(--gc);color:var(--gm);}
 .audit-row{display:flex;gap:10px;padding:9px 12px;border-bottom:1px solid var(--gc);font-size:13px;align-items:center;}
 .audit-row:last-child{border-bottom:none;}
 .audit-row:hover{background:var(--ac);}
@@ -309,6 +366,8 @@ tr:hover td{background:var(--ac);}
   <div class="nt" onclick="goTab('cuarentena',this)">🔴 Cuarentena</div>
   <div class="nt" onclick="goTab('mensajes',this)">💬 Mensajes</div>
   <div class="nt" onclick="goTab('compras',this)">🛒 Compras</div>
+  <div class="nt" onclick="goTab('aseo',this)">🧼 Aseo Personal</div>
+  <div class="nt tab-admin" onclick="goTab('empleados',this)">👔 Empleados</div>
   <div class="nt tab-admin" onclick="goTab('auditoria',this)">📋 Auditoría</div>
   <div class="nt tab-admin" onclick="goTab('reportes',this)">📊 Reportes</div>
   <div class="nt tab-admin" onclick="goTab('fallecidos',this)">✝ Fallecidos</div>
@@ -529,14 +588,22 @@ tr:hover td{background:var(--ac);}
       <div class="fi"><label>Turno que entrega</label><select id="tEnt"><option>☀️ Día (7am–3pm)</option><option>🌤 Tarde (3pm–11pm)</option><option>🌙 Noche (11pm–7am)</option></select></div>
       <div class="fi"><label>Turno que recibe</label><select id="tRec"><option>🌤 Tarde (3pm–11pm)</option><option>🌙 Noche (11pm–7am)</option><option>☀️ Día (7am–3pm)</option></select></div>
       <div class="fi ff">
-      <label>Enfermera que entrega</label>
-      <input type="text" placeholder="🔍 Buscar..." oninput="lupaFiltrar(this.id,'tEnfE')" id="lupa_tEnfE" style="border:1.5px solid var(--bo);border-radius:8px;padding:8px 12px;font-size:15px;width:100%;margin-bottom:4px">
-      <select id="tEnfE" size="3" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px"><option value="">— Seleccionar —</option></select>
+      <label>Empleado que entrega — PIN</label>
+      <div class="pin-emp-wrap">
+        <div class="pin-emp-row">
+          <input id="tEnfE" class="pin-emp-input" type="password" maxlength="4" placeholder="••••" oninput="verificarPINEmp('tEnfE','tEnfERes',null)">
+          <div id="tEnfERes" class="pin-emp-result pin-emp-idle">Ingresa tu PIN</div>
+        </div>
+      </div>
     </div>
       <div class="fi ff">
-      <label>Enfermera que recibe</label>
-      <input type="text" placeholder="🔍 Buscar..." oninput="lupaFiltrar(this.id,'tEnfR')" id="lupa_tEnfR" style="border:1.5px solid var(--bo);border-radius:8px;padding:8px 12px;font-size:15px;width:100%;margin-bottom:4px">
-      <select id="tEnfR" size="3" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px"><option value="">— Seleccionar —</option></select>
+      <label>Empleado que recibe — PIN</label>
+      <div class="pin-emp-wrap">
+        <div class="pin-emp-row">
+          <input id="tEnfR" class="pin-emp-input" type="password" maxlength="4" placeholder="••••" oninput="verificarPINEmp('tEnfR','tEnfRRes',null)">
+          <div id="tEnfRRes" class="pin-emp-result pin-emp-idle">Ingresa tu PIN</div>
+        </div>
+      </div>
     </div>
       <div class="fi ff"><label>Novedades del turno</label><textarea id="tNov" rows="4" placeholder="Medicaciones, cambios, incidentes del turno..."></textarea></div>
       <div class="fi"><label>Residentes en observación</label><textarea id="tResO" rows="3"></textarea></div>
@@ -754,6 +821,11 @@ tr:hover td{background:var(--ac);}
       <button class="btn" style="background:#1A3A5C;color:white" onclick="calcNomina()">🔄 Calcular</button>
       <button class="btn bmo" onclick="pdfNomina()">📄 Exportar PDF</button>
     </div>
+    <div style="background:var(--ac);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--gm)">
+      ℹ️ Las deducciones se calculan según las tablas del Departamento de Hacienda de Puerto Rico vigentes para 2024-2025.
+      Las tasas pueden variar. Este cálculo es estimado — consulta un contador certificado para nómina oficial.
+    </div>
+    </div>
 
     <!-- Tarjetas resumen por empleado -->
     <div class="nom-resumen" id="nomResumen"></div>
@@ -763,7 +835,7 @@ tr:hover td{background:var(--ac);}
       <div class="ch vs">📋 Detalle por Día</div>
       <div class="cb">
         <div class="tw"><table>
-          <thead><tr><th>Empleado</th><th>Fecha</th><th>Entrada</th><th>Salida</th><th>H. Regulares</th><th>H. Extra</th><th>Pago regular</th><th>Pago extra</th><th>Total día</th></tr></table></thead>
+          <thead><tr><th>Empleado</th><th>Fecha</th><th>Entrada</th><th>Salida</th><th>H. Reg.</th><th>H. Extra</th><th>Pago reg.</th><th>Pago extra</th><th>Bruto día</th></tr></table></thead>
           <tbody id="tNomina"></tbody>
         </table></div>
       </div>
@@ -1403,6 +1475,130 @@ tr:hover td{background:var(--ac);}
     </div>
   </div>
 </div>
+
+<!-- ASEO PERSONAL -->
+<div class="sec" id="tab-aseo">
+
+  <!-- Barra de acciones -->
+  <div class="card">
+    <div class="ch" style="background:#0D7A5F">🧼 Registro de Aseo Personal</div>
+    <div class="cb">
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:flex-end">
+        <div class="fi" style="flex:1;min-width:160px">
+          <label>Filtrar por fecha</label>
+          <input id="fAseofecha" type="date" onchange="rAseo()">
+        </div>
+        <div class="fi" style="flex:1;min-width:160px">
+          <label>Turno</label>
+          <select id="fAseoTurno" onchange="rAseo()">
+            <option value="">— Todos —</option>
+            <option>☀️ Día (7am–3pm)</option>
+            <option>🌤 Tarde (3pm–11pm)</option>
+            <option>🌙 Noche (11pm–7am)</option>
+          </select>
+        </div>
+        <button class="btn" style="background:#0D7A5F;color:white" onclick="openAseoQR()">📷 Escanear QR Paciente</button>
+        <button class="btn bam" onclick="openAseoManual()">➕ Registro Manual</button>
+        <button class="btn bmo" onclick="pdfAseo()">📄 Reporte PDF</button>
+      </div>
+
+      <!-- Resumen del día -->
+      <div class="aseo-resumen" id="aseoResumen"></div>
+
+      <!-- Tabla de registros -->
+      <div class="tw"><table>
+        <thead><tr>
+          <th>Paciente</th><th>Turno</th><th>Baño</th><th>Oral</th>
+          <th>Cabello</th><th>Uñas</th><th>Afeitado</th><th>Ropa</th>
+          <th>Cama</th><th>Obs.</th><th>Registrado por</th><th>Fecha/Hora</th>
+        </tr></thead>
+        <tbody id="tAseo"></tbody>
+      </table></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- EMPLEADOS: REQUISITOS Y MEMOS -->
+<div class="sec" id="tab-empleados">
+  <div style="display:grid;grid-template-columns:260px 1fr;gap:14px;align-items:start">
+
+    <!-- Panel lateral: lista de empleados -->
+    <div class="card" style="position:sticky;top:70px">
+      <div class="ch am">👔 Empleados</div>
+      <div class="cb" style="padding:10px">
+        <div id="empSelectorLista"></div>
+      </div>
+    </div>
+
+    <!-- Panel derecho: tabs del empleado seleccionado -->
+    <div>
+      <div id="empDetalle" style="display:none">
+
+        <!-- Header del empleado -->
+        <div class="card" style="margin-bottom:0">
+          <div class="cb" style="padding:12px 16px">
+            <div style="display:flex;align-items:center;gap:14px">
+              <div id="edAvatar" style="width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:white;flex-shrink:0;background:#1A3A5C"></div>
+              <div>
+                <div id="edNombre" style="font-size:18px;font-weight:800"></div>
+                <div id="edRol" style="font-size:13px;color:var(--gm)"></div>
+              </div>
+              <div style="margin-left:auto;display:flex;gap:8px">
+                <button class="btn bmo" onclick="openMemo()">📝 Nuevo Memo</button>
+                <button class="btn bam" onclick="openDocumento()">📎 Subir Documento</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sub-tabs -->
+        <div style="display:flex;gap:0;margin:14px 0 0;border-bottom:2px solid var(--bo)">
+          <div class="itb on" id="edTab_req"   onclick="edSubTab('req',this)"  style="padding:10px 16px;cursor:pointer;font-size:13px;font-weight:700">📋 Requisitos</div>
+          <div class="itb"    id="edTab_memos" onclick="edSubTab('memos',this)" style="padding:10px 16px;cursor:pointer;font-size:13px;font-weight:700">📝 Memos</div>
+          <div class="itb"    id="edTab_docs"  onclick="edSubTab('docs',this)"  style="padding:10px 16px;cursor:pointer;font-size:13px;font-weight:700">📎 Documentos</div>
+        </div>
+
+        <!-- REQUISITOS -->
+        <div class="card is on" id="edSec_req">
+          <div class="ch vs">📋 Requisitos Legales — Puerto Rico</div>
+          <div class="cb">
+            <div style="font-size:12px;color:var(--gm);margin-bottom:12px">
+              ⚖️ Requisitos obligatorios según la Ley de Hogares de Ancianos de Puerto Rico (Ley 85-2018) y el Departamento de Salud.
+            </div>
+            <div id="reqLista" style="border:1px solid var(--bo);border-radius:10px;overflow:hidden;background:var(--bl)"></div>
+            <div style="margin-top:10px;text-align:right" id="reqResumen"></div>
+          </div>
+        </div>
+
+        <!-- MEMOS -->
+        <div class="card is" id="edSec_memos">
+          <div class="ch" style="background:#7B2D8B">📝 Memos del Empleado</div>
+          <div class="cb">
+            <div id="memosLista"></div>
+          </div>
+        </div>
+
+        <!-- DOCUMENTOS -->
+        <div class="card is" id="edSec_docs">
+          <div class="ch" style="background:#E67E22">📎 Documentos Subidos</div>
+          <div class="cb">
+            <div id="docsLista"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Estado inicial -->
+      <div id="empDetalleVacio" class="card">
+        <div class="cb">
+          <div class="es"><div class="ei">👔</div><p>Selecciona un empleado de la lista para ver sus requisitos, memos y documentos.</p></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 </div><!-- /main -->
 
 <!-- ===== MODALES ===== -->
@@ -1594,9 +1790,18 @@ tr:hover td{background:var(--ac);}
         <div class="fi ff">
         <label>Residente *</label>
         <input type="text" id="lupa_mR" placeholder="🔍 Escribir para buscar..." oninput="lupaFiltrar('lupa_mR','mR')" style="border:1.5px solid var(--bo);border-radius:8px;padding:9px 12px;font-size:15px;width:100%;margin-bottom:4px">
-        <div style="display:flex;gap:6px;align-items:center;margin-bottom:4px"><button class="btn bxs" style="background:#444;color:white;white-space:nowrap" onclick="abrirQR('mR')">📷 QR</button></div><select id="mR" size="4" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px"><option value="">— Seleccionar —</option></select>
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:4px"><button class="btn bxs" style="background:#444;color:white;white-space:nowrap" onclick="abrirQR('mR')">📷 QR</button></div><select id="mR" size="4" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px" onchange="mostrarAlergias(this.value,'alertaAlerMed')"><option value="">— Seleccionar —</option></select>
+          <div id="alertaAlerMed" style="display:none;background:var(--rc);border:1.5px solid var(--ra);border-radius:8px;padding:10px 12px;margin-top:6px;font-size:13px;color:var(--ra);font-weight:700"></div>
       </div>
-        <div class="fi"><label>Enfermera</label><input id="mE" type="text"></div>
+        <div class="fi ff">
+        <label>Empleado que administra — PIN</label>
+        <div class="pin-emp-wrap">
+          <div class="pin-emp-row">
+            <input id="mE" class="pin-emp-input" type="password" maxlength="4" placeholder="••••" oninput="verificarPINEmp('mE','mERes',null)">
+            <div id="mERes" class="pin-emp-result pin-emp-idle">Ingresa tu PIN</div>
+          </div>
+        </div>
+      </div>
         <div class="fi"><label>Medicamento *</label><input id="mN" type="text"></div>
         <div class="fi"><label>Dosis</label><input id="mD" type="text" placeholder="Ej: 500mg"></div>
         <div class="fi"><label>Vía de administración</label><select id="mV"><option>Oral</option><option>Sublingual</option><option>Intramuscular</option><option>Intravenosa</option><option>Subcutánea</option><option>Tópica</option><option>Inhalatoria</option><option>Rectal</option></select></div>
@@ -1623,7 +1828,7 @@ tr:hover td{background:var(--ac);}
         <div class="fi ff">
         <label>Registrado por</label>
         <input type="text" placeholder="🔍 Buscar..." oninput="lupaFiltrar(this.id,'svE')" id="lupa_svE" style="border:1.5px solid var(--bo);border-radius:8px;padding:8px 12px;font-size:15px;width:100%;margin-bottom:4px">
-        <select id="svE" size="3" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px"><option value="">— Seleccionar —</option></select>
+        <select id="svE" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:10px"><option value="">— Seleccionar —</option></select>
       </div>
         <div class="fi"><label>TA Sistólica (mmHg)</label><input id="svS" type="number" placeholder="120"></div>
         <div class="fi"><label>TA Diastólica (mmHg)</label><input id="svDi" type="number" placeholder="80"></div>
@@ -1742,7 +1947,7 @@ tr:hover td{background:var(--ac);}
 <!-- Usuario -->
 <div class="mo" id="mUsr">
   <div class="md">
-    <div class="mh am">👤 Nuevo Usuario <button class="mx" onclick="closeM('mUsr')">✕</button></div>
+    <div class="mh am">👤 Nuevo Usuario <button class="mx" onclick="resetModalUsr();closeM('mUsr')">✕</button></div>
     <div class="mb">
       <div class="fg">
         <div class="fi"><label>Nombre completo *</label><input id="uN" type="text"></div>
@@ -2084,6 +2289,233 @@ tr:hover td{background:var(--ac);}
   </div>
 </div>
 
+<!-- Modal: Subir Documento -->
+<div class="mo" id="mDocumento">
+  <div class="md" style="max-width:500px">
+    <div class="mh" style="background:#E67E22">📎 Subir Documento <button class="mx" onclick="closeM('mDocumento')">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="fi"><label>Tipo de documento *</label>
+          <select id="docTipo">
+            <option>Licencia de Conducir / ID</option>
+            <option>Tarjeta de Seguro Social</option>
+            <option>Certificado de Salud (OGPe)</option>
+            <option>Certificado de Antecedentes Penales</option>
+            <option>Certificación Negativa de ASUME</option>
+            <option>Certificación DFAMS</option>
+            <option>Orientación Ley 300 — Derechos del Residente</option>
+            <option>Certificación: Libre de Maltrato de Ancianos</option>
+            <option>Registro de Empleado (ASSMCA)</option>
+            <option>Adiestramiento: Cuidado de Adultos Mayores</option>
+            <option>Adiestramiento: Demencia / Alzheimer</option>
+            <option>Adiestramiento: Ética Profesional</option>
+            <option>Adiestramiento: Prevención de Abuso y Negligencia</option>
+            <option>Adiestramiento: Prevención de Caídas</option>
+            <option>Adiestramiento: Confidencialidad / HIPAA</option>
+            <option>Adiestramiento: Seguridad contra Incendios</option>
+            <option>Manipulación de Alimentos</option>
+            <option>Evaluación de Desempeño Anual</option>
+            <option>Prueba de Tuberculosis (PPD)</option>
+            <option>Certificado de Vacunación COVID-19</option>
+            <option>Vacuna Influenza (anual)</option>
+            <option>Certificado de Hepatitis B</option>
+            <option>Licencia Profesional (RN/LPN/CNA)</option>
+            <option>Certificado de CPR / Primeros Auxilios</option>
+            <option>Diploma / Certificado de Estudios</option>
+            <option>Contrato de Empleo</option>
+            <option>Evaluación de Desempeño</option>
+            <option>Otro documento</option>
+          </select>
+        </div>
+        <div class="fi"><label>Fecha de vencimiento</label>
+          <input id="docVence" type="date">
+        </div>
+        <div class="fi ff"><label>Notas</label>
+          <input id="docNota" type="text" placeholder="Número de licencia, observaciones...">
+        </div>
+        <div class="fi ff">
+          <label>Documento (foto, escaneo o PDF) *</label>
+          <label style="display:flex;align-items:center;gap:10px;padding:12px;border:2px dashed var(--bo);border-radius:10px;cursor:pointer;background:var(--ac)">
+            <span style="font-size:24px">📷</span>
+            <span style="font-size:13px;color:var(--gm)">Toca para tomar foto o seleccionar archivo</span>
+            <input id="docArchivoInput" type="file" accept="*/*" style="display:none">
+          </label>
+          <div id="docPreview" style="margin-top:8px;display:none">
+            <img id="docPreviewImg" style="max-width:100%;max-height:200px;border-radius:8px;border:1px solid var(--bo)">
+            <div id="docPreviewNom" style="font-size:12px;color:var(--gm);margin-top:4px"></div>
+          </div>
+        </div>
+      </div>
+      <div class="ab">
+        <button class="btn bol" onclick="closeM('mDocumento')">Cancelar</button>
+        <button class="btn" style="background:#E67E22;color:white" onclick="saveDocumento()">💾 Guardar Documento</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Nuevo Memo -->
+<div class="mo" id="mMemo">
+  <div class="md" style="max-width:500px">
+    <div class="mh" style="background:#7B2D8B">📝 Nuevo Memo <button class="mx" onclick="closeM('mMemo')">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="fi"><label>Tipo de memo *</label>
+          <select id="memoTipo">
+            <option value="info">ℹ️ Informativo</option>
+            <option value="advert">⚠️ Advertencia</option>
+            <option value="correc">🔴 Carta de Corrección / Disciplinaria</option>
+            <option value="recono">🌟 Reconocimiento / Felicitación</option>
+          </select>
+        </div>
+        <div class="fi ff"><label>Asunto *</label>
+          <input id="memoAsunto" type="text" placeholder="Ej: Tardanza no justificada, Excelente desempeño...">
+        </div>
+        <div class="fi ff"><label>Contenido del memo *</label>
+          <textarea id="memoCuerpo" rows="5" placeholder="Escribe el contenido completo del memo aquí..."></textarea>
+        </div>
+        <div class="fi"><label>Supervisor que emite</label>
+          <input id="memoSupervisor" type="text" placeholder="Nombre del supervisor" value="">
+        </div>
+        <div class="fi" style="display:flex;align-items:center;gap:10px">
+          <input type="checkbox" id="memoFirma" style="width:20px;height:20px;accent-color:var(--mo)">
+          <label for="memoFirma" style="cursor:pointer;font-size:13px">Requiere firma del empleado</label>
+        </div>
+      </div>
+      <div class="ab">
+        <button class="btn bol" onclick="closeM('mMemo')">Cancelar</button>
+        <button class="btn" style="background:#7B2D8B;color:white" onclick="saveMemo()">💾 Guardar Memo</button>
+        <button class="btn bmo" onclick="pdfMemo()">📄 Guardar y PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Aseo Personal -->
+<div class="mo" id="mAseo">
+  <div class="md" style="max-width:520px">
+    <div class="mh" style="background:#0D7A5F">🧼 Registro de Aseo Personal <button class="mx" onclick="closeM('mAseo')">✕</button></div>
+    <div class="mb">
+      <!-- Resultado de escaneo QR -->
+      <div id="aseoQRResult" style="display:none;background:var(--vc);border-radius:8px;padding:10px 14px;margin-bottom:12px;text-align:center">
+        <div id="aseoQRNombre" style="font-size:16px;font-weight:800;color:var(--vs)"></div>
+        <div id="aseoQRHab" style="font-size:12px;color:var(--gm)"></div>
+      </div>
+      <input type="hidden" id="aseoResidenteId">
+      <div class="fg">
+        <!-- Buscar paciente si no viene de QR -->
+        <div id="aseoResidenteSelector">
+          <div class="fi ff">
+            <label>Paciente *</label>
+            <input type="text" id="lupa_aseoR" placeholder="🔍 Buscar paciente..." oninput="lupaFiltrar('lupa_aseoR','aseoR')" style="border:1.5px solid var(--bo);border-radius:8px;padding:9px 12px;font-size:15px;width:100%;margin-bottom:4px">
+            <div style="display:flex;gap:6px;margin-bottom:4px">
+              <button class="btn bxs" style="background:#444;color:white" onclick="abrirQRAseo()">📷 QR</button>
+            </div>
+            <select id="aseoR" size="3" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px" onchange="selAseoResidente()"><option value="">— Seleccionar —</option></select>
+          </div>
+        </div>
+
+        <div class="fi"><label>Turno</label>
+          <select id="aseoTurno">
+            <option>☀️ Día (7am–3pm)</option>
+            <option>🌤 Tarde (3pm–11pm)</option>
+            <option>🌙 Noche (11pm–7am)</option>
+          </select>
+        </div>
+
+        <!-- Checklist de aseo -->
+        <div class="fi ff" style="margin-top:4px">
+          <label>Actividades de aseo realizadas</label>
+          <div style="background:var(--ac);border-radius:10px;padding:8px 12px">
+            <div class="aseo-check" id="chk_banio">
+              <input type="checkbox" id="aseoBanio">
+              <label for="aseoBanio">🚿 Baño completo / Ducha</label>
+            </div>
+            <div class="aseo-check" id="chk_esponja">
+              <input type="checkbox" id="aseoEsponja">
+              <label for="aseoEsponja">🧽 Baño de esponja (en cama)</label>
+            </div>
+            <div class="aseo-check" id="chk_oral">
+              <input type="checkbox" id="aseoOral">
+              <label for="aseoOral">🦷 Higiene oral / Dentadura</label>
+            </div>
+            <div class="aseo-check" id="chk_cabello">
+              <input type="checkbox" id="aseoCabello">
+              <label for="aseoCabello">💇 Lavado / Peinado de cabello</label>
+            </div>
+            <div class="aseo-check" id="chk_unias">
+              <input type="checkbox" id="aseoUnias">
+              <label for="aseoUnias">💅 Corte / Limpieza de uñas</label>
+            </div>
+            <div class="aseo-check" id="chk_afeitado">
+              <input type="checkbox" id="aseoAfeitado">
+              <label for="aseoAfeitado">🪒 Afeitado / Depilación facial</label>
+            </div>
+            <div class="aseo-check" id="chk_ropa">
+              <input type="checkbox" id="aseoRopa">
+              <label for="aseoRopa">👕 Cambio de ropa</label>
+            </div>
+            <div class="aseo-check" id="chk_cama">
+              <input type="checkbox" id="aseoCama">
+              <label for="aseoCama">🛏️ Cambio de ropa de cama</label>
+            </div>
+            <div class="aseo-check" id="chk_pies">
+              <input type="checkbox" id="aseoPies">
+              <label for="aseoPies">🦶 Cuidado de pies</label>
+            </div>
+            <div class="aseo-check" id="chk_crema">
+              <input type="checkbox" id="aseoCrema">
+              <label for="aseoCrema">🧴 Aplicación de crema / hidratante</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="fi"><label>Condición de la piel</label>
+          <select id="aseoPiel">
+            <option>Normal</option>
+            <option>Seca / Escamosa</option>
+            <option>Enrojecida</option>
+            <option>Con lesiones</option>
+            <option>Edema</option>
+            <option>Con úlceras de presión</option>
+          </select>
+        </div>
+
+        <div class="fi"><label>Estado de ánimo durante el aseo</label>
+          <select id="aseoAnimo">
+            <option>😊 Cooperativo</option>
+            <option>😐 Neutral</option>
+            <option>😢 Triste / Lloroso</option>
+            <option>😠 Resistente / Agitado</option>
+            <option>😴 Somnoliento</option>
+          </select>
+        </div>
+
+        <div class="fi ff">
+          <label>Observaciones</label>
+          <textarea id="aseoObs" rows="2" placeholder="Lesiones, úlceras, cambios en la piel, incontinencia..."></textarea>
+        </div>
+
+        <!-- PIN del empleado -->
+        <div class="fi ff">
+          <label>Empleado que realizó el aseo — PIN</label>
+          <div class="pin-emp-wrap">
+            <div class="pin-emp-row">
+              <input id="aseoPin" class="pin-emp-input" type="password" maxlength="4" placeholder="••••" oninput="verificarPINEmp('aseoPin','aseoPinRes',null)">
+              <div id="aseoPinRes" class="pin-emp-result pin-emp-idle">Ingresa tu PIN</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ab">
+        <button class="btn bol" onclick="closeM('mAseo')">Cancelar</button>
+        <button class="btn" style="background:#0D7A5F;color:white" onclick="saveAseo()">💾 Guardar Registro</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Modal: Comedor QR -->
 <div class="mo" id="mComedor">
   <div class="md" style="max-width:420px">
@@ -2244,13 +2676,13 @@ cDB();
 
 // ===== PERMISOS =====
 var PERM = {
-  admin:    ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','cuarentena','mensajes','compras','guia','auditoria','reportes','fallecidos','usuarios'],
-  medico:   ['dashboard','residentes','expediente','medicamentos','signos','incidentes','graficas','alertas','visitas_med','plan_act','cuarentena','mensajes','guia'],
-  enfermera:['dashboard','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','cuarentena','mensajes','compras','guia'],
-  aux:      ['dashboard','alimentacion','actividades','visitas','turno','alertas','plan_act','cuarentena','mensajes','compras','guia'],
-  recepcion:['dashboard','residentes','visitas','alertas','mensajes','compras','guia']
+  admin:    ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','cuarentena','mensajes','compras','guia','empleados','auditoria','reportes','fallecidos','usuarios','aseo'],
+  medico:   ['dashboard','residentes','expediente','medicamentos','signos','incidentes','graficas','alertas','visitas_med','plan_act','cuarentena','mensajes','guia','aseo'],
+  enfermera:['dashboard','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','cuarentena','mensajes','compras','guia','aseo'],
+  aux:      ['dashboard','alimentacion','actividades','visitas','turno','alertas','plan_act','cuarentena','mensajes','compras','guia','aseo'],
+  recepcion:['dashboard','residentes','visitas','alertas','mensajes','compras','guia','aseo']
 };
-var TABS = ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','cuarentena','mensajes','compras','guia','auditoria','reportes','fallecidos','usuarios'];
+var TABS = ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','cuarentena','mensajes','compras','guia','aseo','empleados','auditoria','reportes','fallecidos','usuarios'];
 
 function applyPerm() {
   var ok = PERM[SES.rol] || [];
@@ -2266,6 +2698,7 @@ function doLogin() {
   var usr = DB.usuarios.find(function(x){ return x.username===u && x.password===p; });
   if (!usr) { document.getElementById('luErr').style.display='flex'; return; }
   SES = usr;
+  logAudit('Login','Inicio de sesión',usr.rol);
   document.getElementById('hNom').textContent = usr.nombre;
   document.getElementById('hRol').textContent = rolL(usr.rol);
   applyPerm();
@@ -2320,6 +2753,8 @@ function goTab(id, el) {
   if (id==='mensajes') initMensajes();
   if (id==='cuarentena') rCuarentena();
   if (id==='guia') {}  // solo mostrar HTML
+  if (id==='empleados') initEmpleados();
+  if (id==='aseo') initAseo();
   if (id==='auditoria') rAuditoria();
   if (id==='reportes') rReportes();
   if (id==='fallecidos') rFallecidos();
@@ -2616,8 +3051,17 @@ function saveHist() {
 function saveAler() {
   var id = document.getElementById('selExp').value; if (!id) return;
   if (!DB.expedientes[id]) DB.expedientes[id] = {};
-  DB.expedientes[id].alergias = {medicamentos:document.getElementById('eAMed').value,alimentos:document.getElementById('eAAlim').value,otras:document.getElementById('eAOtra').value};
-  sDB(); toast('✅ Alergias guardadas','vs');
+  var med  = document.getElementById('eAMed').value.trim();
+  var alim = document.getElementById('eAAlim').value.trim();
+  var otra = document.getElementById('eAOtra').value.trim();
+  DB.expedientes[id].alergias = {medicamentos:med, alimentos:alim, otras:otra};
+  // Sincronizar con el residente para mostrar en tabla y medicamentos
+  var r = DB.residentes.find(function(x){ return x.id===id; });
+  if (r) { r.alerMed=med; r.alerAlim=alim; r.alerOtra=otra; }
+  sDB();
+  rRes(); // Actualizar tabla para mostrar badge
+  logAudit('Expediente','Alergias actualizadas', r?r.nombre:'');
+  toast('✅ Alergias guardadas','vs');
 }
 function saveCont() {
   var id = document.getElementById('selExp').value; if (!id) return;
@@ -2706,11 +3150,46 @@ function rMed() {
 
 // ===== SIGNOS VITALES =====
 function saveSV() {
-  var rid=document.getElementById('svR').value; if (!rid) { toast('⚠️ Selecciona un residente'); return; }
-  var s={id:'SV'+Date.now(),ts:fh(),raw:new Date().toISOString(),residenteId:rid,enfermera:document.getElementById('svE').value.trim(),tas:document.getElementById('svS').value,tad:document.getElementById('svDi').value,fc:document.getElementById('svF').value,fr:document.getElementById('svFR').value,temp:document.getElementById('svT').value,glucosa:document.getElementById('svG').value,spo2:document.getElementById('svO2').value,peso:document.getElementById('svP').value,obs:document.getElementById('svOb').value.trim()};
-  DB.signos.push(s); sDB(); closeM('mSV'); rSV(); gSV();
-  ['svE','svS','svDi','svF','svFR','svT','svG','svO2','svP','svOb'].forEach(function(i){ document.getElementById(i).value=''; });
-  toast('✅ Signos registrados','vs');
+  var rid = document.getElementById('svR').value;
+  if (!rid) { toast('⚠️ Selecciona un residente'); return; }
+  // Convertir peso a kg si está en lb
+  var pesoEl   = document.getElementById('svP');
+  var pesoUnit = document.getElementById('svPUnit') ? document.getElementById('svPUnit').value : 'kg';
+  var pesoVal  = parseFloat(pesoEl ? pesoEl.value : 0);
+  if (pesoVal && pesoUnit === 'lb') pesoVal = parseFloat((pesoVal * 0.453592).toFixed(1));
+  // Obtener empleado del select (puede ser select con size o input)
+  var svEEl = document.getElementById('svE');
+  var enfermera = svEEl ? svEEl.value : '';
+  var s = {
+    id: 'SV'+Date.now(), ts: fh(), raw: new Date().toISOString(),
+    residenteId: rid,
+    enfermera: enfermera,
+    tas:    document.getElementById('svS')  ? document.getElementById('svS').value  : '',
+    tad:    document.getElementById('svDi') ? document.getElementById('svDi').value : '',
+    fc:     document.getElementById('svF')  ? document.getElementById('svF').value  : '',
+    fr:     document.getElementById('svFR') ? document.getElementById('svFR').value : '',
+    temp:   document.getElementById('svT')  ? document.getElementById('svT').value  : '',
+    glucosa:document.getElementById('svG')  ? document.getElementById('svG').value  : '',
+    spo2:   document.getElementById('svO2') ? document.getElementById('svO2').value : '',
+    peso:   pesoVal || '',
+    obs:    document.getElementById('svOb') ? document.getElementById('svOb').value.trim() : ''
+  };
+  DB.signos.push(s);
+  sDB();
+  closeM('mSV');
+  rSV();
+  gSV();
+  // Limpiar campos
+  ['svS','svDi','svF','svFR','svT','svG','svO2','svOb'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.value = '';
+  });
+  if (pesoEl) pesoEl.value = '';
+  if (document.getElementById('svPUnit')) document.getElementById('svPUnit').value = 'kg';
+  if (document.getElementById('svPConv')) document.getElementById('svPConv').textContent = '';
+  // Log auditoría
+  var r = DB.residentes.find(function(x){ return x.id===rid; });
+  logAudit('Signos Vitales','Signos registrados'+(r?' para '+r.nombre:'')+(enfermera?' por '+enfermera:''));
+  toast('✅ Signos registrados', 'vs');
 }
 function rSV() {
   var tbody=document.getElementById('tSV'), lista=DB.signos.slice().reverse();
@@ -2809,11 +3288,34 @@ function rVis() {
 
 // ===== TURNO =====
 function saveTurno() {
-  var e=document.getElementById('eEnt').value.trim(); if (!e) { toast('⚠️ Indica quién entrega'); return; }
-  var t={id:'T'+Date.now(),ts:fh(),tEnt:document.getElementById('tEnt').value,tRec:document.getElementById('tRec').value,eEnt:e,eRec:document.getElementById('eRec').value.trim(),nov:document.getElementById('tNov').value.trim(),resO:document.getElementById('tResO').value.trim(),mPend:document.getElementById('tMedP').value.trim(),obsA:document.getElementById('tObsA').value.trim()};
+  // Resolver PINs de empleados
+  function resolverPin(pinId) {
+    var pin = document.getElementById(pinId) ? document.getElementById(pinId).value : '';
+    if (!pin) return '';
+    var emp = DB.usuarios.find(function(u){ return u.password && u.password.slice(-4)===pin; });
+    return emp ? emp.nombre : 'PIN inválido';
+  }
+  var eEnt = resolverPin('tEnfE');
+  var eRec = resolverPin('tEnfR');
+  if (!eEnt) { toast('⚠️ Ingresa el PIN del empleado que entrega'); return; }
+  var t={id:'T'+Date.now(),ts:fh(),
+    tEnt:document.getElementById('tEnt').value,
+    tRec:document.getElementById('tRec').value,
+    eEnt:eEnt, eRec:eRec,
+    nov:document.getElementById('tNov')?document.getElementById('tNov').value.trim():'',
+    resO:document.getElementById('tResO')?document.getElementById('tResO').value.trim():'',
+    pen:document.getElementById('tPen')?document.getElementById('tPen').value.trim():''
+  };
+  if (!DB.turnos) DB.turnos=[];
   DB.turnos.push(t); sDB(); rTur();
-  ['eEnt','eRec','tNov','tResO','tMedP','tObsA'].forEach(function(i){ document.getElementById(i).value=''; });
-  toast('✅ Turno cerrado','vs');
+  // Limpiar PINs
+  ['tEnfE','tEnfR'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  ['tEnfERes','tEnfRRes'].forEach(function(id){ var el=document.getElementById(id); if(el){ el.textContent='Ingresa tu PIN'; el.className='pin-emp-result pin-emp-idle'; }});
+  if(document.getElementById('tNov')) document.getElementById('tNov').value='';
+  if(document.getElementById('tResO')) document.getElementById('tResO').value='';
+  if(document.getElementById('tPen')) document.getElementById('tPen').value='';
+  logAudit('Turno','Cambio de turno registrado',eEnt+' → '+eRec);
+  toast('✅ Turno registrado','vs');
 }
 function rTur() {
   var tbody=document.getElementById('tTur'), lista=DB.turnos.slice().reverse();
@@ -2824,6 +3326,67 @@ function rTur() {
 }
 
 // ===== USUARIOS =====
+function resetModalUsr() {
+  var hdr = document.querySelector('#mUsr .mh');
+  if (hdr) hdr.childNodes[0].textContent = '👤 Nuevo Usuario ';
+  var btn = document.querySelector('#mUsr .btn.bvs');
+  if (btn) { btn.textContent = '💾 Crear Usuario'; btn.onclick = saveUsr; }
+  ['uN','uU','uP','uTel'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  if(document.getElementById('uSalario')) document.getElementById('uSalario').value='';
+  if(document.getElementById('uHorasReg')) document.getElementById('uHorasReg').value='40';
+}
+
+function editUsr(uid) {
+  var u = DB.usuarios.find(function(x){ return x.id===uid; });
+  if (!u) return;
+  // Llenar el modal con los datos del usuario
+  document.getElementById('uN').value   = u.nombre   || '';
+  document.getElementById('uU').value   = u.username || '';
+  document.getElementById('uP').value   = u.password || '';
+  document.getElementById('uR').value   = u.rol      || 'enfermera';
+  document.getElementById('uT').value   = u.turno    || '☀️ Día';
+  document.getElementById('uTel').value = u.tel      || '';
+  if (document.getElementById('uSalario'))  document.getElementById('uSalario').value  = u.salario  || '';
+  if (document.getElementById('uHorasReg')) document.getElementById('uHorasReg').value = u.horasReg || 40;
+  // Cambiar título y botón
+  var hdr = document.querySelector('#mUsr .mh');
+  if (hdr) hdr.childNodes[0].textContent = '✏️ Editar Usuario ';
+  var btn = document.querySelector('#mUsr .btn.bvs');
+  if (btn) { btn.textContent = '💾 Actualizar Usuario'; btn.onclick = function(){ actualizarUsr(uid); }; }
+  openM('mUsr');
+}
+
+function actualizarUsr(uid) {
+  var u = DB.usuarios.find(function(x){ return x.id===uid; });
+  if (!u) return;
+  var n = document.getElementById('uN').value.trim();
+  var username = document.getElementById('uU').value.trim().toLowerCase();
+  var p = document.getElementById('uP').value;
+  if (!n || !username || !p) { toast('⚠️ Nombre, usuario y contraseña son obligatorios'); return; }
+  // Verificar que el username no esté tomado por otro
+  var dup = DB.usuarios.find(function(x){ return x.username===username && x.id!==uid; });
+  if (dup) { toast('⚠️ Ese nombre de usuario ya está en uso'); return; }
+  // Actualizar
+  u.nombre   = n;
+  u.username = username;
+  u.password = p;
+  u.rol      = document.getElementById('uR').value;
+  u.turno    = document.getElementById('uT').value;
+  u.tel      = document.getElementById('uTel').value;
+  u.salario  = parseFloat(document.getElementById('uSalario')  ? document.getElementById('uSalario').value  : u.salario)  || u.salario  || 0;
+  u.horasReg = parseInt (document.getElementById('uHorasReg') ? document.getElementById('uHorasReg').value : u.horasReg) || u.horasReg || 40;
+  sDB();
+  closeM('mUsr');
+  rUsr();
+  // Restaurar modal a modo "nuevo"
+  var hdr = document.querySelector('#mUsr .mh');
+  if (hdr) hdr.childNodes[0].textContent = '👤 Nuevo Usuario ';
+  var btn = document.querySelector('#mUsr .btn.bvs');
+  if (btn) { btn.textContent = '💾 Crear Usuario'; btn.onclick = saveUsr; }
+  logAudit('Usuario','Usuario actualizado: '+n);
+  toast('✅ Usuario actualizado', 'vs');
+}
+
 function saveUsr() {
   var n=document.getElementById('uN').value.trim(), u=document.getElementById('uU').value.trim().toLowerCase(), p=document.getElementById('uP').value;
   if (!n||!u||!p) { toast('⚠️ Nombre, usuario y contraseña son obligatorios'); return; }
@@ -2831,6 +3394,7 @@ function saveUsr() {
   DB.usuarios.push({id:'U'+Date.now(),nombre:n,username:u,password:p,rol:document.getElementById('uR').value,turno:document.getElementById('uT').value,salario:parseFloat(document.getElementById('uSalario').value)||0,horasReg:parseInt(document.getElementById('uHorasReg').value)||40});
   sDB(); closeM('mUsr'); rUsr();
   ['uN','uU','uP','uTel','uSalario'].forEach(function(i){ document.getElementById(i).value=''; }); document.getElementById('uHorasReg').value='40';
+  logAudit('Usuario','Usuario creado: '+n);
   toast('✅ Usuario creado','vs');
 }
 function delUsr(id) {
@@ -2861,6 +3425,7 @@ function rUsr() {
     h += '</div>';
     if (SES.rol==='admin') {
       h += '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">';
+      h += '<button class="btn bxs" style="background:var(--na);color:white" onclick="editUsr(window._uIds['+i+'])">✏️ Editar</button>';
       h += '<button class="btn bxs bmo" onclick="abrirPerms(window._uIds['+i+'])">🔐 Permisos</button>';
       if (u.id!=='U1') h += '<button class="btn bxs bra" onclick="delUsr(window._uIds['+i+'])">🗑️</button>';
       h += '</div>';
@@ -3348,6 +3913,32 @@ function calcAlerts() {
   }
 
   // ── RENDERIZAR ──────────────────────────────────────────
+  // ── REQUISITOS DE EMPLEADOS ──────────────────────────
+  var alertasReq = alertasRequisitos();
+  alertasReq.slice(0,5).forEach(function(a){ // máximo 5 para no saturar
+    if (a.tipo==='crit') crit.push(a);
+    else warn.push(a);
+  });
+  if (alertasReq.length > 5) {
+    warn.push({ico:'📋',titulo:(alertasReq.length-5)+' requisitos adicionales pendientes',detalle:'Ver pestaña Empleados',tipo:'warn'});
+  }
+
+  // ── ASEO: PACIENTES SIN REGISTRO HOY ───────────────
+  var hoyAseo = now.toISOString().slice(0,10);
+  var conAseoHoy = new Set((DB.aseos||[]).filter(function(a){ return a.raw&&a.raw.startsWith(hoyAseo); }).map(function(a){ return a.residenteId; }));
+  var resActivosAseo = DB.residentes.filter(function(r){ return r.estado==='Activo'||r.estado==='En observación'; });
+  var sinAseo = resActivosAseo.filter(function(r){ return !conAseoHoy.has(r.id); });
+  // Alerta a las 8am (hora 480) para baño de mañana
+  // y a las 8pm (hora 1200) para baño de noche
+  if (sinAseo.length > 0 && (horaActual >= 480 && horaActual < 720) ) {
+    info.push({ico:'🧼', titulo:'☀️ '+sinAseo.length+' paciente(s) sin aseo de mañana',
+      detalle:sinAseo.slice(0,5).map(function(r){ return r.nombre.split(' ')[0]; }).join(', ')+(sinAseo.length>5?' y más':''), tipo:'info'});
+  }
+  if (sinAseo.length > 0 && horaActual >= 1200) {
+    info.push({ico:'🧼', titulo:'🌙 '+sinAseo.length+' paciente(s) sin aseo de noche',
+      detalle:sinAseo.slice(0,5).map(function(r){ return r.nombre.split(' ')[0]; }).join(', ')+(sinAseo.length>5?' y más':''), tipo:'info'});
+  }
+
   // ── COMPRAS URGENTES ───────────────────────────────
   var comprasUrg = (DB.compras||[]).filter(function(x){ return x.urgente && x.estado==='Pendiente'; });
   if (comprasUrg.length>0) {
@@ -3706,8 +4297,8 @@ function pdfReporte() {
   // Encabezado tabla
   doc.setFontSize(8); doc.setFont(undefined,'bold'); doc.setTextColor(255,255,255);
   doc.setFillColor(26,58,92); doc.rect(14,y,182,7,'F');
-  ['EMPLEADO','ROL','FECHA','ENTRADA','SALIDA','HORAS'].forEach(function(h,i){
-    doc.text(h, 16+i*30, y+5);
+  ['EMPLEADO','ROL','FECHA','ENTR','SAL','BRUTO','DED.','NETO'].forEach(function(h,i){
+    doc.text(h, [16,40,70,98,112,126,150,170][i], y+5);
   });
   y+=9; doc.setTextColor(40,40,40); doc.setFont(undefined,'normal');
 
@@ -3733,8 +4324,11 @@ function pdfReporte() {
       var hT=totalMin?Math.floor(totalMin/60)+'h '+(totalMin%60)+'min':'—';
       var fd=fecha.split('-');
       if(fila%2===0){doc.setFillColor(240,244,248);doc.rect(14,y-4,182,7,'F');}
-      [u.nombre.substring(0,16),rolL(u.rol).replace(/[👑🩺💉🙋📋]/g,'').trim().substring(0,10),fd[2]+'/'+fd[1],horaEnt,horaSal,hT].forEach(function(v,j){
-        doc.text(String(v),16+j*30,y);
+      var brutoFila = pR+pE;
+      var dedFila = brutoFila * (0.062+0.0145+0.003+0.003+0.015);
+      var netoFila = brutoFila - dedFila;
+      [u.nombre.substring(0,16),rolL(u.rol).replace(/[👑🩺💉🙋📋]/g,'').trim().substring(0,8),fd[2]+'/'+fd[1],horaEnt.substring(0,5),horaSal.substring(0,5),'$'+brutoFila.toFixed(2),'-$'+dedFila.toFixed(2),'$'+netoFila.toFixed(2)].forEach(function(v,j){
+        doc.text(String(v),[16,40,70,98,112,126,150,170][j],y);
       });
       y+=7; fila++;
     });
@@ -3768,6 +4362,47 @@ function getRango(per) {
   };
 }
 
+function calcDeduccionesPR(brutoAnual, brutoperiodo) {
+  // Tasas PR 2024-2025 (Hacienda PR + IRS para PR)
+  // FICA - Seguro Social (aplica hasta $168,600 anuales en 2024)
+  var SS_RATE     = 0.062;   // 6.2%
+  var MEDI_RATE   = 0.0145;  // 1.45%
+  // Seguro por Desempleo Estatal (DACO/PRE) - empleado paga 0.3% hasta $7,000
+  var SUE_RATE    = 0.003;   // 0.3% (límite $7,000 anual)
+  // Seguro de Incapacidad No Ocupacional (SINOT)
+  var SINOT_RATE  = 0.003;   // 0.3% (límite ~$9,000 anual)
+  // Fondo del Seguro del Estado (FSE/CFSE) - varía por industria ~1.5-3%
+  var FSE_RATE    = 0.015;   // ~1.5% (estimado para cuidado de salud)
+
+  // Retención de ingresos PR (Hacienda) - tabla simplificada
+  // Estimado básico: 7% para ingresos bajos, 10% medios, 14% altos
+  function retencionPR(brutoAnual) {
+    if (brutoAnual <= 9000)  return 0;
+    if (brutoAnual <= 25000) return (brutoAnual - 9000) * 0.07;
+    if (brutoAnual <= 41500) return 1120 + (brutoAnual - 25000) * 0.14;
+    if (brutoAnual <= 61500) return 3430 + (brutoAnual - 41500) * 0.25;
+    return 8430 + (brutoAnual - 61500) * 0.33;
+  }
+
+  var ss    = Math.min(brutoperiodo * SS_RATE,    168600/52 * SS_RATE);
+  var medi  = brutoperiodo * MEDI_RATE;
+  var sue   = Math.min(brutoperiodo * SUE_RATE,   7000/52  * SUE_RATE);
+  var sinot = Math.min(brutoperiodo * SINOT_RATE, 9000/52  * SINOT_RATE);
+  var fse   = brutoperiodo * FSE_RATE;
+  var retenAnual = retencionPR(brutoAnual);
+  var reten = retenAnual / 52; // por semana (ajustar por período)
+
+  return {
+    ss:    ss,
+    medi:  medi,
+    sue:   sue,
+    sinot: sinot,
+    fse:   fse,
+    reten: reten,
+    total: ss+medi+sue+sinot+fse+reten
+  };
+}
+
 function calcNomina() {
   var per   = document.getElementById('nPer')  ? document.getElementById('nPer').value   : 'semana';
   var esAdmin = SES.rol === 'admin';
@@ -3782,10 +4417,12 @@ function calcNomina() {
   var totDiv   = document.getElementById('nomTotales');
   if (!tbody||!resumen||!totDiv) return;
 
-  var OVERTIME_MULT = 1.5; // horas extra al 1.5x
+  var OVERTIME_MULT = 1.5;
 
-  // Agrupar ponches por empleado → por fecha
-  var data = {}; // {userId: {fecha: {entradas:[], salidas:[]}}}
+  // Factor de semanas según período (para anualizar y calcular retención)
+  var semFactor = {semana:1, quincenal1:2, quincenal2:2, mes:4.33}[per] || 1;
+
+  var data = {};
   (DB.ponches||[]).forEach(function(p){
     if (p.fecha < desde || p.fecha > hasta) return;
     if (uid && p.userId!==uid) return;
@@ -3795,11 +4432,9 @@ function calcNomina() {
     else                    data[p.userId][p.fecha].salidas.push(p.hora);
   });
 
-  var filas = '';
-  var resCards = '';
-  var grandTotal = 0;
-  var grandHReg  = 0;
-  var grandHExt  = 0;
+  var filas='', resCards='';
+  var grandBruto=0, grandNeto=0, grandDed=0;
+  var grandHReg=0, grandHExt=0;
 
   DB.usuarios.forEach(function(u){
     if (uid && u.id!==uid) return;
@@ -3807,89 +4442,88 @@ function calcNomina() {
     var horasReg = parseInt(u.horasReg)   || 40;
     var diasData = data[u.id] || {};
     var fechas   = Object.keys(diasData).sort();
-
-    // Acumuladores del empleado
-    var totalMinEmp = 0, totalMinExtEmp = 0;
-    var totalRegPago = 0, totalExtPago = 0;
-
-    // Horas regulares diarias = horasReg / 5 días
     var horasRegDia = horasReg / 5;
+    var totalMinEmp=0, totalMinExtEmp=0, totalBruto=0;
 
     fechas.forEach(function(fecha){
       var d = diasData[fecha];
-      var ents = d.entradas.slice().sort();
-      var sals = d.salidas.slice().sort();
-      var minTrab = 0;
-      for (var i=0; i<Math.min(ents.length,sals.length); i++) {
-        var eM=toMin(ents[i]), sM=toMin(sals[i]);
-        if (sM>eM) minTrab += sM-eM;
+      var ents=d.entradas.slice().sort(), sals=d.salidas.slice().sort();
+      var minT=0;
+      for(var i=0;i<Math.min(ents.length,sals.length);i++){
+        var eM=toMin(ents[i]),sM=toMin(sals[i]); if(sM>eM) minT+=sM-eM;
       }
-      var horasTrab = minTrab/60;
-      var hReg = Math.min(horasTrab, horasRegDia);
-      var hExt = Math.max(0, horasTrab - horasRegDia);
-      var pagoReg = hReg  * salHora;
-      var pagoExt = hExt  * salHora * OVERTIME_MULT;
-      var pagoTotal = pagoReg + pagoExt;
-
-      totalMinEmp    += minTrab;
-      totalMinExtEmp += hExt*60;
-      totalRegPago   += pagoReg;
-      totalExtPago   += pagoExt;
-
-      var fd = fecha.split('-');
-      var fechaMost = fd[2]+'/'+fd[1]+'/'+fd[0];
-      var horaEnt = ents.length ? ents[0] : '—';
-      var horaSal = sals.length ? sals[sals.length-1] : '—';
-
-      filas += '<tr>';
-      filas += '<td><strong>'+u.nombre+'</strong></td>';
-      filas += '<td>'+fechaMost+'</td>';
-      filas += '<td>'+horaEnt+'</td>';
-      filas += '<td>'+horaSal+'</td>';
-      filas += '<td>'+fmt2(hReg)+'h</td>';
-      filas += '<td class="nom-overtime">'+fmt2(hExt)+'h</td>';
-      filas += '<td>$'+pagoReg.toFixed(2)+'</td>';
-      filas += '<td class="nom-overtime">$'+pagoExt.toFixed(2)+'</td>';
-      filas += '<td><strong>$'+pagoTotal.toFixed(2)+'</strong></td>';
-      filas += '</tr>';
+      var hT=minT/60, hR=Math.min(hT,horasRegDia), hE=Math.max(0,hT-horasRegDia);
+      var pR=hR*salHora, pE=hE*salHora*OVERTIME_MULT, pT=pR+pE;
+      totalMinEmp+=minT; totalMinExtEmp+=hE*60; totalBruto+=pT;
+      var fd=fecha.split('-');
+      filas+='<tr>';
+      filas+='<td><strong>'+u.nombre+'</strong></td>';
+      filas+='<td>'+fd[2]+'/'+fd[1]+'/'+fd[0]+'</td>';
+      filas+='<td>'+(ents[0]||'—')+'</td>';
+      filas+='<td>'+(sals[sals.length-1]||'—')+'</td>';
+      filas+='<td>'+fmt2(hR)+'</td>';
+      filas+='<td class="nom-overtime">'+fmt2(hE)+'</td>';
+      filas+='<td>$'+pR.toFixed(2)+'</td>';
+      filas+='<td class="nom-overtime">$'+pE.toFixed(2)+'</td>';
+      filas+='<td><strong>$'+pT.toFixed(2)+'</strong></td>';
+      filas+='</tr>';
     });
 
-    var hRegEmp  = totalMinEmp/60 - totalMinExtEmp/60;
-    var hExtEmp  = totalMinExtEmp/60;
-    var totalEmp = totalRegPago + totalExtPago;
-    grandTotal  += totalEmp;
-    grandHReg   += hRegEmp;
-    grandHExt   += hExtEmp;
+    var hRegEmp=totalMinEmp/60-totalMinExtEmp/60, hExtEmp=totalMinExtEmp/60;
+    grandHReg+=hRegEmp; grandHExt+=hExtEmp;
 
-    var colores = {admin:'#1A3A5C',medico:'#7B2D8B',enfermera:'#0D7A5F',aux:'#E67E22',recepcion:'#607D8B'};
-    var col = colores[u.rol]||'#607D8B';
+    // Calcular deducciones
+    var brutoAnual = totalBruto * (52/semFactor);
+    var ded = calcDeduccionesPR(brutoAnual, totalBruto);
+    // Ajustar retención al período
+    ded.reten = (ded.reten * semFactor);
+    ded.total = ded.ss+ded.medi+ded.sue+ded.sinot+ded.fse+ded.reten;
+    var neto = totalBruto - ded.total;
 
-    resCards += '<div class="nom-card">';
-    resCards += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">';
-    resCards += '<div style="width:32px;height:32px;border-radius:50%;background:'+col+';color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">'+u.nombre.charAt(0)+'</div>';
-    resCards += '<div><div class="nom-emp">'+u.nombre+'</div><div class="nom-rol">'+rolL(u.rol)+(salHora?'  ·  $'+salHora.toFixed(2)+'/h':'  ·  ⚠️ Sin tarifa')+'</div></div>';
-    resCards += '</div>';
+    grandBruto+=totalBruto; grandDed+=ded.total; grandNeto+=neto;
+
+    var col={admin:'#1A3A5C',medico:'#7B2D8B',enfermera:'#0D7A5F',aux:'#E67E22',recepcion:'#607D8B'}[u.rol]||'#607D8B';
+
+    resCards+='<div class="nom-card">';
+    resCards+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">';
+    resCards+='<div style="width:36px;height:36px;border-radius:50%;background:'+col+';color:white;display:flex;align-items:center;justify-content:center;font-weight:800">'+u.nombre.charAt(0)+'</div>';
+    resCards+='<div><div class="nom-emp">'+u.nombre+'</div>';
+    resCards+='<div class="nom-rol">'+rolL(u.rol)+(salHora?' · $'+salHora.toFixed(2)+'/h':' · ⚠️ Sin tarifa')+'</div></div></div>';
+
     if (salHora===0) {
-      resCards += '<div style="color:var(--na);font-size:12px;padding:8px">⚠️ Asigna salario/hora en Usuarios para calcular nómina.</div>';
+      resCards+='<div style="color:var(--na);font-size:12px">⚠️ Asigna salario/hora en Usuarios.</div>';
     } else {
-      resCards += '<div class="nom-row"><span>H. regulares</span><span>'+fmt2(hRegEmp)+'h</span></div>';
-      resCards += '<div class="nom-row"><span>H. extra (×1.5)</span><span class="nom-overtime">'+fmt2(hExtEmp)+'h</span></div>';
-      resCards += '<div class="nom-row"><span>Pago regular</span><span>$'+totalRegPago.toFixed(2)+'</span></div>';
-      resCards += '<div class="nom-row"><span>Pago horas extra</span><span class="nom-overtime">$'+totalExtPago.toFixed(2)+'</span></div>';
-      resCards += '<div class="nom-total"><span>BRUTO PERÍODO</span><span class="nom-bruto">$'+totalEmp.toFixed(2)+'</span></div>';
+      resCards+='<table class="ded-tabla">';
+      resCards+='<tr class="ded-hdr"><td colspan="2">Ingresos</td></tr>';
+      resCards+='<tr><td class="ded-lbl">H. regulares ('+fmt2(hRegEmp)+')</td><td class="ded-val">$'+(hRegEmp*salHora).toFixed(2)+'</td></tr>';
+      resCards+='<tr><td class="ded-lbl">H. extra ×1.5 ('+fmt2(hExtEmp)+')</td><td class="ded-val nom-overtime">$'+(hExtEmp*salHora*1.5).toFixed(2)+'</td></tr>';
+      resCards+='<tr><td class="ded-lbl"><strong>Salario Bruto</strong></td><td class="ded-val"><strong>$'+totalBruto.toFixed(2)+'</strong></td></tr>';
+      resCards+='<tr class="ded-hdr"><td colspan="2">Deducciones Obligatorias PR</td></tr>';
+      resCards+='<tr><td class="ded-lbl">Seguro Social (6.2%)</td><td class="ded-sub">-$'+ded.ss.toFixed(2)+'</td></tr>';
+      resCards+='<tr><td class="ded-lbl">Medicare (1.45%)</td><td class="ded-sub">-$'+ded.medi.toFixed(2)+'</td></tr>';
+      resCards+='<tr><td class="ded-lbl">Seg. Desempleo / PRE (0.3%)</td><td class="ded-sub">-$'+ded.sue.toFixed(2)+'</td></tr>';
+      resCards+='<tr><td class="ded-lbl">SINOT Incapacidad (0.3%)</td><td class="ded-sub">-$'+ded.sinot.toFixed(2)+'</td></tr>';
+      resCards+='<tr><td class="ded-lbl">FSE / CFSE (~1.5%)</td><td class="ded-sub">-$'+ded.fse.toFixed(2)+'</td></tr>';
+      resCards+='<tr><td class="ded-lbl">Retención Hacienda PR (est.)</td><td class="ded-sub">-$'+ded.reten.toFixed(2)+'</td></tr>';
+      resCards+='<tr><td class="ded-lbl"><strong>Total Deducciones</strong></td><td class="ded-sub"><strong>-$'+ded.total.toFixed(2)+'</strong></td></tr>';
+      resCards+='<tr class="ded-hdr"><td colspan="2">Pago Neto</td></tr>';
+      resCards+='<tr><td class="ded-lbl"><strong>💵 NETO A PAGAR</strong></td><td class="ded-neto">$'+neto.toFixed(2)+'</td></tr>';
+      resCards+='</table>';
     }
-    resCards += '</div>';
+    resCards+='</div>';
   });
 
-  tbody.innerHTML = filas || '<tr><td colspan="9"><div class="es"><div class="ei">💰</div><p>Sin registros de ponche en este período.</p></div></td></tr>';
+  tbody.innerHTML = filas || '<tr><td colspan="9"><div class="es"><div class="ei">💰</div><p>Sin registros.</p></div></td></tr>';
   resumen.innerHTML = resCards || '<div class="es"><div class="ei">💰</div><p>Sin datos.</p></div>';
 
   // Totales generales
-  totDiv.innerHTML = grandTotal>0 ?
+  totDiv.innerHTML = grandBruto>0 ?
     '<div style="background:var(--am);color:white;border-radius:10px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">'+
-    '<div><div style="font-size:11px;opacity:.8;text-transform:uppercase;letter-spacing:.5px">Total horas regulares</div><div style="font-size:22px;font-weight:800">'+fmt2(grandHReg)+'h</div></div>'+
-    '<div><div style="font-size:11px;opacity:.8;text-transform:uppercase;letter-spacing:.5px">Total horas extra</div><div style="font-size:22px;font-weight:800;color:#F5D06A">'+fmt2(grandHExt)+'h</div></div>'+
-    '<div><div style="font-size:11px;opacity:.8;text-transform:uppercase;letter-spacing:.5px">NÓMINA TOTAL</div><div style="font-size:28px;font-weight:800;color:#7EE8A2">$'+grandTotal.toFixed(2)+'</div></div>'+
+    '<div><div style="font-size:11px;opacity:.8">H. Regulares</div><div style="font-size:20px;font-weight:800">'+fmt2(grandHReg)+'</div></div>'+
+    '<div><div style="font-size:11px;opacity:.8">H. Extra</div><div style="font-size:20px;font-weight:800;color:#F5D06A">'+fmt2(grandHExt)+'</div></div>'+
+    '<div><div style="font-size:11px;opacity:.8">NÓMINA BRUTA</div><div style="font-size:22px;font-weight:800">$'+grandBruto.toFixed(2)+'</div></div>'+
+    '<div><div style="font-size:11px;opacity:.8">DEDUCCIONES</div><div style="font-size:22px;font-weight:800;color:#FFB3B3">-$'+grandDed.toFixed(2)+'</div></div>'+
+    '<div><div style="font-size:11px;opacity:.8">NÓMINA NETA</div><div style="font-size:28px;font-weight:800;color:#7EE8A2">$'+grandNeto.toFixed(2)+'</div></div>'+
     '</div>' : '';
 }
 
@@ -4091,17 +4725,7 @@ function convertirPeso() {
 }
 
 // saveSV: guardar siempre en kg
-var _saveSVOrig = saveSV;
-function saveSV() {
-  var val  = parseFloat(document.getElementById('svP').value);
-  var unit = document.getElementById('svPUnit').value;
-  if (val && unit==='lb') {
-    document.getElementById('svP').value = (val*0.453592).toFixed(1);
-  }
-  _saveSVOrig();
-  document.getElementById('svPUnit').value = 'kg';
-  document.getElementById('svPConv').textContent = '';
-}
+
 
 // ===== LUPA FILTRO DE RESIDENTE =====
 function lupaFiltrar(inputId, selectId) {
@@ -5275,6 +5899,743 @@ function cerrarComedorQR() {
   }
 }
 
+// ===== EMPLEADOS: REQUISITOS Y MEMOS =====
+var _empSelId = null;
+
+// Requisitos obligatorios PR (Ley 85-2018 y Depto. Salud)
+// Requisitos — Ley 300 (Hogares Ancianos PR), Ley 85-2018 y Depto. de Salud
+var REQUISITOS_PR = [
+  // ── IDENTIFICACIÓN ─────────────────────────────────
+  {id:'id_gov',     nom:'ID Gubernamental / Licencia de Conducir',           vence:false, obligatorio:true,  ley:'General'},
+  {id:'ss',         nom:'Tarjeta de Seguro Social',                           vence:false, obligatorio:true,  ley:'General'},
+
+  // ── LEY 300 — REQUISITOS ESPECÍFICOS HOGARES ANCIANOS ──
+  {id:'orient300',  nom:'Orientación Ley 300 — Derechos del Residente',      vence:true,  meses:12, obligatorio:true,  ley:'Ley 300'},
+  {id:'maltrato',   nom:'Certificación: Libre de Maltrato de Ancianos',       vence:true,  meses:12, obligatorio:true,  ley:'Ley 300'},
+  {id:'regist300',  nom:'Registro de Empleado (ASSMCA / Depto. Salud)',       vence:true,  meses:12, obligatorio:true,  ley:'Ley 300'},
+  {id:'entrena',    nom:'Entrenamiento en Cuidado de Adultos Mayores',        vence:true,  meses:24, obligatorio:true,  ley:'Ley 300'},
+  {id:'alzheimer',  nom:'Adiestramiento: Demencia / Alzheimer',               vence:true,  meses:24, obligatorio:true,  ley:'Ley 300'},
+  {id:'etica',      nom:'Adiestramiento: Ética Profesional',                  vence:true,  meses:24, obligatorio:true,  ley:'Ley 300'},
+  {id:'abuso',      nom:'Adiestramiento: Prevención de Abuso y Negligencia',  vence:true,  meses:12, obligatorio:true,  ley:'Ley 300'},
+  {id:'caidas',     nom:'Adiestramiento: Prevención de Caídas',               vence:true,  meses:12, obligatorio:true,  ley:'Ley 300'},
+  {id:'hipaa',      nom:'Adiestramiento: Confidencialidad / HIPAA',           vence:true,  meses:12, obligatorio:true,  ley:'Ley 300'},
+
+  // ── SALUD Y VACUNAS ─────────────────────────────────
+  {id:'salud',      nom:'Certificado de Salud (OGPe)',                         vence:true,  meses:12, obligatorio:true,  ley:'Depto. Salud'},
+  {id:'ppd',        nom:'Prueba de Tuberculosis (PPD) o RX de Tórax',         vence:true,  meses:12, obligatorio:true,  ley:'Depto. Salud'},
+  {id:'influenza',  nom:'Vacuna Influenza (anual)',                             vence:true,  meses:12, obligatorio:true,  ley:'Depto. Salud'},
+  {id:'hepatitis',  nom:'Vacuna / Certificación Hepatitis B',                  vence:false, obligatorio:true,  ley:'Depto. Salud'},
+  {id:'covid',      nom:'Vacunación COVID-19',                                  vence:false, obligatorio:true,  ley:'Depto. Salud'},
+
+  // ── SEGURIDAD Y ANTECEDENTES ────────────────────────
+  {id:'penal',      nom:'Certificado de Antecedentes Penales',                 vence:true,  meses:12, obligatorio:true,  ley:'Ley 300'},
+  {id:'asume',      nom:'Certificación Negativa de ASUME',                     vence:true,  meses:12, obligatorio:true,  ley:'Ley 300'},
+  {id:'dfams',      nom:'Certificación DFAMS (Maltrato a Menores/Ancianos)',   vence:true,  meses:12, obligatorio:true,  ley:'Ley 300'},
+
+  // ── CAPACITACIÓN ────────────────────────────────────
+  {id:'cpr',        nom:'CPR / Primeros Auxilios certificado',                 vence:true,  meses:24, obligatorio:true,  ley:'Ley 300'},
+  {id:'segur',      nom:'Adiestramiento: Seguridad contra Incendios',          vence:true,  meses:12, obligatorio:true,  ley:'Ley 300'},
+  {id:'aliment',    nom:'Manipulación de Alimentos (si aplica)',               vence:true,  meses:12, obligatorio:false, ley:'Ley 300'},
+
+  // ── DOCUMENTOS DE EMPLEO ────────────────────────────
+  {id:'contrato',   nom:'Contrato de Empleo firmado',                          vence:false, obligatorio:true,  ley:'General'},
+  {id:'licprof',    nom:'Licencia Profesional (RN/LPN/CNA si aplica)',         vence:true,  meses:12, obligatorio:false, ley:'General'},
+  {id:'diploma',    nom:'Diploma / Certificado de Estudios',                   vence:false, obligatorio:false, ley:'General'},
+  {id:'eval',       nom:'Evaluación de Desempeño Anual',                       vence:true,  meses:12, obligatorio:true,  ley:'Ley 300'},
+];
+
+function initEmpleados() {
+  if (!DB.empDocs)  DB.empDocs  = {};
+  if (!DB.empMemos) DB.empMemos = {};
+  rEmpSelector();
+}
+
+function rEmpSelector() {
+  var div = document.getElementById('empSelectorLista');
+  if (!div) return;
+  var cols = {admin:'#1A3A5C',medico:'#7B2D8B',enfermera:'#0D7A5F',aux:'#E67E22',recepcion:'#607D8B'};
+  var h = '';
+  window._uEmpIds = [];
+  DB.usuarios.forEach(function(u){
+    var ini = u.nombre.split(' ').map(function(x){ return x[0]; }).join('').substring(0,2).toUpperCase();
+    var docs = DB.empDocs[u.id] || [];
+    var memos = DB.empMemos[u.id] || [];
+    // Calcular requisitos pendientes
+    var vencidos = 0, faltantes = 0;
+    REQUISITOS_PR.forEach(function(r){
+      var doc = docs.find(function(d){ return d.reqId===r.id; });
+      if (!doc) { if(r.obligatorio) faltantes++; }
+      else if (r.vence && doc.vence) {
+        var diff = (new Date(doc.vence)-new Date())/86400000;
+        if (diff < 0) vencidos++;
+      }
+    });
+    var badge = vencidos>0 ? '<span style="background:var(--ra);color:white;border-radius:10px;padding:1px 6px;font-size:10px;margin-left:4px">'+vencidos+' vencidos</span>'
+               : faltantes>0 ? '<span style="background:#856404;color:#FFF3CD;border-radius:10px;padding:1px 6px;font-size:10px;margin-left:4px">'+faltantes+' pendientes</span>'
+               : '<span style="color:var(--vs);font-size:11px;margin-left:4px">✅ Al día</span>';
+    var ei = window._uEmpIds.length;
+    window._uEmpIds.push(u.id);
+    h += '<div class="emp-selector-card'+(u.id===_empSelId?' sel':'')+'" onclick="selEmpleado(window._uEmpIds['+ei+'])">';
+    h += '<div style="width:38px;height:38px;border-radius:50%;background:'+cols[u.rol]+';color:white;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0">'+ini+'</div>';
+    h += '<div style="flex:1;min-width:0">';
+    h += '<div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+u.nombre+'</div>';
+    h += '<div style="font-size:11px;color:var(--gm)">'+rolL(u.rol)+(memos.length?' · '+memos.length+' memo(s)':'')+'</div>';
+    h += badge;
+    h += '</div></div>';
+  });
+  div.innerHTML = h;
+}
+
+function selEmpleado(uid) {
+  _empSelId = uid;
+  var u = DB.usuarios.find(function(x){ return x.id===uid; });
+  if (!u) return;
+  // Header
+  var cols = {admin:'#1A3A5C',medico:'#7B2D8B',enfermera:'#0D7A5F',aux:'#E67E22',recepcion:'#607D8B'};
+  var ini = u.nombre.split(' ').map(function(x){ return x[0]; }).join('').substring(0,2).toUpperCase();
+  document.getElementById('edAvatar').textContent = ini;
+  document.getElementById('edAvatar').style.background = cols[u.rol]||'#607D8B';
+  document.getElementById('edNombre').textContent = u.nombre;
+  document.getElementById('edRol').textContent = rolL(u.rol)+' · @'+u.username+(u.turno?' · '+u.turno:'');
+  document.getElementById('empDetalle').style.display = '';
+  document.getElementById('empDetalleVacio').style.display = 'none';
+  // Pre-llenar supervisor con usuario actual
+  if (document.getElementById('memoSupervisor')) document.getElementById('memoSupervisor').value = SES.nombre;
+  rEmpSelector();
+  edSubTab('req', document.getElementById('edTab_req'));
+  rRequisitos();
+  rMemos();
+  rDocs();
+}
+
+function edSubTab(tab, btn) {
+  ['req','memos','docs'].forEach(function(t){
+    var s = document.getElementById('edSec_'+t);
+    var b = document.getElementById('edTab_'+t);
+    if (s) s.classList.toggle('on', t===tab);
+    if (b) b.classList.toggle('on', t===tab);
+  });
+}
+
+// ─── REQUISITOS ────────────────────────────────
+function rRequisitos() {
+  var div = document.getElementById('reqLista');
+  var res = document.getElementById('reqResumen');
+  if (!div || !_empSelId) return;
+  var docs = DB.empDocs[_empSelId] || [];
+  var hoy = new Date();
+  var ok=0, pend=0, venc=0, falt=0;
+  var h = '';
+  REQUISITOS_PR.forEach(function(r){
+    var doc = docs.find(function(d){ return d.reqId===r.id; });
+    var estado, badgeCls, badgeTxt, detalle='';
+    if (!doc) {
+      estado='falt'; badgeCls='doc-falt'; badgeTxt=r.obligatorio?'⚠️ Faltante':'Opcional'; falt++;
+    } else {
+      if (r.vence && doc.vence) {
+        var diff = Math.floor((new Date(doc.vence)-hoy)/86400000);
+        if (diff<0) { estado='venc'; badgeCls='doc-venc'; badgeTxt='🔴 Vencido '+Math.abs(diff)+'d'; venc++; }
+        else if (diff<=30) { estado='pend'; badgeCls='doc-pend'; badgeTxt='⚠️ Vence en '+diff+'d'; pend++; }
+        else { estado='ok'; badgeCls='doc-ok'; badgeTxt='✅ Vigente'; ok++; }
+        detalle = 'Vence: '+doc.vence;
+      } else { estado='ok'; badgeCls='doc-ok'; badgeTxt='✅ En archivo'; ok++; }
+      if (doc.nota) detalle += (detalle?' · ':'')+doc.nota;
+    }
+    h += '<div class="doc-req">';
+    h += '<div class="doc-req-ico" style="background:'+(estado==='ok'?'var(--vc)':estado==='venc'?'var(--rc)':estado==='pend'?'#FFF3CD':'var(--gc)')+'">'+
+         (estado==='ok'?'✅':estado==='venc'?'🔴':estado==='pend'?'⚠️':'📋')+'</div>';
+    h += '<div class="doc-req-info">';
+    h += '<div class="doc-req-nom">'+r.nom+(r.obligatorio?'':' <span style="color:var(--gm);font-size:10px">(opcional)</span>')+'</div>';
+    if (r.ley) h += '<div style="font-size:10px;color:var(--am);font-weight:700;margin-top:1px">'+r.ley+(r.meses?' · cada '+r.meses+' meses':'')+'</div>';
+    if (detalle) h += '<div class="doc-req-det">'+detalle+'</div>';
+    if (doc && doc.ts) h += '<div class="doc-req-det">Subido: '+doc.ts+'</div>';
+    h += '</div>';
+    h += '<span class="doc-badge '+badgeCls+'">'+badgeTxt+'</span>';
+    if (doc) {
+      h += ' <button class="btn bxs" style="background:#444;color:white;font-size:11px" data-uid="'+_empSelId+'" data-rid="'+r.id+'">👁️</button>';
+    } else {
+      h += ' <button class="btn bxs bam" style="font-size:11px" data-orid="'+r.id+'">📎 Subir</button>';
+    }
+    h += '</div>';
+  });
+  div.innerHTML = h;
+  // Delegación eventos
+  div.addEventListener('click', function(e){
+    var b = e.target.closest('button');
+    if (!b) return;
+    var uid=b.getAttribute('data-uid'), rid=b.getAttribute('data-rid'), orid=b.getAttribute('data-orid');
+    if (uid&&rid) verDoc(uid+'_'+rid);
+    if (orid) openDocPara(orid);
+  });
+  if (res) {
+    var total = REQUISITOS_PR.filter(function(r){ return r.obligatorio; }).length;
+    var pct = Math.round(ok/(total)*100);
+    res.innerHTML = '<div style="font-size:13px">Completados: <strong style="color:var(--vs)">'+ok+'</strong> · Vencidos: <strong style="color:var(--ra)">'+venc+'</strong> · Por vencer: <strong style="color:var(--na)">'+pend+'</strong> · Faltantes: <strong style="color:var(--gm)">'+falt+'</strong></div>'+
+      '<div style="height:8px;background:var(--gc);border-radius:4px;margin-top:6px"><div style="height:8px;border-radius:4px;background:var(--vs);width:'+pct+'%"></div></div>'+
+      '<div style="font-size:11px;color:var(--gm);margin-top:4px">'+pct+'% de requisitos obligatorios completados</div>';
+  }
+}
+
+var _docParaReq = null;
+function openDocPara(reqId) {
+  _docParaReq = reqId;
+  var r = REQUISITOS_PR.find(function(x){ return x.id===reqId; });
+  if (r && document.getElementById('docTipo')) document.getElementById('docTipo').value = r.nom;
+  document.getElementById('docVence').value = '';
+  document.getElementById('docNota').value = '';
+  document.getElementById('docPreview').style.display = 'none';
+  openM('mDocumento');
+}
+
+function openDocumento() {
+  _docParaReq = null;
+  document.getElementById('docVence').value = '';
+  document.getElementById('docNota').value = '';
+  document.getElementById('docPreview').style.display = 'none';
+  openM('mDocumento');
+}
+
+// Listener de archivo
+document.addEventListener('DOMContentLoaded', function(){
+  var inp = document.getElementById('docArchivoInput');
+  if (!inp) return;
+  inp.addEventListener('change', function(){
+    var file = this.files[0]; if (!file) return;
+    var prev = document.getElementById('docPreview');
+    var img  = document.getElementById('docPreviewImg');
+    var nom  = document.getElementById('docPreviewNom');
+    prev.style.display = 'block';
+    nom.textContent = file.name + ' (' + (file.size/1024).toFixed(1) + ' KB)';
+    if (file.type.startsWith('image/')) {
+      var fr = new FileReader();
+      fr.onload = function(e){ img.src = e.target.result; img.style.display='block'; };
+      fr.readAsDataURL(file);
+    } else {
+      img.style.display = 'none';
+    }
+  });
+});
+
+function saveDocumento() {
+  if (!_empSelId) { toast('⚠️ Selecciona un empleado primero'); return; }
+  var inp = document.getElementById('docArchivoInput');
+  var tipo = document.getElementById('docTipo').value;
+  var vence = document.getElementById('docVence').value;
+  var nota = document.getElementById('docNota').value.trim();
+  var reqId = _docParaReq || tipo.toLowerCase().replace(/[^a-z]/g,'').substring(0,10);
+
+  function guardarDoc(b64) {
+    if (!DB.empDocs[_empSelId]) DB.empDocs[_empSelId] = [];
+    // Eliminar doc anterior del mismo tipo si existe
+    DB.empDocs[_empSelId] = DB.empDocs[_empSelId].filter(function(d){ return d.reqId!==reqId; });
+    DB.empDocs[_empSelId].push({
+      id: 'D'+Date.now(),
+      reqId: reqId,
+      tipo: tipo,
+      vence: vence,
+      nota: nota,
+      archivo: b64 || null,
+      fileName: inp.files[0] ? inp.files[0].name : '',
+      ts: fh()
+    });
+    sDB();
+    closeM('mDocumento');
+    rRequisitos();
+    rDocs();
+    rEmpSelector();
+    logAudit('Documento','Documento subido: '+tipo, DB.usuarios.find(function(u){ return u.id===_empSelId; }) ? DB.usuarios.find(function(u){ return u.id===_empSelId; }).nombre : '');
+    toast('✅ Documento guardado', 'vs');
+  }
+
+  if (inp.files[0]) {
+    // Verificar tamaño (max 1.5MB para localStorage)
+    if (inp.files[0].size > 1500000) {
+      toast('⚠️ El archivo es muy grande. Máximo 1.5MB. Toma una foto más pequeña.');
+      return;
+    }
+    var fr = new FileReader();
+    fr.onload = function(e){ guardarDoc(e.target.result); };
+    fr.readAsDataURL(inp.files[0]);
+  } else {
+    guardarDoc(null);
+  }
+}
+
+function rDocs() {
+  var div = document.getElementById('docsLista');
+  if (!div || !_empSelId) return;
+  var docs = DB.empDocs[_empSelId] || [];
+  if (!docs.length) { div.innerHTML = '<div class="es"><div class="ei">📎</div><p>Sin documentos subidos.</p></div>'; return; }
+  window._docIds = [];
+  var h = '';
+  docs.slice().reverse().forEach(function(d, i){
+    window._docIds[i] = d.id;
+    h += '<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--gc)">';
+    h += '<div style="font-size:24px">'+(d.archivo&&d.archivo.startsWith('data:image')?'🖼️':'📄')+'</div>';
+    h += '<div style="flex:1">';
+    h += '<div style="font-size:13px;font-weight:700">'+d.tipo+'</div>';
+    h += '<div style="font-size:11px;color:var(--gm)">'+(d.vence?'Vence: '+d.vence+' · ':'')+(d.nota||'')+(d.fileName?' · '+d.fileName:'')+'</div>';
+    h += '<div style="font-size:11px;color:var(--gm)">Subido: '+d.ts+'</div>';
+    h += '</div>';
+    if (d.archivo) h += '<button class="btn bsm bam" data-uid="'+_empSelId+'" data-rid="'+d.reqId+'">👁️ Ver</button>';
+    h += '<button class="btn bsm bra" onclick="eliminarDoc(window._docIds['+i+'])">🗑️</button>';
+    h += '</div>';
+  });
+  div.innerHTML = h;
+  div.addEventListener('click', function(e){
+    var b=e.target.closest('button[data-uid]');
+    if(b) verDoc(b.getAttribute('data-uid')+'_'+b.getAttribute('data-rid'));
+  });
+}
+
+function verDoc(key) {
+  var parts = key.split('_');
+  var uid = parts[0], reqId = parts[1];
+  var docs = DB.empDocs[uid] || [];
+  var doc = docs.find(function(d){ return d.reqId===reqId; });
+  if (!doc || !doc.archivo) { toast('⚠️ Sin archivo guardado'); return; }
+  // Abrir en nueva pestaña
+  var w = window.open();
+  w.document.write('<img src="'+doc.archivo+'" style="max-width:100%"><p>'+doc.tipo+'</p>');
+}
+
+function eliminarDoc(id) {
+  if (!confirm('¿Eliminar este documento?')) return;
+  if (!DB.empDocs[_empSelId]) return;
+  DB.empDocs[_empSelId] = DB.empDocs[_empSelId].filter(function(d){ return d.id!==id; });
+  sDB(); rDocs(); rRequisitos(); rEmpSelector();
+  toast('🗑️ Documento eliminado');
+}
+
+// ─── MEMOS ─────────────────────────────────────
+function openMemo() {
+  if (!_empSelId) { toast('⚠️ Selecciona un empleado primero'); return; }
+  document.getElementById('memoAsunto').value = '';
+  document.getElementById('memoCuerpo').value = '';
+  document.getElementById('memoSupervisor').value = SES.nombre;
+  document.getElementById('memoFirma').checked = true;
+  openM('mMemo');
+}
+
+function saveMemo(genPDF) {
+  if (!_empSelId) return;
+  var asunto = document.getElementById('memoAsunto').value.trim();
+  var cuerpo = document.getElementById('memoCuerpo').value.trim();
+  if (!asunto || !cuerpo) { toast('⚠️ Asunto y contenido son obligatorios'); return; }
+  var emp = DB.usuarios.find(function(u){ return u.id===_empSelId; });
+  if (!DB.empMemos[_empSelId]) DB.empMemos[_empSelId] = [];
+  var memo = {
+    id: 'MM'+Date.now(),
+    tipo: document.getElementById('memoTipo').value,
+    asunto: asunto,
+    cuerpo: cuerpo,
+    supervisor: document.getElementById('memoSupervisor').value.trim(),
+    firma: document.getElementById('memoFirma').checked,
+    firmado: false,
+    empleado: emp ? emp.nombre : '',
+    ts: fh(), raw: new Date().toISOString()
+  };
+  DB.empMemos[_empSelId].push(memo);
+  sDB();
+  logAudit('Memo','Memo emitido: '+asunto+(emp?' a '+emp.nombre:''));
+  if (genPDF) pdfMemoData(memo, emp);
+  closeM('mMemo');
+  rMemos();
+  rEmpSelector();
+  toast('✅ Memo guardado', 'vs');
+}
+
+function pdfMemo() { saveMemo(true); }
+
+function pdfMemoData(memo, emp) {
+  var JP = window.jspdf ? window.jspdf.jsPDF : null;
+  if (!JP) { toast('⚠️ Cargando PDF...'); return; }
+  var tipoLabel = {info:'Informativo',advert:'Advertencia',correc:'Carta de Corrección',recono:'Reconocimiento'}[memo.tipo]||memo.tipo;
+  var tipoColor = {info:[26,58,92],advert:[200,150,0],correc:[192,57,43],recono:[13,122,95]}[memo.tipo]||[26,58,92];
+  var doc = new JP(), y=30;
+  doc.setFillColor.apply(doc, tipoColor); doc.rect(0,0,210,22,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(14); doc.setFont(undefined,'bold');
+  doc.text('MEMORÁNDUM INTERNO — '+tipoLabel.toUpperCase(),14,14);
+  doc.setTextColor(40,40,40);
+
+  doc.setFontSize(10); doc.setFont(undefined,'bold'); doc.setTextColor(tipoColor[0],tipoColor[1],tipoColor[2]);
+  doc.text('CareHome Manager', 14, y); y+=7;
+  doc.setTextColor(40,40,40); doc.setFont(undefined,'normal'); doc.setFontSize(10);
+  var rows2 = [
+    ['PARA:', emp ? emp.nombre+' ('+rolL(emp.rol)+')' : ''],
+    ['DE:', memo.supervisor||SES.nombre],
+    ['FECHA:', memo.ts],
+    ['ASUNTO:', memo.asunto],
+  ];
+  rows2.forEach(function(r){
+    doc.setFont(undefined,'bold'); doc.text(r[0], 14, y);
+    doc.setFont(undefined,'normal'); doc.text(r[1]||'', 45, y);
+    y+=7;
+  });
+  doc.setDrawColor(200,200,200); doc.line(14, y, 196, y); y+=8;
+  doc.setFontSize(10); doc.setFont(undefined,'normal');
+  var lines = doc.splitTextToSize(memo.cuerpo, 172);
+  lines.forEach(function(line){
+    if(y>265){doc.addPage();y=20;}
+    doc.text(line, 14, y); y+=6;
+  });
+  if (memo.firma) {
+    y += 15;
+    doc.setDrawColor(40,40,40);
+    doc.line(14,y,90,y); doc.line(110,y,196,y);
+    doc.setFontSize(9); doc.setTextColor(100,100,100);
+    doc.text('Firma del empleado / Fecha', 14, y+5);
+    doc.text('Firma del supervisor / Fecha', 110, y+5);
+  }
+  doc.save('Memo_'+memo.asunto.substring(0,20).replace(/ /g,'_')+'.pdf');
+  toast('📄 Memo PDF generado','vs');
+}
+
+function rMemos() {
+  var div = document.getElementById('memosLista');
+  if (!div || !_empSelId) return;
+  var memos = (DB.empMemos[_empSelId] || []).slice().reverse();
+  if (!memos.length) { div.innerHTML = '<div class="es"><div class="ei">📝</div><p>Sin memos registrados.</p></div>'; return; }
+  var tipoLabel = {info:'Informativo',advert:'Advertencia',correc:'Corrección',recono:'Reconocimiento'};
+  var tipoCls   = {info:'memo-info',advert:'memo-advert',correc:'memo-correc',recono:'memo-recono'};
+  window._memoIds = [];
+  var h = '';
+  memos.forEach(function(m, i){
+    window._memoIds[i] = m.id;
+    h += '<div class="memo-card">';
+    h += '<div class="memo-hdr">';
+    h += '<div><span class="memo-tipo '+(tipoCls[m.tipo]||'memo-info')+'">'+tipoLabel[m.tipo]+'</span> <strong style="font-size:14px;margin-left:6px">'+m.asunto+'</strong></div>';
+    h += '<div style="display:flex;gap:6px">';
+    h += '<button class="btn bsm bmo" onclick="pdfMemoById(window._memoIds['+i+'])">📄</button>';
+    h += '<button class="btn bsm bra" onclick="eliminarMemo(window._memoIds['+i+'])">🗑️</button>';
+    h += '</div></div>';
+    h += '<div class="memo-body">'+m.cuerpo+'</div>';
+    h += '<div class="memo-firma">Por: '+m.supervisor+' · '+m.ts+(m.firma?' · Requiere firma del empleado':'')+'</div>';
+    h += '</div>';
+  });
+  div.innerHTML = h;
+}
+
+function pdfMemoById(id) {
+  var m = (DB.empMemos[_empSelId]||[]).find(function(x){ return x.id===id; });
+  var emp = DB.usuarios.find(function(u){ return u.id===_empSelId; });
+  if (m) pdfMemoData(m, emp);
+}
+
+function eliminarMemo(id) {
+  if (!confirm('¿Eliminar este memo?')) return;
+  DB.empMemos[_empSelId] = (DB.empMemos[_empSelId]||[]).filter(function(x){ return x.id!==id; });
+  sDB(); rMemos(); rEmpSelector();
+  toast('🗑️ Memo eliminado');
+}
+
+// ═══ Alertas: requisitos vencidos ═══
+function alertasRequisitos() {
+  var alertas = [];
+  var hoy = new Date();
+  DB.usuarios.forEach(function(u){
+    var docs = DB.empDocs[u.id] || [];
+    REQUISITOS_PR.forEach(function(r){
+      if (!r.obligatorio) return;
+      var doc = docs.find(function(d){ return d.reqId===r.id; });
+      if (!doc) {
+        alertas.push({ico:'📋',titulo:'Req. faltante: '+r.nom,detalle:u.nombre,tipo:'warn'});
+      } else if (r.vence && doc.vence) {
+        var diff = Math.floor((new Date(doc.vence)-hoy)/86400000);
+        if (diff<0) alertas.push({ico:'🔴',titulo:'Req. VENCIDO: '+r.nom,detalle:u.nombre+' · '+Math.abs(diff)+'d vencido',tipo:'crit'});
+        else if (diff<=30) alertas.push({ico:'⚠️',titulo:'Req. por vencer: '+r.nom,detalle:u.nombre+' · vence en '+diff+'d',tipo:'warn'});
+      }
+    });
+  });
+  return alertas;
+}
+
+// ===== ASEO PERSONAL =====
+var _aseoRid = null;
+
+function initAseo() {
+  if (!DB.aseos) DB.aseos = [];
+  var hoy = new Date().toISOString().slice(0,10);
+  document.getElementById('fAseofecha').value = hoy;
+  rAseo();
+}
+
+function openAseoManual() {
+  _aseoRid = null;
+  openM('mAseo');
+  setTimeout(function(){
+    pSel('aseoR');
+    document.getElementById('lupa_aseoR').value = '';
+    document.getElementById('aseoQRResult').style.display = 'none';
+    document.getElementById('aseoResidenteSelector').style.display = '';
+    limpiarAseoForm();
+  }, 50);
+}
+
+function openAseoQR() {
+  // Abrir modal de aseo con escáner QR activo
+  _aseoRid = null;
+  openM('mAseo');
+  setTimeout(function(){
+    pSel('aseoR');
+    document.getElementById('lupa_aseoR').value = '';
+    document.getElementById('aseoQRResult').style.display = 'none';
+    limpiarAseoForm();
+    iniciarCamaraAseo();
+  }, 50);
+}
+
+function iniciarCamaraAseo() {
+  // Usar el mismo sistema de cámara del QR principal
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    toast('⚠️ Cámara no disponible'); return;
+  }
+  // Crear un overlay de cámara temporal
+  var overlay = document.createElement('div');
+  overlay.id = 'aseoCamOverlay';
+  overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px';
+  overlay.innerHTML =
+    '<div style="color:white;font-size:18px;font-weight:800;margin-bottom:12px">📷 Apunta al QR del paciente</div>'+
+    '<video id="aseoCamVideo" style="width:100%;max-width:380px;border-radius:10px;background:#000;max-height:320px"></video>'+
+    '<canvas id="aseoCamCanvas" style="display:none"></canvas>'+
+    '<p id="aseoCamMsg" style="color:#aaa;font-size:13px;margin:10px 0">Escaneando...</p>'+
+    '<button onclick="cerrarCamaraAseo()" style="background:var(--ra);color:white;border:none;border-radius:8px;padding:12px 24px;font-size:16px;font-weight:700;cursor:pointer;margin-top:8px">✕ Cancelar</button>';
+  document.body.appendChild(overlay);
+
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}})
+    .then(function(stream){
+      window._aseoCamStream = stream;
+      var video = document.getElementById('aseoCamVideo');
+      video.srcObject = stream; video.play();
+      window._aseoCamInterval = setInterval(scanAseoFrame, 600);
+    })
+    .catch(function(){ toast('⚠️ No se pudo acceder a la cámara'); cerrarCamaraAseo(); });
+}
+
+function scanAseoFrame() {
+  var video = document.getElementById('aseoCamVideo');
+  var canvas = document.getElementById('aseoCamCanvas');
+  if (!video || !video.videoWidth) return;
+  canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+  if ('BarcodeDetector' in window) {
+    new BarcodeDetector({formats:['qr_code']}).detect(canvas).then(function(codes){
+      if (codes.length > 0) selAseoQR(codes[0].rawValue);
+    }).catch(function(){});
+  }
+}
+
+function selAseoQR(qrVal) {
+  var r = DB.residentes.find(function(x){
+    return (x.id===qrVal || x.cedula===qrVal) && x.estado!=='Fallecido' && x.estado!=='Inactivo';
+  });
+  if (!r) {
+    document.getElementById('aseoCamMsg').textContent = '⚠️ Paciente no encontrado';
+    return;
+  }
+  cerrarCamaraAseo();
+  // Mostrar resultado en el modal
+  _aseoRid = r.id;
+  document.getElementById('aseoResidenteId').value = r.id;
+  document.getElementById('aseoQRResult').style.display = 'block';
+  document.getElementById('aseoQRNombre').textContent = r.nombre;
+  document.getElementById('aseoQRHab').textContent = 'Hab. '+r.habitacion+' · '+r.sexo;
+  document.getElementById('aseoResidenteSelector').style.display = 'none';
+  // Pre-seleccionar también en el select por si acaso
+  var sel = document.getElementById('aseoR');
+  if (sel) sel.value = r.id;
+  toast('✅ Paciente: '+r.nombre, 'vs');
+}
+
+function cerrarCamaraAseo() {
+  if (window._aseoCamStream) { window._aseoCamStream.getTracks().forEach(function(t){ t.stop(); }); window._aseoCamStream=null; }
+  if (window._aseoCamInterval) { clearInterval(window._aseoCamInterval); window._aseoCamInterval=null; }
+  var overlay = document.getElementById('aseoCamOverlay');
+  if (overlay) overlay.remove();
+}
+
+function abrirQRAseo() {
+  iniciarCamaraAseo();
+}
+
+function selAseoResidente() {
+  var sel = document.getElementById('aseoR');
+  if (sel && sel.value) {
+    _aseoRid = sel.value;
+    document.getElementById('aseoResidenteId').value = sel.value;
+  }
+}
+
+function limpiarAseoForm() {
+  ['aseoBanio','aseoEsponja','aseoOral','aseoCabello','aseoUnias',
+   'aseoAfeitado','aseoRopa','aseoCama','aseoPies','aseoCrema'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.checked = false;
+  });
+  if (document.getElementById('aseoObs'))   document.getElementById('aseoObs').value = '';
+  if (document.getElementById('aseoPin'))   document.getElementById('aseoPin').value = '';
+  if (document.getElementById('aseoPinRes')) {
+    document.getElementById('aseoPinRes').textContent = 'Ingresa tu PIN';
+    document.getElementById('aseoPinRes').className = 'pin-emp-result pin-emp-idle';
+  }
+}
+
+function saveAseo() {
+  var rid = document.getElementById('aseoResidenteId').value ||
+            (document.getElementById('aseoR') ? document.getElementById('aseoR').value : '');
+  if (!rid) { toast('⚠️ Selecciona o escanea un paciente'); return; }
+
+  // Resolver PIN
+  var pin = document.getElementById('aseoPin') ? document.getElementById('aseoPin').value : '';
+  var emp = pin ? DB.usuarios.find(function(u){ return u.password && u.password.slice(-4)===pin; }) : null;
+  if (!emp) { toast('⚠️ Ingresa tu PIN para registrar'); return; }
+
+  var r = DB.residentes.find(function(x){ return x.id===rid; });
+
+  // Recoger checklist
+  var items = {
+    banio:     document.getElementById('aseoBanio')    ? document.getElementById('aseoBanio').checked    : false,
+    esponja:   document.getElementById('aseoEsponja')  ? document.getElementById('aseoEsponja').checked  : false,
+    oral:      document.getElementById('aseoOral')     ? document.getElementById('aseoOral').checked     : false,
+    cabello:   document.getElementById('aseoCabello')  ? document.getElementById('aseoCabello').checked  : false,
+    unias:     document.getElementById('aseoUnias')    ? document.getElementById('aseoUnias').checked    : false,
+    afeitado:  document.getElementById('aseoAfeitado') ? document.getElementById('aseoAfeitado').checked : false,
+    ropa:      document.getElementById('aseoRopa')     ? document.getElementById('aseoRopa').checked     : false,
+    cama:      document.getElementById('aseoCama')     ? document.getElementById('aseoCama').checked     : false,
+    pies:      document.getElementById('aseoPies')     ? document.getElementById('aseoPies').checked     : false,
+    crema:     document.getElementById('aseoCrema')    ? document.getElementById('aseoCrema').checked    : false
+  };
+
+  var totalItems = Object.keys(items).length;
+  var hechos = Object.values(items).filter(Boolean).length;
+
+  if (!DB.aseos) DB.aseos = [];
+  DB.aseos.push({
+    id: 'AS'+Date.now(),
+    ts: fh(), raw: new Date().toISOString(),
+    residenteId: rid,
+    nombre: r ? r.nombre : '',
+    habitacion: r ? r.habitacion : '',
+    turno: document.getElementById('aseoTurno') ? document.getElementById('aseoTurno').value : '',
+    items: items,
+    hechos: hechos,
+    totalItems: totalItems,
+    piel: document.getElementById('aseoPiel') ? document.getElementById('aseoPiel').value : '',
+    animo: document.getElementById('aseoAnimo') ? document.getElementById('aseoAnimo').value : '',
+    obs: document.getElementById('aseoObs') ? document.getElementById('aseoObs').value.trim() : '',
+    empleado: emp.nombre,
+    empleadoRol: emp.rol
+  });
+  sDB();
+  closeM('mAseo');
+  _aseoRid = null;
+  rAseo();
+  logAudit('Aseo','Aseo registrado: '+hechos+'/'+totalItems+' actividades'+(r?' para '+r.nombre:''),emp.nombre);
+  toast('✅ Aseo registrado — '+hechos+' actividades realizadas', 'vs');
+}
+
+function rAseo() {
+  if (!DB.aseos) DB.aseos = [];
+  var fecha = document.getElementById('fAseofecha') ? document.getElementById('fAseofecha').value : new Date().toISOString().slice(0,10);
+  var turno = document.getElementById('fAseoTurno') ? document.getElementById('fAseoTurno').value : '';
+
+  var lista = DB.aseos.filter(function(a){
+    if (!a.raw) return false;
+    if (fecha && !a.raw.startsWith(fecha)) return false;
+    if (turno && a.turno !== turno) return false;
+    return true;
+  }).slice().reverse();
+
+  // Resumen por residente
+  var resDiv = document.getElementById('aseoResumen');
+  if (resDiv) {
+    var hoy = new Date().toISOString().slice(0,10);
+    var registrosHoy = DB.aseos.filter(function(a){ return a.raw && a.raw.startsWith(hoy); });
+    var idsConAseo = [...new Set(registrosHoy.map(function(a){ return a.residenteId; }))];
+    var resActivos = DB.residentes.filter(function(r){ return r.estado==='Activo'||r.estado==='En observación'; });
+    var h = '';
+    resActivos.slice(0,12).forEach(function(r){
+      var aseoHoy = registrosHoy.filter(function(a){ return a.residenteId===r.id; });
+      var pct = aseoHoy.length ? Math.round(aseoHoy[aseoHoy.length-1].hechos/aseoHoy[aseoHoy.length-1].totalItems*100) : 0;
+      var color = pct===100?'var(--vs)':pct>50?'var(--na)':aseoHoy.length?'var(--ra)':'var(--gc)';
+      h += '<div class="aseo-res-card">';
+      h += '<div class="aseo-res-foto">'+(r.foto?'<img src="'+r.foto+'" style="width:40px;height:40px;border-radius:50%;object-fit:cover">':'👴')+'</div>';
+      h += '<div class="aseo-res-info">';
+      h += '<div class="aseo-res-nom">'+r.nombre.split(' ')[0]+' '+r.nombre.split(' ')[1]+'</div>';
+      h += '<div class="aseo-res-pct">Hab.'+r.habitacion+(aseoHoy.length?' · '+pct+'% completado':' · Sin registro hoy')+'</div>';
+      h += '<div class="aseo-barra"><div class="aseo-barra-fill" style="width:'+pct+'%;background:'+color+'"></div></div>';
+      h += '</div></div>';
+    });
+    resDiv.innerHTML = h || '<div class="es"><div class="ei">🧼</div><p>Sin residentes activos.</p></div>';
+  }
+
+  // Tabla
+  var tbody = document.getElementById('tAseo');
+  if (!tbody) return;
+  if (!lista.length) {
+    tbody.innerHTML = '<tr><td colspan="12"><div class="es"><div class="ei">🧼</div><p>Sin registros de aseo en este período.</p></div></td></tr>';
+    return;
+  }
+
+  function ico(v) { return v ? '✅' : '—'; }
+  var h2 = '';
+  lista.forEach(function(a){
+    h2 += '<tr>';
+    h2 += '<td><strong>'+a.nombre+'</strong><br><span style="font-size:11px;color:var(--gm)">Hab.'+a.habitacion+'</span></td>';
+    h2 += '<td style="font-size:12px">'+a.turno+'</td>';
+    h2 += '<td style="text-align:center">'+ico(a.items&&(a.items.banio||a.items.esponja))+'</td>';
+    h2 += '<td style="text-align:center">'+ico(a.items&&a.items.oral)+'</td>';
+    h2 += '<td style="text-align:center">'+ico(a.items&&a.items.cabello)+'</td>';
+    h2 += '<td style="text-align:center">'+ico(a.items&&a.items.unias)+'</td>';
+    h2 += '<td style="text-align:center">'+ico(a.items&&a.items.afeitado)+'</td>';
+    h2 += '<td style="text-align:center">'+ico(a.items&&a.items.ropa)+'</td>';
+    h2 += '<td style="text-align:center">'+ico(a.items&&a.items.cama)+'</td>';
+    h2 += '<td style="font-size:12px;color:var(--gm)">'+(a.obs||'—')+'</td>';
+    h2 += '<td style="font-size:12px">'+a.empleado+'<br><span style="font-size:10px;color:var(--gm)">'+a.piel+'</span></td>';
+    h2 += '<td style="font-size:11px;color:var(--gm)">'+a.ts+'</td>';
+    h2 += '</tr>';
+  });
+  tbody.innerHTML = h2;
+}
+
+function pdfAseo() {
+  var JP = window.jspdf ? window.jspdf.jsPDF : null;
+  if (!JP) { toast('⚠️ Cargando PDF...'); setTimeout(pdfAseo,1500); return; }
+  var fecha = document.getElementById('fAseofecha') ? document.getElementById('fAseofecha').value : new Date().toISOString().slice(0,10);
+  var lista = (DB.aseos||[]).filter(function(a){ return a.raw && a.raw.startsWith(fecha); }).slice().reverse();
+
+  var doc = new JP('landscape'), y=28;
+  doc.setFillColor(13,122,95); doc.rect(0,0,297,20,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(13); doc.setFont(undefined,'bold');
+  doc.text('CareHome Manager — Reporte de Aseo Personal',14,13);
+  doc.setFontSize(8); doc.setFont(undefined,'normal');
+  doc.text('Fecha: '+fecha+' · Generado: '+fh(),280,13,'right');
+  doc.setTextColor(40,40,40);
+
+  // Encabezado tabla
+  doc.setFontSize(8); doc.setFont(undefined,'bold'); doc.setFillColor(13,122,95);
+  doc.setTextColor(255,255,255); doc.rect(14,y,269,6,'F');
+  var cols = ['Paciente','Turno','Baño','Oral','Cabello','Uñas','Afeitar','Ropa','Cama','Piel','Empleado','Hora'];
+  var xs   = [16,50,72,82,92,102,112,122,132,142,165,205];
+  cols.forEach(function(h,i){ doc.text(h,xs[i],y+4); });
+  y+=8; doc.setTextColor(40,40,40); doc.setFont(undefined,'normal');
+
+  function ic(v){ return v?'SI':'—'; }
+  lista.forEach(function(a,i){
+    if(y>190){doc.addPage('landscape');y=20;}
+    if(i%2===0){doc.setFillColor(240,248,245);doc.rect(14,y-3,269,6,'F');}
+    [a.nombre.substring(0,18),a.turno.substring(0,8),
+     ic(a.items&&(a.items.banio||a.items.esponja)),ic(a.items&&a.items.oral),
+     ic(a.items&&a.items.cabello),ic(a.items&&a.items.unias),ic(a.items&&a.items.afeitado),
+     ic(a.items&&a.items.ropa),ic(a.items&&a.items.cama),
+     (a.piel||'').substring(0,14),a.empleado.substring(0,16),a.ts.substring(0,8)
+    ].forEach(function(v,j){ doc.text(String(v),xs[j],y); });
+    y+=6;
+  });
+
+  doc.save('Aseo_'+fecha+'.pdf');
+  toast('📄 Reporte de aseo generado','vs');
+}
+
 // ===== AUDITORÍA =====
 function logAudit(tipo, detalle, extra) {
   if (!DB.auditoria) DB.auditoria = [];
@@ -5323,7 +6684,18 @@ function rAuditoria() {
     Cuarentena:'#C0392B',Fallecido:'#555',Usuario:'#1A3A5C',Ponche:'#0D7A5F',Compra:'#2D6A4F'};
 
   if (res_div) {
-    res_div.innerHTML = '<div style="font-size:12px;color:var(--gm)"><strong>'+lista.length+'</strong> registros encontrados · Total en sistema: <strong>'+(DB.auditoria.length)+'</strong></div>';
+    // Conteo por empleado
+    var byEmp = {};
+    (DB.auditoria||[]).forEach(function(a){
+      if (!byEmp[a.usuario]) byEmp[a.usuario] = 0;
+      byEmp[a.usuario]++;
+    });
+    var empSummary = Object.keys(byEmp).sort().map(function(e){
+      return '<span style="background:var(--ac);border-radius:6px;padding:2px 8px;font-size:11px;margin:2px;display:inline-block"><strong>'+e+'</strong>: '+byEmp[e]+'</span>';
+    }).join('');
+    res_div.innerHTML =
+      '<div style="font-size:12px;color:var(--gm);margin-bottom:6px"><strong>'+lista.length+'</strong> registros encontrados · Total: <strong>'+(DB.auditoria.length)+'</strong></div>'+
+      (empSummary ? '<div style="margin-bottom:6px">'+empSummary+'</div>' : '');
   }
 
   if (!lista.length) {
@@ -5337,8 +6709,9 @@ function rAuditoria() {
     h += '<div class="audit-row">';
     h += '<div class="audit-ico" style="background:'+col+'20;color:'+col+'">'+tipoIco(a.tipo)+'</div>';
     h += '<div class="audit-det">';
-    h += '<div style="font-weight:600">'+a.tipo+' — <span style="color:var(--gm)">'+a.usuario+'</span></div>';
-    h += '<div style="color:var(--go)">'+a.detalle+(a.extra?' · <em>'+a.extra+'</em>':'')+'</div>';
+    h += '<div style="font-weight:700;font-size:13px">'+tipoIco(a.tipo)+' '+a.tipo+'</div>';
+    h += '<div style="color:var(--go);font-size:13px">'+a.detalle+(a.extra?' <em style=\"color:var(--gm)\">('+a.extra+')</em>':'')+'</div>';
+    h += '<div style="font-size:11px;color:var(--am);margin-top:2px">👤 '+a.usuario+(a.usuarioRol?' · '+rolL(a.usuarioRol):'')+'</div>';
     h += '</div>';
     h += '<div class="audit-ts">'+a.ts+'</div>';
     h += '</div>';
@@ -5626,6 +6999,25 @@ function mostrarSesionInfo() {
   var el = document.getElementById('sesionInfo');
   if (el && SES.nombre) el.textContent = SES.nombre + ' · ' + rolL(SES.rol);
 }
+
+// ===== PIN DE EMPLEADO =====
+function verificarPINEmp(pinInputId, resultId, storageKey) {
+  var pin = document.getElementById(pinInputId) ? document.getElementById(pinInputId).value : '';
+  var res = document.getElementById(resultId);
+  if (!pin || pin.length < 4) {
+    if (res) { res.textContent = 'Ingresa tu PIN (4 dígitos)'; res.className = 'pin-emp-result pin-emp-idle'; }
+    return null;
+  }
+  var emp = DB.usuarios.find(function(u){ return u.password && u.password.slice(-4) === pin; });
+  if (!emp) {
+    if (res) { res.textContent = '❌ PIN incorrecto'; res.className = 'pin-emp-result pin-emp-err'; }
+    return null;
+  }
+  if (res) { res.textContent = '✅ ' + emp.nombre + ' (' + rolL(emp.rol) + ')'; res.className = 'pin-emp-result pin-emp-ok'; }
+  return emp.nombre;
+}
+
+
 
 // ===== INIT =====
 document.getElementById('viE').value = new Date().toTimeString().slice(0,5);
