@@ -26,7 +26,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--gc);color:var(
 .hu{font-size:11px;opacity:.9;text-align:right;line-height:1.4;}
 .hu b{font-size:13px;}
 .boutl{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:white;padding:6px 10px;border-radius:7px;font-size:12px;cursor:pointer;font-weight:600;}
-.nav{background:var(--bl);border-bottom:2px solid var(--bo);display:flex;overflow-x:auto;scrollbar-width:none;}
+.nav{background:var(--bl);border-bottom:2px solid var(--bo);display:flex;overflow-x:auto;scrollbar-width:none;position:relative;}
+.nav-salir{position:sticky;right:0;background:var(--bl);border-left:1px solid var(--bo);padding:0 8px;display:flex;align-items:center;gap:6px;flex-shrink:0;z-index:10;}
 .nav::-webkit-scrollbar{display:none;}
 .nt{padding:13px 14px;font-size:13px;font-weight:600;color:var(--gm);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;display:flex;align-items:center;gap:5px;flex-shrink:0;}
 .nt:hover{color:var(--az);background:var(--ac);}
@@ -374,7 +375,7 @@ tr:hover td{background:var(--ac);}
   <div class="nt tab-admin" onclick="goTab('usuarios',this)">👥 Usuarios</div>
   <div class="nt" onclick="goTab('guia',this)">📖 Guía</div>
   <div style="flex:1;min-width:8px"></div>
-  <div style="display:flex;align-items:center;gap:6px;padding:0 8px;flex-shrink:0">
+  <div class="nav-salir">
     <span id="sesionInfo" style="font-size:11px;color:var(--gm);white-space:nowrap;display:none"></span>
     <button onclick="cerrarSesion()" style="background:var(--ra);color:white;border:none;border-radius:8px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">🚪 Salir</button>
   </div>
@@ -3137,7 +3138,10 @@ function saveMed() {
     var emp=DB.usuarios.find(function(u){ return u.password&&u.password.slice(-4)===pin; });
     return emp?emp.nombre:pin;
   })(),nombre:nom,dosis:document.getElementById('mD').value.trim(),via:document.getElementById('mV').value,hora:document.getElementById('mH').value,estado:document.getElementById('mEst').value,obs:document.getElementById('mO').value.trim()};
-  DB.medicamentos.push(m); sDB(); closeM('mMed'); rMed();
+  DB.medicamentos.push(m); sDB(); closeM('mMed');
+  if(document.getElementById('mE')) document.getElementById('mE').value='';
+  if(document.getElementById('mERes')) { document.getElementById('mERes').textContent='Ingresa tu PIN'; document.getElementById('mERes').className='pin-emp-result pin-emp-idle'; }
+  rMed();
   ['mE','mN','mD','mO'].forEach(function(i){ document.getElementById(i).value=''; });
   logAudit('Medicamento','Medicamento registrado: '+document.getElementById('mM').value);
   toast('✅ Medicamento registrado','vs');
@@ -3425,7 +3429,7 @@ function rUsr() {
     h += '<div class="ua" style="background:'+cols[u.rol]+'">'+ini+'</div>';
     h += '<div class="ui">';
     h += '<div class="un">'+u.nombre+'</div>';
-    h += '<div class="ur">'+rolL(u.rol)+' · @'+u.username+' · '+u.turno+salario+'</div>';
+    h += '<div class="ur">'+rolL(u.rol)+' · @'+u.username+' · '+(u.turno||'—')+salario+'</div>';
     h += '<div>'+permBadge+'</div>';
     h += '</div>';
     if (SES.rol==='admin') {
@@ -4183,8 +4187,7 @@ function rEmpStatus() {
     h += '<div class="emp-av" style="background:'+cols[u.rol]+'">'+ini+'</div>';
     h += '<div class="emp-info">';
     h += '<div class="emp-nom">'+u.nombre+'</div>';
-    var pinVis = u.password ? 'PIN: <strong>'+u.password.slice(-4)+'</strong>' : '';
-    h += '<div class="emp-det">'+rolL(u.rol)+(u.turno?' · '+u.turno:'')+' · '+pinVis+(horaEnt!=='—'?' · Entrada: '+horaEnt:'')+(horaSal!=='—'?' · Salida: '+horaSal:'')+(totalMin>0?' · ⏱ '+horas:'')+'</div>';
+    h += '<div class="emp-det">'+rolL(u.rol)+(u.turno?' · '+u.turno:'')+(horaEnt!=='—'?' · Entrada: '+horaEnt:'')+(horaSal!=='—'?' · Salida: '+horaSal:'')+(totalMin>0?' · ⏱ '+horas:'')+'</div>';
     h += '</div>';
     h += '<span class="emp-status '+statusClass+'">'+statusTxt+'</span>';
     h += '</div>';
@@ -7023,6 +7026,47 @@ function verificarPINEmp(pinInputId, resultId, storageKey) {
 }
 
 
+
+// ===== ALERGIAS =====
+function mostrarAlergias(rid, divId) {
+  var div = document.getElementById(divId);
+  if (!div) return;
+  if (!rid) { div.style.display='none'; return; }
+  var r = DB.residentes.find(function(x){ return x.id===rid; });
+  if (!r) { div.style.display='none'; return; }
+  var al = [];
+  if (r.alerMed)  al.push('💊 ' + r.alerMed);
+  if (r.alerAlim) al.push('🍎 ' + r.alerAlim);
+  if (r.alerOtra) al.push('⚠️ ' + r.alerOtra);
+  // También buscar en expediente
+  if (DB.expedientes && DB.expedientes[rid] && DB.expedientes[rid].alergias) {
+    var ea = DB.expedientes[rid].alergias;
+    if (ea.medicamentos && !r.alerMed) al.push('💊 ' + ea.medicamentos);
+    if (ea.alimentos   && !r.alerAlim) al.push('🍎 ' + ea.alimentos);
+    if (ea.otras       && !r.alerOtra) al.push('⚠️ ' + ea.otras);
+  }
+  if (!al.length) { div.style.display='none'; return; }
+  div.innerHTML = '⚠️ ALERGIAS CONOCIDAS: ' + al.join(' · ');
+  div.style.display = 'block';
+}
+
+function syncAlergiasExpediente(rid) {
+  var r = DB.residentes.find(function(x){ return x.id===rid; });
+  if (!r) return;
+  var aMed  = document.getElementById('eAMed');
+  var aAlim = document.getElementById('eAAlim');
+  var aOtra = document.getElementById('eAOtra');
+  if (aMed  && !aMed.value  && r.alerMed)  aMed.value  = r.alerMed;
+  if (aAlim && !aAlim.value && r.alerAlim) aAlim.value = r.alerAlim;
+  if (aOtra && !aOtra.value && r.alerOtra) aOtra.value = r.alerOtra;
+  // También cargar del expediente si existe
+  if (DB.expedientes && DB.expedientes[rid] && DB.expedientes[rid].alergias) {
+    var ea = DB.expedientes[rid].alergias;
+    if (aMed  && !aMed.value  && ea.medicamentos) aMed.value  = ea.medicamentos;
+    if (aAlim && !aAlim.value && ea.alimentos)    aAlim.value = ea.alimentos;
+    if (aOtra && !aOtra.value && ea.otras)        aOtra.value = ea.otras;
+  }
+}
 
 // ===== INIT =====
 document.getElementById('viE').value = new Date().toTimeString().slice(0,5);
