@@ -1646,6 +1646,9 @@ tr:hover td{background:var(--ac);}
       <div id="luErr" class="al alr" style="display:none">⚠️ <span>Usuario o contraseña incorrectos.</span></div>
       <div class="ab"><button class="btn bol" onclick="closeM('mLogin')">Cancelar</button><button class="btn bam" onclick="doLogin()">Iniciar Sesión</button></div>
       <div class="dv"></div>
+      <div style="text-align:center;margin-top:8px">
+        <a href="#" onclick="resetearAdmin();return false;" style="font-size:11px;color:var(--gm);text-decoration:underline">¿Problemas de acceso? Restaurar admin</a>
+      </div>
       <p style="font-size:12px;color:var(--gm);font-weight:700;text-transform:uppercase;margin-bottom:6px">Accesos disponibles</p>
       <div style="font-size:12px;color:var(--gm);line-height:1.9">
         👑 admin / admin123 — Administrador<br>
@@ -2743,7 +2746,14 @@ function cDB() {
      'empDocs','empMemos','compras','mensajes','tareas',
      'visitasMed','planAct','terapias','planSemanal'
     ].forEach(function(k){ if(d[k]) DB[k]=d[k]; });
-    if (d.usuarios && d.usuarios.length > 5) DB.usuarios = d.usuarios;
+    if (d.usuarios && d.usuarios.length > 0) {
+      DB.usuarios = d.usuarios;
+      // Garantizar que siempre existe el admin por defecto
+      var hasAdmin = DB.usuarios.find(function(u){ return u.rol==='admin'; });
+      if (!hasAdmin) {
+        DB.usuarios.unshift({id:'U1',nombre:'Administrador',username:'admin',password:'admin123',rol:'admin',turno:'Rotativo'});
+      }
+    }
   } catch(e) { console.error('cDB error:', e); }
 }
 function sDB() { localStorage.setItem('chdb4', JSON.stringify(DB)); }
@@ -2778,7 +2788,15 @@ function doLogin() {
   var u = document.getElementById('luU').value.trim().toLowerCase();
   var p = document.getElementById('luP').value;
   var usr = DB.usuarios.find(function(x){ return x.username===u && x.password===p; });
-  if (!usr) { document.getElementById('luErr').style.display='flex'; return; }
+  if (!usr) {
+    var errEl = document.getElementById('luErr');
+    if (errEl) {
+      errEl.style.display='flex';
+      var span = errEl.querySelector('span');
+      if (span) span.textContent = 'Usuario o contraseña incorrectos. Admin demo: admin / admin123';
+    }
+    return;
+  }
   SES = usr;
   logAudit('Login','Inicio de sesión',usr.rol);
   document.getElementById('hNom').textContent = usr.nombre;
@@ -7131,6 +7149,24 @@ function verificarPINEmp(pinInputId, resultId, storageKey) {
 }
 
 
+
+// ===== RESETEAR ADMIN =====
+function resetearAdmin() {
+  if (!confirm('¿Restaurar el usuario administrador?\n\nUsuario: admin\nContraseña: admin123\n\nEsto NO borra los datos de los residentes.')) return;
+  // Buscar si ya existe admin
+  var adminIdx = DB.usuarios.findIndex(function(u){ return u.id==='U1' || u.rol==='admin'; });
+  var adminUser = {id:'U1',nombre:'Administrador',username:'admin',password:'admin123',rol:'admin',turno:'Rotativo'};
+  if (adminIdx >= 0) {
+    // Actualizar contraseña del admin existente
+    DB.usuarios[adminIdx].password = 'admin123';
+    DB.usuarios[adminIdx].username = 'admin';
+    toast('✅ Contraseña del admin restaurada a: admin123');
+  } else {
+    DB.usuarios.unshift(adminUser);
+    toast('✅ Admin restaurado: admin / admin123');
+  }
+  sDB();
+}
 
 // ===== ALERGIAS =====
 function mostrarAlergias(rid, divId) {
