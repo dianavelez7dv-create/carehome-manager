@@ -174,6 +174,18 @@ tr:hover td{background:var(--ac);}
 .item-compra .item-nota{font-size:11px;color:var(--gm);}
 .item-compra .item-precio{font-size:12px;color:var(--vs);font-weight:700;white-space:nowrap;}
 .urgente-tag{background:var(--rc);color:var(--ra);font-size:10px;font-weight:700;border-radius:6px;padding:2px 6px;margin-left:4px;}
+.pago-card{background:var(--bl);border:1.5px solid var(--bo);border-radius:10px;padding:12px 14px;margin-bottom:8px;}
+.pago-card.pagado{border-color:var(--vs);background:#F0FFF4;}
+.pago-card.vencido{border-color:var(--ra);background:#FFF5F5;}
+.pago-card.pendiente{border-color:var(--na);}
+.pago-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.pago-nom{font-size:14px;font-weight:700;}
+.pago-monto{font-size:18px;font-weight:800;color:var(--am);}
+.pago-meta{font-size:12px;color:var(--gm);}
+.pago-estado{font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px;}
+.pago-pagado{background:var(--vc);color:var(--vs);}
+.pago-vencido{background:var(--rc);color:var(--ra);}
+.pago-pendiente{background:#FFF3CD;color:#856404;}
 .ded-tabla{width:100%;font-size:12px;border-collapse:collapse;margin-top:8px;}
 .ded-tabla td{padding:5px 8px;border-bottom:1px solid var(--gc);}
 .ded-tabla tr:last-child td{border-bottom:none;}
@@ -371,6 +383,7 @@ tr:hover td{background:var(--ac);}
   <div class="nt tab-admin" onclick="goTab('empleados',this)">👔 Empleados</div>
   <div class="nt tab-admin" onclick="goTab('auditoria',this)">📋 Auditoría</div>
   <div class="nt tab-admin" onclick="goTab('reportes',this)">📊 Reportes</div>
+  <div class="nt tab-admin" onclick="goTab('pagos',this)">💳 Pagos</div>
   <div class="nt tab-admin" onclick="goTab('fallecidos',this)">✝ Fallecidos</div>
   <div class="nt tab-admin" onclick="goTab('usuarios',this)">👥 Usuarios</div>
   <div class="nt" onclick="goTab('guia',this)">📖 Guía</div>
@@ -1632,6 +1645,44 @@ tr:hover td{background:var(--ac);}
 
   </div>
 </div>
+
+<!-- PAGOS Y MENSUALIDADES -->
+<div class="sec" id="tab-pagos">
+  <div class="card">
+    <div class="ch am">💳 Cobro de Mensualidades y Pagos</div>
+    <div class="cb">
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:flex-end">
+        <div class="fi" style="flex:1;min-width:160px">
+          <label>Residente</label>
+          <select id="fPagoRes" onchange="rPagos()">
+            <option value="">— Todos —</option>
+          </select>
+        </div>
+        <div class="fi" style="width:140px">
+          <label>Estado</label>
+          <select id="fPagoEst" onchange="rPagos()">
+            <option value="">— Todos —</option>
+            <option>Pendiente</option>
+            <option>Pagado</option>
+            <option>Vencido</option>
+          </select>
+        </div>
+        <div class="fi" style="width:120px">
+          <label>Mes</label>
+          <input id="fPagoMes" type="month" onchange="rPagos()">
+        </div>
+        <button class="btn bam" onclick="openPago()">➕ Registrar Pago</button>
+        <button class="btn bmo" onclick="pdfPagos()">📄 PDF</button>
+      </div>
+
+      <!-- KPIs de cobro -->
+      <div id="pagoKPIs" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:14px"></div>
+
+      <!-- Lista de pagos -->
+      <div id="pagoLista"></div>
+    </div>
+  </div>
+</div>
 </div><!-- /main -->
 
 <!-- ===== MODALES ===== -->
@@ -1687,6 +1738,20 @@ tr:hover td{background:var(--ac);}
         <div class="fi"><label>Fecha de ingreso</label><input id="rI" type="date"></div>
         <div class="fi"><label>Plan / Pago</label><select id="rPl"><option>Privado</option><option>Seguro médico</option><option>Subsidiado</option><option>Fundación</option></select></div>
         <div class="fi ff"><label>Diagnóstico principal al ingreso</label><input id="rD" type="text"></div>
+        <div class="fi">
+          <label>Teléfono</label>
+          <div style="display:flex;gap:6px;align-items:center">
+            <input id="rTel" type="tel" placeholder="(787) 000-0000" style="flex:1" oninput="actualizarTelLink()">
+            <a id="rTelLink" href="tel:" style="display:none;background:#25D366;color:white;border-radius:8px;padding:9px 12px;font-size:16px;text-decoration:none">📞</a>
+          </div>
+        </div>
+        <div class="fi ff">
+          <label>Dirección</label>
+          <div style="display:flex;gap:6px;align-items:center">
+            <input id="rDir" type="text" placeholder="Calle, Urb., Ciudad, PR" style="flex:1" oninput="actualizarMapLink()">
+            <a id="rDirLink" href="#" target="_blank" style="background:#4285F4;color:white;border-radius:8px;padding:9px 12px;font-size:16px;text-decoration:none">🗺️</a>
+          </div>
+        </div>
         <div class="fi"><label>Estado</label><select id="rE"><option>Activo</option><option>En observación</option><option>Hospitalizado</option><option>Egresado</option></select></div>
         <div class="fi"><label>Observación inicial</label><textarea id="rO" rows="2"></textarea></div>
 
@@ -1703,8 +1768,7 @@ tr:hover td{background:var(--ac);}
         <!-- CLASIFICACIÓN CLÍNICA -->
         <div class="fi ff" style="margin-top:8px">
           <label style="color:var(--mo)">🏷️ Clasificación Clínica</label>
-          <select id="rClasif">
-            <option value="">— Seleccionar —</option>
+          <select id="rClasif" multiple style="height:130px">
             <option>Geriátrico regular</option>
             <option>Geriátrico encamado</option>
             <option>Psiquiátrico</option>
@@ -1716,6 +1780,7 @@ tr:hover td{background:var(--ac);}
             <option>Discapacidad intelectual</option>
             <option>Múltiples condiciones</option>
           </select>
+          <div style="font-size:11px;color:var(--gm);margin-top:3px">💡 Mantén presionado Ctrl (PC) o ⌘ (Mac) para seleccionar varias. En móvil toca cada una.</div>
         </div>
         <div class="fi ff"><label>Nivel de cuidado requerido</label>
           <select id="rNivelCuido">
@@ -1874,9 +1939,13 @@ tr:hover td{background:var(--ac);}
         <div style="display:flex;gap:6px;align-items:center;margin-bottom:4px"><button class="btn bxs" style="background:#444;color:white;white-space:nowrap" onclick="abrirQR('svR')">📷 QR</button></div><select id="svR" size="4" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px"><option value="">— Seleccionar —</option></select>
       </div>
         <div class="fi ff">
-        <label>Registrado por</label>
-        <input type="text" placeholder="🔍 Buscar..." oninput="lupaFiltrar(this.id,'svE')" id="lupa_svE" style="border:1.5px solid var(--bo);border-radius:8px;padding:8px 12px;font-size:15px;width:100%;margin-bottom:4px">
-        <select id="svE" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:10px"><option value="">— Seleccionar —</option></select>
+        <label>Empleado que registra — PIN</label>
+        <div class="pin-emp-wrap">
+          <div class="pin-emp-row">
+            <input id="svE" class="pin-emp-input" type="password" maxlength="4" placeholder="••••" oninput="verificarPINEmp('svE','svERes',null)">
+            <div id="svERes" class="pin-emp-result pin-emp-idle">Ingresa tu PIN</div>
+          </div>
+        </div>
       </div>
         <div class="fi"><label>TA Sistólica (mmHg)</label><input id="svS" type="number" placeholder="120"></div>
         <div class="fi"><label>TA Diastólica (mmHg)</label><input id="svDi" type="number" placeholder="80"></div>
@@ -2359,6 +2428,70 @@ tr:hover td{background:var(--ac);}
   </div>
 </div>
 
+<!-- Modal: Registrar Pago -->
+<div class="mo" id="mPago">
+  <div class="md" style="max-width:500px">
+    <div class="mh am">💳 Registrar Pago <button class="mx" onclick="closeM('mPago')">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="fi ff">
+          <label>Residente *</label>
+          <input type="text" id="lupa_pagoR" placeholder="🔍 Buscar..." oninput="lupaFiltrar('lupa_pagoR','pagoR')" style="border:1.5px solid var(--bo);border-radius:8px;padding:9px;font-size:15px;width:100%;margin-bottom:4px">
+          <select id="pagoR" size="3" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px"><option value="">— Seleccionar —</option></select>
+        </div>
+        <div class="fi"><label>Tipo de pago *</label>
+          <select id="pagoTipo">
+            <option>💰 Mensualidad</option>
+            <option>🏥 Deducible médico</option>
+            <option>💊 Medicamentos / Farmacia</option>
+            <option>🎭 Actividad extracurricular</option>
+            <option>✂️ Peluquería / Estética</option>
+            <option>👕 Ropa / Artículos personales</option>
+            <option>🚗 Transportación médica</option>
+            <option>🔧 Cuota extra / Mantenimiento</option>
+            <option>📋 Copago de seguro</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div class="fi"><label>Monto ($) *</label>
+          <input id="pagoMonto" type="number" step="0.01" min="0" placeholder="0.00">
+        </div>
+        <div class="fi"><label>Período / Mes</label>
+          <input id="pagoPeriodo" type="month">
+        </div>
+        <div class="fi"><label>Fecha de vencimiento</label>
+          <input id="pagoVence" type="date">
+        </div>
+        <div class="fi"><label>Método de pago</label>
+          <select id="pagoMetodo">
+            <option>Efectivo</option>
+            <option>Cheque</option>
+            <option>Transferencia</option>
+            <option>Tarjeta</option>
+            <option>ACH</option>
+            <option>Medicare / Medicaid</option>
+          </select>
+        </div>
+        <div class="fi"><label>Estado</label>
+          <select id="pagoEstado">
+            <option>Pendiente</option>
+            <option>Pagado</option>
+            <option>Vencido</option>
+            <option>Plan de pago</option>
+          </select>
+        </div>
+        <div class="fi ff"><label>Notas / Referencia</label>
+          <input id="pagoNota" type="text" placeholder="Núm. cheque, recibo, etc.">
+        </div>
+      </div>
+      <div class="ab">
+        <button class="btn bol" onclick="closeM('mPago')">Cancelar</button>
+        <button class="btn bam" onclick="savePago()">💾 Guardar Pago</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Modal: Subir Documento -->
 <div class="mo" id="mDocumento">
   <div class="md" style="max-width:500px">
@@ -2723,7 +2856,7 @@ var DB = {
   actividades:[], incidentes:[], visitas:[], turnos:[], expedientes:{},
   fallecidos:[], cuarentenas:[], ponches:[], aseos:[], auditoria:[],
   empDocs:{}, empMemos:{}, compras:[], mensajes:[], tareas:[],
-  visitasMed:[], planAct:[], terapias:[], planSemanal:[],
+  visitasMed:[], planAct:[], terapias:[], planSemanal:[], pagos:[],
   usuarios:[
     {id:'U1',nombre:'Administrador',username:'admin',password:'admin123',rol:'admin',turno:'Rotativo'},
     {id:'U2',nombre:'Dr. García',username:'medico',password:'med123',rol:'medico',turno:'Día'},
@@ -2762,7 +2895,7 @@ cDB();
 
 // ===== PERMISOS =====
 var PERM = {
-  admin:    ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','cuarentena','mensajes','compras','guia','empleados','auditoria','reportes','fallecidos','usuarios','aseo'],
+  admin:    ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','cuarentena','mensajes','compras','guia','empleados','auditoria','reportes','pagos','fallecidos','usuarios','aseo'],
   medico:   ['dashboard','residentes','expediente','medicamentos','signos','incidentes','graficas','alertas','visitas_med','plan_act','cuarentena','mensajes','guia','aseo'],
   enfermera:['dashboard','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','cuarentena','mensajes','compras','guia','aseo'],
   aux:      ['dashboard','alimentacion','actividades','visitas','turno','alertas','plan_act','cuarentena','mensajes','compras','guia','aseo'],
@@ -2775,7 +2908,7 @@ var PERM = {
   horas_verdes: ['dashboard','actividades','visitas','alimentacion','aseo','alertas','mensajes','guia'],
   practicante:  ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','alertas','visitas_med','plan_act','aseo','mensajes','guia']
 };
-var TABS = ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','cuarentena','mensajes','compras','guia','aseo','empleados','auditoria','reportes','fallecidos','usuarios'];
+var TABS = ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','cuarentena','mensajes','compras','guia','aseo','empleados','auditoria','reportes','pagos','fallecidos','usuarios'];
 
 function applyPerm() {
   var ok = PERM[SES.rol] || [];
@@ -2867,6 +3000,7 @@ function goTab(id, el) {
   if (id==='aseo') initAseo();
   if (id==='auditoria') rAuditoria();
   if (id==='reportes') rReportes();
+  if (id==='pagos') initPagos();
   if (id==='fallecidos') rFallecidos();
   if (id==='usuarios') rUsr();
   if (id==='alertas') { calcAlerts(); }
@@ -4057,6 +4191,13 @@ function calcAlerts() {
   if (sinAseo.length > 0 && horaActual >= 1200) {
     info.push({ico:'🧼', titulo:'🌙 '+sinAseo.length+' paciente(s) sin aseo de noche',
       detalle:sinAseo.slice(0,5).map(function(r){ return r.nombre.split(' ')[0]; }).join(', ')+(sinAseo.length>5?' y más':''), tipo:'info'});
+  }
+
+  // ── PAGOS VENCIDOS ───────────────────────────────
+  var pagosVenc = (DB.pagos||[]).filter(function(p){ return p.estado==='Vencido'; });
+  if (pagosVenc.length>0) {
+    warn.push({ico:'💳',titulo:pagosVenc.length+' pago(s) vencido(s)',
+      detalle:pagosVenc.slice(0,3).map(function(p){ return p.nombre+' $'+p.monto.toFixed(2); }).join(', '),tipo:'warn'});
   }
 
   // ── COMPRAS URGENTES ───────────────────────────────
@@ -5631,6 +5772,7 @@ function rTareas() {
     if (t.desc) h += '<div style="font-size:13px;color:var(--gm);margin-top:4px">'+t.desc+'</div>';
     h += '<div class="tarea-meta">'+t.categoria+(t.fecha?' · Vence: '+t.fecha:'')+(vencida?' 🔴 VENCIDA':'')+'</div>';
     h += '<div class="tarea-meta">Creado por: '+t.creadoPor+' · '+t.ts+'</div>';
+    if (t.completadoPor) h += '<div class="tarea-meta" style="color:var(--vs)">✅ Completada por: '+t.completadoPor+' · '+t.completadoTs+'</div>';
     h += '<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">';
     if (t.estado!=='Completada') {
       h += '<button class="btn bsm bvs" onclick="cambiarEstadoTarea(window._tIds['+i+'],\'Completada\')">\u2705 Completar</button>';
@@ -5671,19 +5813,29 @@ function rTareasAdmin() {
 function cambiarEstadoTarea(id, nuevoEstado) {
   var t = (DB.tareas||[]).find(function(x){ return x.id===id; });
   if (!t) return;
+  var estadoAnterior = t.estado;
   t.estado = nuevoEstado;
   t.ultimoCambio = fh();
+  if (nuevoEstado === 'Completada') {
+    t.completadoPor = SES.nombre;
+    t.completadoTs  = fh();
+  }
   sDB(); rTareas();
   if (SES.rol==='admin') rTareasAdmin();
+  logAudit('Tarea', nuevoEstado==='Completada'?'Tarea completada: '+t.titulo:'Tarea actualizada: '+t.titulo, SES.nombre);
   toast(nuevoEstado==='Completada'?'✅ Tarea completada':'▶ Tarea actualizada','vs');
 }
 
 function eliminarTarea(id) {
-  if (!confirm('¿Eliminar esta tarea?')) return;
+  var t = (DB.tareas||[]).find(function(x){ return x.id===id; });
+  if (!t) return;
+  if (!confirm('¿Eliminar la tarea "'+t.titulo+'"?')) return;
+  // Guardar en auditoría antes de borrar
+  logAudit('Tarea','Tarea eliminada: '+t.titulo, SES.nombre+' · estado anterior: '+t.estado);
   DB.tareas = (DB.tareas||[]).filter(function(x){ return x.id!==id; });
   sDB(); rTareas();
   if (SES.rol==='admin') rTareasAdmin();
-  toast('🗑️ Tarea eliminada');
+  toast('🗑️ Tarea eliminada — registrado en auditoría');
 }
 
 // Contador de mensajes no leídos en el nav
@@ -6477,6 +6629,183 @@ function alertasRequisitos() {
   return alertas;
 }
 
+// ===== PAGOS Y MENSUALIDADES =====
+function initPagos() {
+  if (!DB.pagos) DB.pagos = [];
+  // Poblar filtro de residentes
+  var sel = document.getElementById('fPagoRes');
+  if (sel && sel.options.length <= 1) {
+    pSel('fPagoRes');
+  }
+  // Mes actual por defecto
+  var mesEl = document.getElementById('fPagoMes');
+  if (mesEl && !mesEl.value) mesEl.value = new Date().toISOString().slice(0,7);
+  rPagos();
+}
+
+function openPago() {
+  setTimeout(function(){
+    pSel('pagoR');
+    document.getElementById('lupa_pagoR').value = '';
+    var hoy = new Date();
+    document.getElementById('pagoPeriodo').value = hoy.toISOString().slice(0,7);
+    document.getElementById('pagoVence').value   = '';
+    document.getElementById('pagoMonto').value   = '';
+    document.getElementById('pagoNota').value    = '';
+  }, 50);
+  openM('mPago');
+}
+
+function savePago() {
+  var rid = document.getElementById('pagoR').value;
+  if (!rid) { toast('⚠️ Selecciona un residente'); return; }
+  var monto = parseFloat(document.getElementById('pagoMonto').value);
+  if (!monto || monto <= 0) { toast('⚠️ Ingresa el monto'); return; }
+  var r = DB.residentes.find(function(x){ return x.id===rid; });
+  if (!DB.pagos) DB.pagos = [];
+  DB.pagos.push({
+    id:       'PG'+Date.now(),
+    residenteId: rid,
+    nombre:   r ? r.nombre : '',
+    tipo:     document.getElementById('pagoTipo').value,
+    monto:    monto,
+    periodo:  document.getElementById('pagoPeriodo').value,
+    vence:    document.getElementById('pagoVence').value,
+    metodo:   document.getElementById('pagoMetodo').value,
+    estado:   document.getElementById('pagoEstado').value,
+    nota:     document.getElementById('pagoNota').value.trim(),
+    creadoPor: SES.nombre,
+    ts:       fh(),
+    raw:      new Date().toISOString()
+  });
+  sDB();
+  closeM('mPago');
+  rPagos();
+  logAudit('Pago','Pago registrado: '+document.getElementById('pagoTipo').value+' $'+monto.toFixed(2), r?r.nombre:'');
+  toast('✅ Pago registrado','vs');
+}
+
+function rPagos() {
+  var lista_div = document.getElementById('pagoLista');
+  var kpi_div   = document.getElementById('pagoKPIs');
+  if (!lista_div) return;
+  if (!DB.pagos) DB.pagos = [];
+
+  var fRes = document.getElementById('fPagoRes') ? document.getElementById('fPagoRes').value : '';
+  var fEst = document.getElementById('fPagoEst') ? document.getElementById('fPagoEst').value : '';
+  var fMes = document.getElementById('fPagoMes') ? document.getElementById('fPagoMes').value : '';
+
+  var lista = DB.pagos.filter(function(p){
+    if (fRes && p.residenteId !== fRes) return false;
+    if (fEst && p.estado !== fEst) return false;
+    if (fMes && p.periodo !== fMes) return false;
+    return true;
+  }).slice().reverse();
+
+  // KPIs
+  var totalCobrado  = DB.pagos.filter(function(p){ return p.estado==='Pagado'&&(!fMes||p.periodo===fMes); }).reduce(function(a,p){return a+p.monto;},0);
+  var totalPendiente= DB.pagos.filter(function(p){ return p.estado==='Pendiente'&&(!fMes||p.periodo===fMes); }).reduce(function(a,p){return a+p.monto;},0);
+  var totalVencido  = DB.pagos.filter(function(p){ return p.estado==='Vencido'&&(!fMes||p.periodo===fMes); }).reduce(function(a,p){return a+p.monto;},0);
+  if (kpi_div) kpi_div.innerHTML =
+    '<div class="reporte-kpi"><div class="reporte-kpi-val" style="color:var(--vs)">$'+totalCobrado.toFixed(2)+'</div><div class="reporte-kpi-lbl">💰 Cobrado</div></div>'+
+    '<div class="reporte-kpi"><div class="reporte-kpi-val" style="color:var(--na)">$'+totalPendiente.toFixed(2)+'</div><div class="reporte-kpi-lbl">⏳ Pendiente</div></div>'+
+    '<div class="reporte-kpi"><div class="reporte-kpi-val" style="color:var(--ra)">$'+totalVencido.toFixed(2)+'</div><div class="reporte-kpi-lbl">🔴 Vencido</div></div>'+
+    '<div class="reporte-kpi"><div class="reporte-kpi-val">'+lista.length+'</div><div class="reporte-kpi-lbl">Total registros</div></div>';
+
+  if (!lista.length) {
+    lista_div.innerHTML = '<div class="es"><div class="ei">💳</div><p>Sin pagos registrados en este período.</p></div>';
+    return;
+  }
+
+  window._pgIds = [];
+  var h = '';
+  lista.forEach(function(p, i){
+    window._pgIds[i] = p.id;
+    var cls = p.estado==='Pagado'?'pagado':p.estado==='Vencido'?'vencido':'pendiente';
+    var eCls = p.estado==='Pagado'?'pago-pagado':p.estado==='Vencido'?'pago-vencido':'pago-pendiente';
+    h += '<div class="pago-card '+cls+'">';
+    h += '<div class="pago-hdr">';
+    h += '<div><div class="pago-nom">'+p.nombre+'</div><div class="pago-meta">'+p.tipo+(p.periodo?' · '+p.periodo:'')+'</div></div>';
+    h += '<div style="text-align:right"><div class="pago-monto">$'+p.monto.toFixed(2)+'</div><span class="pago-estado '+eCls+'">'+p.estado+'</span></div>';
+    h += '</div>';
+    h += '<div class="pago-meta">'+p.metodo+(p.vence?' · Vence: '+p.vence:'')+(p.nota?' · '+p.nota:'')+'</div>';
+    h += '<div class="pago-meta">Por: '+p.creadoPor+' · '+p.ts+'</div>';
+    h += '<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">';
+    if (p.estado!=='Pagado') h += '<button class="btn bsm bvs" onclick="marcarPagado(window._pgIds['+i+'])">✅ Marcar Pagado</button>';
+    h += '<button class="btn bsm bmo" onclick="editarEstadoPago(window._pgIds['+i+'])">✏️ Estado</button>';
+    h += '<button class="btn bsm bra" onclick="eliminarPago(window._pgIds['+i+'])">🗑️</button>';
+    h += '</div></div>';
+  });
+  lista_div.innerHTML = h;
+}
+
+function marcarPagado(id) {
+  var p = (DB.pagos||[]).find(function(x){ return x.id===id; });
+  if (!p) return;
+  p.estado = 'Pagado';
+  p.fechaPago = fh();
+  p.cobradoPor = SES.nombre;
+  sDB(); rPagos();
+  logAudit('Pago','Pago marcado como pagado: '+p.tipo+' $'+p.monto.toFixed(2), p.nombre);
+  toast('✅ Pago registrado como pagado','vs');
+}
+
+function editarEstadoPago(id) {
+  var p = (DB.pagos||[]).find(function(x){ return x.id===id; });
+  if (!p) return;
+  var estados = ['Pendiente','Pagado','Vencido','Plan de pago'];
+  var actual = estados.indexOf(p.estado);
+  var nuevo = prompt('Nuevo estado (Pendiente/Pagado/Vencido/Plan de pago):',  p.estado);
+  if (!nuevo || nuevo===p.estado) return;
+  if (estados.indexOf(nuevo) < 0) { toast('⚠️ Estado no válido'); return; }
+  p.estado = nuevo;
+  sDB(); rPagos();
+  toast('✅ Estado actualizado','vs');
+}
+
+function eliminarPago(id) {
+  var p = (DB.pagos||[]).find(function(x){ return x.id===id; });
+  if (!p) return;
+  if (!confirm('¿Eliminar el pago de '+p.nombre+' por $'+p.monto.toFixed(2)+'?')) return;
+  logAudit('Pago','Pago eliminado: '+p.tipo+' $'+p.monto.toFixed(2), p.nombre+' · por: '+SES.nombre);
+  DB.pagos = DB.pagos.filter(function(x){ return x.id!==id; });
+  sDB(); rPagos();
+  toast('🗑️ Pago eliminado');
+}
+
+function pdfPagos() {
+  var JP = window.jspdf ? window.jspdf.jsPDF : null;
+  if (!JP) { toast('⚠️ Cargando PDF...'); setTimeout(pdfPagos,1500); return; }
+  var fMes = document.getElementById('fPagoMes') ? document.getElementById('fPagoMes').value : '';
+  var lista = (DB.pagos||[]).filter(function(p){ return !fMes||p.periodo===fMes; }).slice().reverse();
+  var doc = new JP(), y=28;
+  doc.setFillColor(26,58,92); doc.rect(0,0,210,20,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(13); doc.setFont(undefined,'bold');
+  doc.text('CareHome Manager — Pagos y Mensualidades',14,13);
+  doc.setFontSize(8); doc.setFont(undefined,'normal');
+  doc.text((fMes||'Todos los períodos')+' · '+fh(),196,13,'right');
+  doc.setTextColor(40,40,40);
+  doc.setFontSize(8); doc.setFont(undefined,'bold'); doc.setFillColor(26,58,92); doc.setTextColor(255,255,255);
+  doc.rect(14,y,182,6,'F');
+  ['RESIDENTE','TIPO','MONTO','PERÍODO','ESTADO','MÉTODO'].forEach(function(h,i){
+    doc.text(h,[16,46,96,118,140,162][i],y+4);
+  });
+  y+=8; doc.setTextColor(40,40,40); doc.setFont(undefined,'normal');
+  var total=0;
+  lista.forEach(function(p,i){
+    if(y>275){doc.addPage();y=20;}
+    if(i%2===0){doc.setFillColor(245,248,252);doc.rect(14,y-3,182,6,'F');}
+    [p.nombre.substring(0,16),p.tipo.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s\/]/g,'').substring(0,20),'$'+p.monto.toFixed(2),p.periodo||'—',p.estado,p.metodo||'—'].forEach(function(v,j){
+      doc.text(String(v),[16,46,96,118,140,162][j],y);
+    });
+    total+=p.monto; y+=6;
+  });
+  y+=4; doc.setFont(undefined,'bold');
+  doc.text('TOTAL: $'+total.toFixed(2),196,y,'right');
+  doc.save('Pagos_'+(fMes||'todos')+'.pdf');
+  toast('📄 PDF generado','vs');
+}
+
 // ===== ASEO PERSONAL =====
 var _aseoRid = null;
 
@@ -7174,6 +7503,30 @@ function resetearAdmin() {
   sDB();
 }
 
+// ===== TELÉFONO Y MAPA =====
+function actualizarTelLink() {
+  var tel = document.getElementById('rTel') ? document.getElementById('rTel').value.trim() : '';
+  var link = document.getElementById('rTelLink');
+  if (!link) return;
+  if (tel) {
+    var limpio = tel.replace(/[^0-9+]/g, '');
+    link.href = 'tel:' + limpio;
+    link.style.display = 'flex';
+    link.style.alignItems = 'center';
+  } else {
+    link.style.display = 'none';
+  }
+}
+
+function actualizarMapLink() {
+  var dir = document.getElementById('rDir') ? document.getElementById('rDir').value.trim() : '';
+  var link = document.getElementById('rDirLink');
+  if (!link) return;
+  if (dir) {
+    link.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(dir + ' Puerto Rico');
+  }
+}
+
 // ===== ALERGIAS =====
 function mostrarAlergias(rid, divId) {
   var div = document.getElementById(divId);
@@ -7295,7 +7648,7 @@ function mostrarPanelMed(rid) {
 
 // ===== INIT =====
 // Garantizar que todas las tablas existen
-['fallecidos','cuarentenas','ponches','aseos','auditoria','compras','mensajes','tareas','visitasMed','planAct','terapias','planSemanal'].forEach(function(k){
+['fallecidos','cuarentenas','ponches','aseos','auditoria','compras','mensajes','tareas','visitasMed','planAct','terapias','planSemanal','pagos'].forEach(function(k){
   if (!DB[k]) DB[k] = [];
 });
 if (!DB.empDocs)  DB.empDocs  = {};
