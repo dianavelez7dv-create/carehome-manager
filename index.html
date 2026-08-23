@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="CareHome">
 <meta name="theme-color" content="#1A3A5C">
-<title>CareHome Manager v5</title>
+<title>CareHome Manager v6</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -1639,12 +1639,12 @@ tr:hover td{background:var(--ac);}
 <!-- Login -->
 <div class="mo" id="mLogin">
   <div class="md" style="max-width:420px">
-    <div class="mh am">🔐 Cambiar Usuario <button class="mx" onclick="closeM('mLogin')">✕</button></div>
+    <div class="mh am" style="justify-content:center">🔐 Iniciar Sesión</div>
     <div class="mb">
       <div class="fi" style="margin-bottom:12px"><label>Usuario</label><input id="luU" type="text" placeholder="usuario"></div>
       <div class="fi" style="margin-bottom:14px"><label>Contraseña</label><input id="luP" type="password" placeholder="••••••••"></div>
-      <div id="luErr" class="al alr" style="display:none">⚠️ <span>Usuario o contraseña incorrectos.</span></div>
-      <div class="ab"><button class="btn bol" onclick="closeM('mLogin')">Cancelar</button><button class="btn bam" onclick="doLogin()">Iniciar Sesión</button></div>
+      <div id="luErr" class="al alr" style="display:none">⚠️ <span id="luErrMsg">Usuario o contraseña incorrectos.</span></div>
+      <div class="ab"><button class="btn bam" onclick="doLogin()" style="width:100%;font-size:16px;padding:14px">🔐 Iniciar Sesión</button></div>
       <div class="dv"></div>
       <div style="text-align:center;margin-top:8px">
         <a href="#" onclick="resetearAdmin();return false;" style="font-size:11px;color:var(--gm);text-decoration:underline">¿Problemas de acceso? Restaurar admin</a>
@@ -2789,12 +2789,9 @@ function doLogin() {
   var p = document.getElementById('luP').value;
   var usr = DB.usuarios.find(function(x){ return x.username===u && x.password===p; });
   if (!usr) {
-    var errEl = document.getElementById('luErr');
-    if (errEl) {
-      errEl.style.display='flex';
-      var span = errEl.querySelector('span');
-      if (span) span.textContent = 'Usuario o contraseña incorrectos. Admin demo: admin / admin123';
-    }
+    document.getElementById('luErr').style.display='flex';
+    var em = document.getElementById('luErrMsg');
+    if (em) em.textContent = 'Incorrecto. Usuarios demo: admin/admin123  enfermera/enf123  aux/aux123';
     return;
   }
   SES = usr;
@@ -2886,7 +2883,9 @@ function inTab(g, id, el) {
 
 // ===== MODALES =====
 function openM(id) { document.getElementById(id).classList.add('on'); }
-function closeM(id) { document.getElementById(id).classList.remove('on'); }
+function closeM(id) {
+  // No cerrar el login si no hay sesión
+  if (id==='mLogin' && (!SES || !SES.id)) return; document.getElementById(id).classList.remove('on'); }
 document.querySelectorAll('.mo').forEach(function(o){
   o.addEventListener('click', function(e){ if(e.target===o) o.classList.remove('on'); });
 });
