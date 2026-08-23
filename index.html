@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="CareHome">
 <meta name="theme-color" content="#1A3A5C">
-<title>CareHome Manager v4</title>
+<title>CareHome Manager v5</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -26,13 +26,13 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--gc);color:var(
 .hu{font-size:11px;opacity:.9;text-align:right;line-height:1.4;}
 .hu b{font-size:13px;}
 .boutl{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:white;padding:6px 10px;border-radius:7px;font-size:12px;cursor:pointer;font-weight:600;}
-.nav{background:var(--bl);border-bottom:2px solid var(--bo);display:flex;overflow-x:auto;scrollbar-width:none;position:relative;}
+.nav{background:var(--bl);border-bottom:2px solid var(--bo);display:none;overflow-x:auto;scrollbar-width:none;position:relative;}
 .nav-salir{position:sticky;right:0;background:var(--bl);border-left:2px solid var(--bo);padding:0 10px;display:flex;align-items:center;gap:6px;flex-shrink:0;z-index:10;min-width:80px;}
 .nav::-webkit-scrollbar{display:none;}
 .nt{padding:13px 14px;font-size:13px;font-weight:600;color:var(--gm);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;display:flex;align-items:center;gap:5px;flex-shrink:0;}
 .nt:hover{color:var(--az);background:var(--ac);}
 .nt.on{color:var(--am);border-bottom-color:var(--am);}
-.main{padding:16px;max-width:1100px;margin:0 auto;}
+.main{padding:16px;max-width:1100px;margin:0 auto;display:none;}
 .sec{display:none;}.sec.on{display:block;}
 .card{background:var(--bl);border-radius:12px;border:1px solid var(--bo);box-shadow:0 2px 10px rgba(26,58,92,.08);margin-bottom:18px;overflow:hidden;}
 .ch{color:white;padding:13px 18px;font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px;}
@@ -447,6 +447,7 @@ tr:hover td{background:var(--ac);}
         <div class="itb" onclick="inTab('exp','cont',this)">📞 Contactos</div>
         <div class="itb" onclick="inTab('exp','evol',this)">📝 Evolución</div>
         <div class="itb" onclick="inTab('exp','planes',this)">📋 Planes y Beneficios</div>
+        <div class="itb" onclick="inTab('exp','medlista',this)">💊 Medicamentos</div>
       </div>
       <div class="is on exp" id="exp-datos"><div id="expDG" class="fg"></div></div>
       <div class="is exp" id="exp-hist">
@@ -480,7 +481,19 @@ tr:hover td{background:var(--ac);}
         </div>
         <div class="ab"><button class="btn bvs" onclick="saveCont()">💾 Guardar Contactos</button></div>
       </div>
-      <div class="is exp" id="exp-planes">
+      <div class="is exp" id="exp-medlista">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <div style="font-size:13px;font-weight:700;color:var(--vs)">💊 Medicamentos activos / historial</div>
+            <button class="btn bxs bvs" onclick="openMedConRes()">➕ Agregar</button>
+          </div>
+          <!-- Alergias del paciente -->
+          <div id="expMedAler" style="display:none;background:var(--rc);border:1.5px solid var(--ra);border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:13px;color:var(--ra);font-weight:700"></div>
+          <!-- Lista de medicamentos -->
+          <div id="expMedLista" style="border:1px solid var(--bo);border-radius:10px;overflow:hidden">
+            <div class="es"><div class="ei">💊</div><p>Selecciona un residente.</p></div>
+          </div>
+        </div>
+        <div class="is exp" id="exp-planes">
           <div class="fg" id="expPlanesContent">
             <div class="es ff"><div class="ei">📋</div><p>Selecciona un residente.</p></div>
           </div>
@@ -1066,320 +1079,339 @@ tr:hover td{background:var(--ac);}
 
 <!-- GUÍA DE USO -->
 <div class="sec" id="tab-guia">
-  <div class="card">
-    <div class="ch am">📖 Guía de Uso — CareHome Manager</div>
-    <div class="cb">
+<div class="card">
+  <div class="ch am">📖 Guía de Uso — CareHome Manager</div>
+  <div class="cb">
 
-      <div style="background:var(--ac);border-radius:10px;padding:14px 16px;margin-bottom:20px">
-        <div style="font-size:15px;font-weight:800;color:var(--am);margin-bottom:4px">¡Bienvenido a CareHome Manager!</div>
-        <div style="font-size:13px;color:var(--gm)">Sistema integral de gestión para hogares de ancianos. Aquí encontrarás cómo usar cada módulo paso a paso.</div>
-      </div>
-
-      <!-- INICIO DE SESIÓN -->
-      <div class="guia-seccion">
-        <h3>🔐 Inicio de Sesión</h3>
-        <div class="guia-mod">
-          <div class="guia-card">
-            <div class="guia-card-ico">👤</div>
-            <div class="guia-card-titulo">Cómo entrar</div>
-            <ol class="guia-card-pasos">
-              <li>Ingresa tu <strong>usuario</strong> y <strong>contraseña</strong></li>
-              <li>Presiona <strong>Entrar</strong></li>
-              <li>El sistema te llevará al Dashboard automáticamente</li>
-              <li>Para salir presiona 🚪 <strong>Salir</strong> en la barra superior</li>
-            </ol>
-          </div>
-          <div class="guia-card">
-            <div class="guia-card-ico">🔑</div>
-            <div class="guia-card-titulo">Credenciales por defecto</div>
-            <div class="guia-card-desc">
-              <strong>admin</strong> / admin123<br>
-              <strong>medico</strong> / med123<br>
-              <strong>enfermera</strong> / enf123<br>
-              <strong>aux</strong> / aux123<br>
-              <strong>recepcion</strong> / rec123<br>
-              <span style="color:var(--ra)">⚠️ Cambia las contraseñas en Usuarios</span>
-            </div>
-          </div>
-          <div class="guia-card">
-            <div class="guia-card-ico">⏱️</div>
-            <div class="guia-card-titulo">Cierre automático</div>
-            <div class="guia-card-desc">La sesión se cierra automáticamente después de <strong>15 minutos</strong> de inactividad para proteger la información de los pacientes. Una advertencia aparecerá 2 minutos antes.</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- RESIDENTES -->
-      <div class="guia-seccion">
-        <h3>👴 Residentes</h3>
-        <div class="guia-mod">
-          <div class="guia-card">
-            <div class="guia-card-ico">➕</div>
-            <div class="guia-card-titulo">Registrar un residente</div>
-            <ol class="guia-card-pasos">
-              <li>Ve a la pestaña <strong>Residentes</strong></li>
-              <li>Presiona <strong>+ Nuevo Residente</strong></li>
-              <li>Llena nombre, cédula, fecha nacimiento, habitación</li>
-              <li>Selecciona clasificación clínica y nivel de cuidado</li>
-              <li>Agrega planes del gobierno: Medicare, Medicaid, PAN, TANF, SSI</li>
-              <li>Ingresa fechas de próximas revisiones</li>
-              <li>Presiona <strong>Registrar Residente</strong></li>
-            </ol>
-          </div>
-          <div class="guia-card">
-            <div class="guia-card-ico">📷</div>
-            <div class="guia-card-titulo">Código QR del paciente</div>
-            <ol class="guia-card-pasos">
-              <li>En la tabla de residentes presiona <strong>QR</strong></li>
-              <li>Aparece el código QR del paciente</li>
-              <li>Imprímelo o muéstralo para identificación rápida</li>
-              <li>En los módulos usa <strong>📷 QR</strong> para escanear y seleccionar el paciente sin buscar</li>
-            </ol>
-          </div>
-          <div class="guia-card">
-            <div class="guia-card-ico">✏️</div>
-            <div class="guia-card-titulo">Editar / Inactivar / Fallecido</div>
-            <div class="guia-card-desc">
-              <strong>✏️</strong> — Editar datos del residente<br>
-              <strong>📋</strong> — Abrir expediente clínico<br>
-              <strong>📄</strong> — Generar PDF del residente<br>
-              <strong>⏸</strong> — Inactivar (sale de listas activas)<br>
-              <strong>✝</strong> — Registrar fallecimiento con datos completos
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- MÓDULOS CLÍNICOS -->
-      <div class="guia-seccion">
-        <h3>🏥 Módulos Clínicos</h3>
-        <div class="guia-mod">
-          <div class="guia-card">
-            <div class="guia-card-ico">💊</div>
-            <div class="guia-card-titulo">Medicamentos</div>
-            <ol class="guia-card-pasos">
-              <li>Presiona <strong>+ Registrar Medicamento</strong></li>
-              <li>Busca el paciente con la 🔍 lupa o escanea su QR</li>
-              <li>Escribe el medicamento, dosis, vía y hora</li>
-              <li>Selecciona el estado: Administrado ✅ / Pendiente ⏳ / Rechazado ❌</li>
-            </ol>
-          </div>
-          <div class="guia-card">
-            <div class="guia-card-ico">📈</div>
-            <div class="guia-card-titulo">Signos Vitales</div>
-            <ol class="guia-card-pasos">
-              <li>Presiona <strong>+ Registrar Signos</strong></li>
-              <li>Selecciona el paciente</li>
-              <li>Ingresa TA, FC, FR, Temperatura, Glucosa, SpO₂</li>
-              <li>El peso acepta <strong>kg o lb</strong> — convierte automáticamente</li>
-              <li>El sistema alerta automáticamente si los valores están fuera de rango</li>
-            </ol>
-          </div>
-          <div class="guia-card">
-            <div class="guia-card-ico">🍽️</div>
-            <div class="guia-card-titulo">Alimentación — Modo Comedor</div>
-            <ol class="guia-card-pasos">
-              <li>Para registro rápido en el comedor presiona <strong>📷 Modo Comedor QR</strong></li>
-              <li>Selecciona la comida y % consumido</li>
-              <li>Escanea el QR de cada paciente — se registra al instante</li>
-              <li>La lista de registrados aparece en tiempo real</li>
-            </ol>
-          </div>
-          <div class="guia-card">
-            <div class="guia-card-ico">🩺</div>
-            <div class="guia-card-titulo">Visitas Médicas</div>
-            <ol class="guia-card-pasos">
-              <li>Presiona <strong>+ Registrar Visita</strong></li>
-              <li>Selecciona el paciente con la lupa</li>
-              <li>Ingresa médico, diagnóstico y órdenes médicas</li>
-              <li>Las órdenes activas aparecen en el expediente del paciente</li>
-            </ol>
-          </div>
-          <div class="guia-card">
-            <div class="guia-card-ico">🚨</div>
-            <div class="guia-card-titulo">Incidentes</div>
-            <ol class="guia-card-pasos">
-              <li>Registra caídas, lesiones, emergencias</li>
-              <li>Selecciona gravedad: Leve 🟢 / Moderado 🟠 / Grave 🔴</li>
-              <li>Marca si se notificó a familiar y médico</li>
-              <li>Los incidentes graves generan alerta automática</li>
-            </ol>
-          </div>
-          <div class="guia-card">
-            <div class="guia-card-ico">🔴</div>
-            <div class="guia-card-titulo">Cuarentena</div>
-            <ol class="guia-card-pasos">
-              <li>Presiona <strong>🔴 Iniciar Cuarentena</strong></li>
-              <li>Selecciona tipo: COVID, Influenza, MRSA, etc.</li>
-              <li>Indica nivel de aislamiento y precauciones</li>
-              <li>Cuando el paciente se recupera presiona <strong>✅ Levantar</strong></li>
-            </ol>
-          </div>
-        </div>
-      </div>
-
-      <!-- PERSONAL -->
-      <div class="guia-seccion">
-        <h3>👥 Personal y Nómina</h3>
-        <div class="guia-mod">
-          <div class="guia-card">
-            <div class="guia-card-ico">⏱️</div>
-            <div class="guia-card-titulo">Ponchador</div>
-            <ol class="guia-card-pasos">
-              <li>Ve a la pestaña <strong>⏱️ Ponchador</strong></li>
-              <li>Selecciona tu nombre en la lista</li>
-              <li>Ingresa tu <strong>PIN</strong> (últimos 4 caracteres de tu contraseña)</li>
-              <li>Presiona <strong>▶ ENTRADA</strong> al llegar o <strong>■ SALIDA</strong> al irte</li>
-              <li>El estado de todos los empleados se actualiza en tiempo real</li>
-            </ol>
-          </div>
-          <div class="guia-card">
-            <div class="guia-card-ico">💰</div>
-            <div class="guia-card-titulo">Nómina</div>
-            <ol class="guia-card-pasos">
-              <li>Asigna el salario/hora en <strong>Usuarios</strong> a cada empleado</li>
-              <li>Ve a <strong>💰 Nómina</strong></li>
-              <li>Selecciona el período: semana, quincena o mes</li>
-              <li>El sistema calcula automáticamente horas regulares y extras (×1.5)</li>
-              <li>Exporta en PDF por período</li>
-            </ol>
-          </div>
-          <div class="guia-card">
-            <div class="guia-card-ico">🔐</div>
-            <div class="guia-card-titulo">Usuarios y Permisos</div>
-            <ol class="guia-card-pasos">
-              <li>Solo el <strong>admin</strong> puede crear y editar usuarios</li>
-              <li>Roles disponibles: Admin, Médico, Enfermera, Auxiliar, Recepción</li>
-              <li>Presiona <strong>🔐 Permisos</strong> en cualquier usuario para personalizar qué pestañas puede ver</li>
-              <li>El PIN del ponchador son los últimos 4 caracteres de la contraseña</li>
-            </ol>
-          </div>
-        </div>
-      </div>
-
-      <!-- HERRAMIENTAS -->
-      <div class="guia-seccion">
-        <h3>🛠️ Herramientas Adicionales</h3>
-        <div class="guia-mod">
-          <div class="guia-card">
-            <div class="guia-card-ico">💬</div>
-            <div class="guia-card-titulo">Mensajería y Tareas</div>
-            <div class="guia-card-desc">
-              <strong>Canales:</strong> General, Enfermería, Médicos, Admin, Urgente<br>
-              <strong>Directo:</strong> Mensaje privado a cualquier empleado<br>
-              <strong>📢 Anuncio:</strong> Envía a todos los canales a la vez<br>
-              <strong>Tareas:</strong> Crea, asigna y da seguimiento a tareas del equipo
-            </div>
-          </div>
-          <div class="guia-card">
-            <div class="guia-card-ico">🛒</div>
-            <div class="guia-card-titulo">Lista de Compras</div>
-            <ol class="guia-card-pasos">
-              <li>Selecciona el departamento en los botones superiores</li>
-              <li>Presiona <strong>➕ Agregar Artículo</strong></li>
-              <li>Marca como 🔴 Urgente si se necesita hoy</li>
-              <li>Marca el checkbox cuando se compre</li>
-              <li>Exporta la lista en PDF para llevar a la tienda</li>
-            </ol>
-          </div>
-          <div class="guia-card">
-            <div class="guia-card-ico">🔔</div>
-            <div class="guia-card-titulo">Alertas Automáticas</div>
-            <div class="guia-card-desc">
-              El Dashboard muestra alertas automáticas de:<br>
-              • Signos vitales fuera de rango<br>
-              • Medicamentos pendientes<br>
-              • Revisiones de planes vencidas<br>
-              • Cuarentenas activas<br>
-              • Cumpleaños del día<br>
-              • Compras urgentes<br>
-              • Empleados sin ponche
-            </div>
-          </div>
-          <div class="guia-card">
-            <div class="guia-card-ico">📄</div>
-            <div class="guia-card-titulo">Exportar PDF</div>
-            <div class="guia-card-desc">
-              Disponible en:<br>
-              • Expediente completo del paciente<br>
-              • Signos vitales y medicamentos<br>
-              • Cambio de turno con firmas<br>
-              • Nómina por período<br>
-              • Reporte de asistencia<br>
-              • Lista de compras<br>
-              • Registro de cuarentena y fallecidos
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- AUDITORÍA Y REPORTES -->
-      <div class="guia-seccion">
-        <h3>📋 Auditoría y Reportes</h3>
-        <div class="guia-mod">
-          <div class="guia-card">
-            <div class="guia-card-ico">📋</div>
-            <div class="guia-card-titulo">Auditoría</div>
-            <div class="guia-card-desc">
-              Registro automático de todas las acciones del sistema:<br>
-              • Inicio y cierre de sesión<br>
-              • Registros de residentes, medicamentos, incidentes<br>
-              • Cuarentenas, fallecidos, ponches<br>
-              Filtrable por tipo, usuario y fecha. Exportable en PDF. El sistema guarda los últimos <strong>1,000 registros</strong>.
-            </div>
-          </div>
-          <div class="guia-card">
-            <div class="guia-card-ico">📊</div>
-            <div class="guia-card-titulo">Reportes</div>
-            <ol class="guia-card-pasos">
-              <li>Selecciona el período: Hoy / Semana / Mes</li>
-              <li>Los KPIs se actualizan automáticamente</li>
-              <li>Ver estadísticas de residentes, medicamentos, incidentes, signos, cuarentenas y asistencia</li>
-              <li>Exporta el reporte completo en PDF con todos los datos</li>
-            </ol>
-          </div>
-        </div>
-      </div>
-
-      <!-- SEGURIDAD -->
-      <div class="guia-seccion">
-        <h3>🔒 Seguridad y Sesión</h3>
-        <div class="guia-mod">
-          <div class="guia-card">
-            <div class="guia-card-ico">⏰</div>
-            <div class="guia-card-titulo">Cierre automático</div>
-            <div class="guia-card-desc">La sesión se cierra automáticamente después de <strong>15 minutos</strong> de inactividad. A los 13 minutos aparece una advertencia. Presiona <strong>"Seguir activo"</strong> si estás presente.</div>
-          </div>
-          <div class="guia-card">
-            <div class="guia-card-ico">🚪</div>
-            <div class="guia-card-titulo">Cerrar sesión</div>
-            <div class="guia-card-desc">Usa el botón <strong>🚪 Salir</strong> en la barra superior para cerrar tu sesión de forma segura. Siempre cierra sesión cuando termines tu turno o dejes el dispositivo.</div>
-          </div>
-          <div class="guia-card">
-            <div class="guia-card-ico">🔐</div>
-            <div class="guia-card-titulo">Permisos personalizados</div>
-            <div class="guia-card-desc">El admin puede personalizar qué pestañas ve cada empleado en <strong>👥 Usuarios → 🔐 Permisos</strong>. Los cambios aplican la próxima vez que el empleado inicia sesión.</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- CONSEJOS -->
-      <div style="background:var(--nc);border-radius:10px;padding:14px 16px;border:1px solid var(--na)">
-        <div style="font-weight:800;color:var(--na);margin-bottom:8px">💡 Consejos importantes</div>
-        <ul style="font-size:13px;color:var(--go);padding-left:18px;line-height:1.9;margin:0">
-          <li>Los datos se guardan automáticamente en este dispositivo. <strong>No se pierden al cerrar el navegador.</strong></li>
-          <li>Cada empleado solo ve sus propios datos en el Ponchador y Nómina (excepto el admin).</li>
-          <li>Para instalar la app en la pantalla de inicio: menú ⋮ del navegador → <strong>Instalar aplicación</strong>.</li>
-          <li>La app funciona <strong>sin internet</strong> una vez instalada.</li>
-          <li>El QR de cada paciente se genera con su ID único — imprímelo y pégalo en su cuarto.</li>
-          <li>Los residentes <strong>Fallecidos e Inactivos</strong> no aparecen en las listas de selección.</li>
-        </ul>
-      </div>
-
+    <div style="background:var(--ac);border-radius:10px;padding:14px 16px;margin-bottom:20px">
+      <div style="font-size:15px;font-weight:800;color:var(--am);margin-bottom:4px">🏥 CareHome Manager</div>
+      <div style="font-size:13px;color:var(--gm)">Sistema integral de gestión para hogares de ancianos en Puerto Rico. Cumple con los requisitos de la Ley 300 y el Departamento de Salud.</div>
     </div>
+
+    <!-- SESIÓN -->
+    <div class="guia-seccion">
+      <h3>🔐 Inicio y Cierre de Sesión</h3>
+      <div class="guia-mod">
+        <div class="guia-card">
+          <div class="guia-card-ico">👤</div>
+          <div class="guia-card-titulo">Cómo entrar</div>
+          <ol class="guia-card-pasos">
+            <li>Al abrir la app aparece el modal de login</li>
+            <li>Ingresa tu <strong>usuario</strong> y <strong>contraseña</strong></li>
+            <li>Presiona <strong>Iniciar Sesión</strong></li>
+            <li>Solo verás las pestañas que tu rol permite</li>
+          </ol>
+        </div>
+        <div class="guia-card">
+          <div class="guia-card-ico">🚪</div>
+          <div class="guia-card-titulo">Cerrar sesión</div>
+          <div class="guia-card-desc">
+            Presiona <strong>🚪 Salir</strong> al final de la barra de navegación.<br><br>
+            La sesión se cierra <strong>automáticamente a los 15 minutos</strong> de inactividad. A los 13 minutos aparece una advertencia con opción de continuar.
+          </div>
+        </div>
+        <div class="guia-card">
+          <div class="guia-card-ico">🔑</div>
+          <div class="guia-card-titulo">Credenciales demo</div>
+          <div class="guia-card-desc">
+            <strong>admin</strong> / admin123<br>
+            <strong>medico</strong> / med123<br>
+            <strong>enfermera</strong> / enf123<br>
+            <strong>aux</strong> / aux123<br>
+            <span style="color:var(--ra)">⚠️ Cambia las contraseñas en Usuarios</span>
+          </div>
+        </div>
+        <div class="guia-card">
+          <div class="guia-card-ico">🔑</div>
+          <div class="guia-card-titulo">PIN del Ponchador</div>
+          <div class="guia-card-desc">
+            El PIN son los <strong>últimos 4 caracteres</strong> de tu contraseña.<br>
+            Ej: si tu contraseña es <code>enf123</code>, tu PIN es <code>f123</code>.<br><br>
+            Se usa en: Ponchador, Signos Vitales, Medicamentos, Cambio de Turno y Aseo Personal.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESIDENTES -->
+    <div class="guia-seccion">
+      <h3>👴 Residentes</h3>
+      <div class="guia-mod">
+        <div class="guia-card">
+          <div class="guia-card-ico">➕</div>
+          <div class="guia-card-titulo">Registrar residente</div>
+          <ol class="guia-card-pasos">
+            <li>Pestaña <strong>Residentes → + Nuevo Residente</strong></li>
+            <li>Nombre, cédula, fecha de nacimiento, habitación</li>
+            <li>Clasificación clínica y nivel de cuidado</li>
+            <li>💊 Medicamentos recetados (lista permanente)</li>
+            <li>⚠️ Alergias: medicamentos, alimentos, otras</li>
+            <li>Planes del gobierno: Medicare, Medicaid, SSI, PAN, TANF</li>
+            <li>Presiona <strong>Registrar Residente</strong></li>
+          </ol>
+        </div>
+        <div class="guia-card">
+          <div class="guia-card-ico">⚠️</div>
+          <div class="guia-card-titulo">Alergias</div>
+          <div class="guia-card-desc">
+            Las alergias se registran al crear o editar el residente.<br><br>
+            Aparecen como <strong>badge rojo</strong> en la tabla y como <strong>aviso automático</strong> al administrar medicamentos — antes de registrar, el sistema muestra las alergias del paciente para corroborar.<br><br>
+            También se sincronizan con el Expediente Clínico.
+          </div>
+        </div>
+        <div class="guia-card">
+          <div class="guia-card-ico">📷</div>
+          <div class="guia-card-titulo">Código QR</div>
+          <ol class="guia-card-pasos">
+            <li>Presiona <strong>QR</strong> en la fila del residente</li>
+            <li>Imprime el QR y pégalo en su habitación</li>
+            <li>En Medicamentos, Aseo y Comedor escanea el QR para seleccionar el paciente sin buscar</li>
+          </ol>
+        </div>
+        <div class="guia-card">
+          <div class="guia-card-ico">✏️</div>
+          <div class="guia-card-titulo">Botones de acción</div>
+          <div class="guia-card-desc">
+            <strong>✏️ Editar</strong> — modificar datos<br>
+            <strong>📋 Expediente</strong> — historial clínico completo<br>
+            <strong>📄 PDF</strong> — exportar ficha del residente<br>
+            <strong>⏸ Inactivar</strong> — sale de listas activas<br>
+            <strong>✝ Fallecido</strong> — registrar con certificado y PDF
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPEDIENTE -->
+    <div class="guia-seccion">
+      <h3>📋 Expediente Clínico</h3>
+      <div class="guia-mod">
+        <div class="guia-card">
+          <div class="guia-card-ico">📋</div>
+          <div class="guia-card-titulo">Pestañas del expediente</div>
+          <div class="guia-card-desc">
+            <strong>📄 Datos</strong> — información general<br>
+            <strong>🩺 Historia</strong> — diagnósticos, antecedentes<br>
+            <strong>⚠️ Alergias</strong> — medicamentos, alimentos, otras<br>
+            <strong>📞 Contactos</strong> — familiar responsable<br>
+            <strong>📝 Evolución</strong> — notas de evolución<br>
+            <strong>📋 Planes y Beneficios</strong> — gobierno, seguros<br>
+            <strong>💊 Medicamentos</strong> — recetados + historial de administración con % adherencia
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MÓDULOS CLÍNICOS -->
+    <div class="guia-seccion">
+      <h3>🏥 Módulos Clínicos</h3>
+      <div class="guia-mod">
+        <div class="guia-card">
+          <div class="guia-card-ico">💊</div>
+          <div class="guia-card-titulo">Medicamentos</div>
+          <ol class="guia-card-pasos">
+            <li>Selecciona o escanea el QR del paciente</li>
+            <li>Aparecen sus alergias en rojo y sus medicamentos recetados automáticamente</li>
+            <li>Corrobora que el medicamento a administrar es correcto</li>
+            <li>Ingresa PIN del empleado que administra</li>
+            <li>Estado: Administrado ✅ / Pendiente ⏳ / Rechazado ❌</li>
+          </ol>
+        </div>
+        <div class="guia-card">
+          <div class="guia-card-ico">📈</div>
+          <div class="guia-card-titulo">Signos Vitales</div>
+          <ol class="guia-card-pasos">
+            <li>Selecciona el paciente con la lupa o QR</li>
+            <li>Ingresa TA, FC, FR, Temperatura, Glucosa, SpO₂</li>
+            <li>Peso en <strong>kg o lb</strong> — convierte automáticamente</li>
+            <li>Ingresa tu PIN para identificarte</li>
+            <li>Alertas automáticas si valores están fuera de rango</li>
+          </ol>
+        </div>
+        <div class="guia-card">
+          <div class="guia-card-ico">🍽️</div>
+          <div class="guia-card-titulo">Alimentación — Modo Comedor</div>
+          <ol class="guia-card-pasos">
+            <li>Presiona <strong>📷 Modo Comedor QR</strong></li>
+            <li>Selecciona la comida y % de consumo</li>
+            <li>Escanea el QR de cada paciente</li>
+            <li>Se registra instantáneamente sin buscar</li>
+          </ol>
+        </div>
+        <div class="guia-card">
+          <div class="guia-card-ico">🧼</div>
+          <div class="guia-card-titulo">Aseo Personal</div>
+          <ol class="guia-card-pasos">
+            <li>Presiona <strong>📷 QR</strong> o <strong>➕ Manual</strong></li>
+            <li>Marca los ítems realizados (baño, oral, cabello, uñas, etc.)</li>
+            <li>Registra condición de piel y estado de ánimo</li>
+            <li>Ingresa tu PIN</li>
+            <li>Alerta automática a las 8am y 8pm si hay pacientes sin registro</li>
+          </ol>
+        </div>
+        <div class="guia-card">
+          <div class="guia-card-ico">🔴</div>
+          <div class="guia-card-titulo">Cuarentena</div>
+          <ol class="guia-card-pasos">
+            <li>Presiona <strong>🔴 Iniciar Cuarentena</strong></li>
+            <li>Tipo: COVID, Influenza, MRSA, C. difficile, etc.</li>
+            <li>Nivel: Estricta / Contacto / Respiratoria / Observación</li>
+            <li>Indica médico, precauciones y cuarto asignado</li>
+            <li>Al recuperarse presiona <strong>✅ Levantar</strong></li>
+            <li>Genera PDF del registro de cuarentena</li>
+          </ol>
+        </div>
+        <div class="guia-card">
+          <div class="guia-card-ico">🚨</div>
+          <div class="guia-card-titulo">Incidentes</div>
+          <ol class="guia-card-pasos">
+            <li>Registra caídas, lesiones, emergencias</li>
+            <li>Gravedad: Leve 🟢 / Moderado 🟠 / Grave 🔴</li>
+            <li>Marca si se notificó a familiar y médico</li>
+            <li>Incidentes graves generan alerta automática</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- PERSONAL -->
+    <div class="guia-seccion">
+      <h3>👥 Personal</h3>
+      <div class="guia-mod">
+        <div class="guia-card">
+          <div class="guia-card-ico">⏱️</div>
+          <div class="guia-card-titulo">Ponchador</div>
+          <ol class="guia-card-pasos">
+            <li>Pestaña <strong>⏱️ Ponchador</strong></li>
+            <li>Selecciona tu nombre en la lista</li>
+            <li>Ingresa tu <strong>PIN</strong> (últimos 4 de tu contraseña)</li>
+            <li>Presiona <strong>▶ ENTRADA</strong> al llegar o <strong>■ SALIDA</strong> al irte</li>
+            <li>El estado de todos se actualiza en tiempo real</li>
+          </ol>
+        </div>
+        <div class="guia-card">
+          <div class="guia-card-ico">💰</div>
+          <div class="guia-card-titulo">Nómina y Deducciones PR</div>
+          <ol class="guia-card-pasos">
+            <li>Asigna salario/hora en <strong>Usuarios</strong></li>
+            <li>Pestaña <strong>💰 Nómina → Calcular</strong></li>
+            <li>Calcula automáticamente: horas regulares y extra (×1.5)</li>
+            <li>Deducciones obligatorias PR: SS 6.2%, Medicare 1.45%, PRE 0.3%, SINOT 0.3%, FSE 1.5%, Retención Hacienda</li>
+            <li>Voluntarios y practicantes muestran horas sin costo</li>
+          </ol>
+        </div>
+        <div class="guia-card">
+          <div class="guia-card-ico">👔</div>
+          <div class="guia-card-titulo">Empleados — Requisitos Ley 300</div>
+          <ol class="guia-card-pasos">
+            <li>Pestaña <strong>👔 Empleados</strong> — selecciona un empleado</li>
+            <li><strong>📋 Requisitos</strong> — ver cumplimiento de los 26 documentos obligatorios</li>
+            <li>Presiona <strong>📎 Subir</strong> en cualquier requisito para tomar foto o subir PDF</li>
+            <li><strong>📝 Memos</strong> — crear advertencias, correcciones o reconocimientos con PDF</li>
+            <li>Alertas automáticas cuando un documento vence o faltan menos de 30 días</li>
+          </ol>
+        </div>
+        <div class="guia-card">
+          <div class="guia-card-ico">👤</div>
+          <div class="guia-card-titulo">Roles del sistema</div>
+          <div class="guia-card-desc">
+            👑 Admin · 🩺 Médico · 💉 Enfermera<br>
+            🙋 Auxiliar · 📋 Recepción<br>
+            🍳 Cocina · 🧹 Limpieza · 🧠 Terapeuta<br>
+            👥 Trabajo Social<br>
+            🤝 Voluntario · 🌿 Horas Verdes · 🎓 Practicante<br><br>
+            Cada rol tiene acceso solo a las pestañas que le corresponden. El admin puede personalizar permisos en <strong>🔐 Permisos</strong>.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HERRAMIENTAS -->
+    <div class="guia-seccion">
+      <h3>🛠️ Comunicación y Herramientas</h3>
+      <div class="guia-mod">
+        <div class="guia-card">
+          <div class="guia-card-ico">💬</div>
+          <div class="guia-card-titulo">Mensajería y Tareas</div>
+          <div class="guia-card-desc">
+            <strong>Canales:</strong> 📢 General, 💉 Enfermería, 🩺 Médicos, 👑 Admin, 🚨 Urgente<br>
+            <strong>Directo:</strong> mensaje privado a cualquier empleado<br>
+            <strong>📢 Anuncio:</strong> envía a todos los canales a la vez<br>
+            <strong>✅ Tareas:</strong> crear, asignar, priorizar y dar seguimiento. Las tareas vencidas se marcan en rojo. El admin ve el tablero completo del equipo.
+          </div>
+        </div>
+        <div class="guia-card">
+          <div class="guia-card-ico">🛒</div>
+          <div class="guia-card-titulo">Lista de Compras</div>
+          <ol class="guia-card-pasos">
+            <li>Selecciona el departamento en los botones superiores</li>
+            <li>Presiona <strong>➕ Agregar Artículo</strong></li>
+            <li>Marca como 🔴 Urgente si se necesita hoy</li>
+            <li>Marca el ✅ checkbox cuando se compre</li>
+            <li>Exporta la lista en PDF</li>
+            <li>Alerta automática en Dashboard si hay urgentes</li>
+          </ol>
+        </div>
+        <div class="guia-card">
+          <div class="guia-card-ico">📋</div>
+          <div class="guia-card-titulo">Auditoría</div>
+          <div class="guia-card-desc">
+            Registro automático de todas las acciones. Filtra por tipo, empleado y fecha.<br><br>
+            Registra: Login/Logout, Residentes, Medicamentos, Signos Vitales, Incidentes, Cuarentenas, Fallecidos, Ponches, Documentos y más.<br><br>
+            Guarda los últimos 1,000 registros. Exporta en PDF.
+          </div>
+        </div>
+        <div class="guia-card">
+          <div class="guia-card-ico">📊</div>
+          <div class="guia-card-titulo">Reportes</div>
+          <ol class="guia-card-pasos">
+            <li>Selecciona período: Hoy / Semana / Mes</li>
+            <li>KPIs de residentes, medicamentos, incidentes, signos, cuarentenas y asistencia</li>
+            <li>Exporta reporte completo en PDF</li>
+          </ol>
+        </div>
+        <div class="guia-card">
+          <div class="guia-card-ico">📄</div>
+          <div class="guia-card-titulo">Exportar PDF</div>
+          <div class="guia-card-desc">
+            Disponible en: expediente clínico, signos vitales, medicamentos, cambio de turno, nómina, aseo personal, cuarentena, fallecidos, lista de compras, memos, auditoría y reportes generales.
+          </div>
+        </div>
+        <div class="guia-card">
+          <div class="guia-card-ico">🔔</div>
+          <div class="guia-card-titulo">Alertas automáticas</div>
+          <div class="guia-card-desc">
+            El Dashboard genera alertas de:<br>
+            • Signos vitales fuera de rango<br>
+            • Medicamentos pendientes<br>
+            • Cuarentenas activas y vencidas<br>
+            • Pacientes sin aseo (8am y 8pm)<br>
+            • Compras urgentes pendientes<br>
+            • Requisitos de empleados vencidos<br>
+            • Cumpleaños del día<br>
+            • Empleados sin ponche
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONSEJOS -->
+    <div style="background:var(--nc);border-radius:10px;padding:14px 16px;border:1px solid var(--na);margin-top:4px">
+      <div style="font-weight:800;color:var(--na);margin-bottom:8px">💡 Consejos importantes</div>
+      <ul style="font-size:13px;color:var(--go);padding-left:18px;line-height:1.9;margin:0">
+        <li>Los datos se guardan automáticamente en este dispositivo. <strong>No se pierden al cerrar el navegador.</strong></li>
+        <li>Para instalar la app: menú ⋮ del navegador → <strong>Instalar aplicación</strong>.</li>
+        <li>La app funciona <strong>sin internet</strong> una vez instalada.</li>
+        <li>El QR de cada paciente se genera con su ID único — imprímelo y pégalo en su cuarto.</li>
+        <li>Los residentes <strong>Fallecidos e Inactivos</strong> no aparecen en las listas de selección.</li>
+        <li>Voluntarios y practicantes solo ven las pestañas que les corresponden por su rol.</li>
+        <li>El admin puede personalizar los permisos de cualquier usuario en <strong>Usuarios → 🔐 Permisos</strong>.</li>
+      </ul>
+    </div>
+
   </div>
 </div>
-
+</div>
 <!-- AUDITORÍA -->
 <div class="sec" id="tab-auditoria">
   <div class="card">
@@ -1654,6 +1686,16 @@ tr:hover td{background:var(--ac);}
         <div class="fi"><label>Estado</label><select id="rE"><option>Activo</option><option>En observación</option><option>Hospitalizado</option><option>Egresado</option></select></div>
         <div class="fi"><label>Observación inicial</label><textarea id="rO" rows="2"></textarea></div>
 
+        <!-- MEDICAMENTOS RECETADOS -->
+        <div class="fi ff" style="margin-top:4px">
+          <label style="color:var(--vs)">💊 Medicamentos recetados (lista del médico)</label>
+          <div id="resMedListaWrap" style="background:var(--ac);border-radius:8px;padding:8px;margin-bottom:6px;min-height:40px;font-size:13px" id="resMedPreview">
+            <em style="color:var(--gm)">Se cargan del historial de medicamentos.</em>
+          </div>
+          <textarea id="rMedsRecetados" rows="3" placeholder="Ej: Metformina 850mg c/12h, Losartán 50mg c/día, Atorvastatina 20mg c/noche..."></textarea>
+          <div style="font-size:11px;color:var(--gm);margin-top:4px">💡 Lista los medicamentos permanentes del paciente para referencia rápida.</div>
+        </div>
+
         <!-- CLASIFICACIÓN CLÍNICA -->
         <div class="fi ff" style="margin-top:8px">
           <label style="color:var(--mo)">🏷️ Clasificación Clínica</label>
@@ -1791,8 +1833,9 @@ tr:hover td{background:var(--ac);}
         <div class="fi ff">
         <label>Residente *</label>
         <input type="text" id="lupa_mR" placeholder="🔍 Escribir para buscar..." oninput="lupaFiltrar('lupa_mR','mR')" style="border:1.5px solid var(--bo);border-radius:8px;padding:9px 12px;font-size:15px;width:100%;margin-bottom:4px">
-        <div style="display:flex;gap:6px;align-items:center;margin-bottom:4px"><button class="btn bxs" style="background:#444;color:white;white-space:nowrap" onclick="abrirQR('mR')">📷 QR</button></div><select id="mR" size="4" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px" onchange="mostrarAlergias(this.value,'alertaAlerMed')"><option value="">— Seleccionar —</option></select>
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:4px"><button class="btn bxs" style="background:#444;color:white;white-space:nowrap" onclick="abrirQR('mR')">📷 QR</button></div><select id="mR" size="4" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px" onchange="mostrarPanelMed(this.value)"><option value="">— Seleccionar —</option></select>
           <div id="alertaAlerMed" style="display:none;background:var(--rc);border:1.5px solid var(--ra);border-radius:8px;padding:10px 12px;margin-top:6px;font-size:13px;color:var(--ra);font-weight:700"></div>
+          <div id="medPanelRecetados" style="display:none;background:var(--ac);border:1.5px solid var(--am);border-radius:8px;padding:10px 12px;margin-top:6px;font-size:13px"></div>
       </div>
         <div class="fi ff">
         <label>Empleado que administra — PIN</label>
@@ -1954,7 +1997,20 @@ tr:hover td{background:var(--ac);}
         <div class="fi"><label>Nombre completo *</label><input id="uN" type="text"></div>
         <div class="fi"><label>Nombre de usuario * (sin espacios)</label><input id="uU" type="text"></div>
         <div class="fi"><label>Contraseña *</label><input id="uP" type="password"></div>
-        <div class="fi"><label>Rol</label><select id="uR"><option value="admin">👑 Administrador</option><option value="medico">🩺 Médico</option><option value="enfermera">💉 Enfermera</option><option value="aux">🙋 Auxiliar</option><option value="recepcion">📋 Recepción</option></select></div>
+        <div class="fi"><label>Rol</label><select id="uR">
+            <option value="admin">👑 Administrador</option>
+            <option value="medico">🩺 Médico</option>
+            <option value="enfermera">💉 Enfermera / Enfermero</option>
+            <option value="aux">🙋 Auxiliar de Enfermería</option>
+            <option value="recepcion">📋 Recepción / Secretaria</option>
+            <option value="cocina">🍳 Cocina / Nutrición</option>
+            <option value="limpieza">🧹 Limpieza / Mantenimiento</option>
+            <option value="terapia">🧠 Terapeuta</option>
+            <option value="trabajo_social">👥 Trabajo Social</option>
+            <option value="voluntario">🤝 Voluntario</option>
+            <option value="horas_verdes">🌿 Horas Verdes (Servicio Comunitario)</option>
+            <option value="practicante">🎓 Estudiante en Práctica</option>
+          </select></div>
         <div class="fi"><label>Turno habitual</label><select id="uT"><option>☀️ Día</option><option>🌤 Tarde</option><option>🌙 Noche</option><option>Rotativo</option></select></div>
         <div class="fi"><label>Teléfono</label><input id="uTel" type="tel"></div>
         <div class="fi"><label>Salario por hora ($)</label><input id="uSalario" type="number" step="0.01" min="0" placeholder="Ej: 12.50"></div>
@@ -2081,8 +2137,13 @@ tr:hover td{background:var(--ac);}
     <div class="mb">
       <div class="fg">
         <div class="fi"><label>Actividad *</label><input id="plN" type="text" placeholder="Nombre de la actividad"></div>
-        <div class="fi"><label>Tipo</label><select id="plT">
-          <option>vs</option><option>na</option><option>mo</option><option>ra</option>
+        <div class="fi"><label>Tipo de actividad</label><select id="plT">
+          <option value="vs">🟢 Terapia / Rehabilitación</option>
+          <option value="na">🟠 Recreativa / Entretenimiento</option>
+          <option value="mo">🟣 Estimulación Cognitiva</option>
+          <option value="ra">🔴 Ejercicio Físico</option>
+          <option value="am">🔵 Espiritual / Religiosa</option>
+          <option value="gc">⚫ Educativa / Informativa</option>
         </select></div>
         <div class="fi"><label>Día de la semana</label><select id="plDia">
           <option value="0">Lunes</option><option value="1">Martes</option><option value="2">Miércoles</option>
@@ -2091,8 +2152,12 @@ tr:hover td{background:var(--ac);}
         <div class="fi"><label>Hora</label><input id="plHora" type="time" value="09:00"></div>
         <div class="fi"><label>Responsable</label><input id="plResp" type="text"></div>
         <div class="fi"><label>Color</label><select id="plColor">
-          <option value="vs">Verde — Terapia</option><option value="na">Naranja — Recreativa</option>
-          <option value="mo">Morado — Cognitiva</option><option value="ra">Rojo — Física</option>
+          <option value="vs">🟢 Verde — Terapia / Rehabilitación</option>
+          <option value="na">🟠 Naranja — Recreativa</option>
+          <option value="mo">🟣 Morado — Cognitiva</option>
+          <option value="ra">🔴 Rojo — Física</option>
+          <option value="am">🔵 Azul — Espiritual</option>
+          <option value="gc">⚫ Gris — Educativa</option>
         </select></div>
       </div>
       <div class="ab">
@@ -2690,7 +2755,14 @@ var PERM = {
   medico:   ['dashboard','residentes','expediente','medicamentos','signos','incidentes','graficas','alertas','visitas_med','plan_act','cuarentena','mensajes','guia','aseo'],
   enfermera:['dashboard','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','cuarentena','mensajes','compras','guia','aseo'],
   aux:      ['dashboard','alimentacion','actividades','visitas','turno','alertas','plan_act','cuarentena','mensajes','compras','guia','aseo'],
-  recepcion:['dashboard','residentes','visitas','alertas','mensajes','compras','guia','aseo']
+  recepcion:['dashboard','residentes','visitas','alertas','mensajes','compras','guia','aseo'],
+  cocina:['dashboard','alimentacion','actividades','alertas','compras','aseo','mensajes','guia'],
+  limpieza:['dashboard','actividades','alertas','compras','aseo','mensajes','guia'],
+  terapia:['dashboard','residentes','expediente','actividades','alertas','visitas_med','plan_act','mensajes','guia'],
+  trabajo_social:['dashboard','residentes','expediente','incidentes','visitas','alertas','mensajes','guia'],
+  voluntario:   ['dashboard','actividades','visitas','alimentacion','aseo','alertas','mensajes','guia'],
+  horas_verdes: ['dashboard','actividades','visitas','alimentacion','aseo','alertas','mensajes','guia'],
+  practicante:  ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','alertas','visitas_med','plan_act','aseo','mensajes','guia']
 };
 var TABS = ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','cuarentena','mensajes','compras','guia','aseo','empleados','auditoria','reportes','fallecidos','usuarios'];
 
@@ -2721,6 +2793,11 @@ resetTimeout();
   document.addEventListener(ev, resetTimeout, {passive:true});
 });
   closeM('mLogin');
+  // Mostrar la app
+  var navBar = document.getElementById('navBar');
+  var mainEl = document.querySelector('.main');
+  if (navBar) navBar.style.display = 'flex';
+  if (mainEl) mainEl.style.display = 'block';
   document.getElementById('luErr').style.display = 'none';
   document.getElementById('luU').value = '';
   document.getElementById('luP').value = '';
@@ -2729,7 +2806,14 @@ resetTimeout();
 document.getElementById('luP').addEventListener('keypress', function(e){ if(e.key==='Enter') doLogin(); });
 
 function rolL(r) {
-  return {admin:'👑 Administrador',medico:'🩺 Médico',enfermera:'💉 Enfermera',aux:'🙋 Auxiliar',recepcion:'📋 Recepción'}[r] || r;
+  return {
+    admin:'👑 Admin', medico:'🩺 Médico', enfermera:'💉 Enfermera',
+    aux:'🙋 Auxiliar', recepcion:'📋 Recepción',
+    cocina:'🍳 Cocina', limpieza:'🧹 Limpieza',
+    terapia:'🧠 Terapeuta', trabajo_social:'👥 Trabajo Social',
+    voluntario:'🤝 Voluntario', horas_verdes:'🌿 Horas Verdes',
+    practicante:'🎓 Estudiante Práctica'
+  }[r] || r || '—';
 }
 
 // ===== RELOJ =====
@@ -3422,7 +3506,7 @@ function delUsr(id) {
 }
 function rUsr() {
   var div=document.getElementById('listUsr'); if (!div) return;
-  var cols={admin:'#1A3A5C',medico:'#7B2D8B',enfermera:'#0D7A5F',aux:'#E67E22',recepcion:'#607D8B'};
+  var cols={admin:'#1A3A5C',medico:'#7B2D8B',enfermera:'#0D7A5F',aux:'#E67E22',recepcion:'#607D8B',cocina:'#C0392B',limpieza:'#27AE60',terapia:'#8E44AD',trabajo_social:'#2980B9',voluntario:'#16A085',horas_verdes:'#1E8449',practicante:'#D35400'};
   window._uIds = [];
   var h='';
   DB.usuarios.forEach(function(u){
@@ -4169,7 +4253,7 @@ function ponchar(tipo) {
 function rEmpStatus() {
   var div = document.getElementById('pEmpStatus'); if (!div) return;
   var hoy = new Date().toISOString().slice(0,10);
-  var cols = {admin:'#1A3A5C',medico:'#7B2D8B',enfermera:'#0D7A5F',aux:'#E67E22',recepcion:'#607D8B'};
+  var cols = {admin:'#1A3A5C',medico:'#7B2D8B',enfermera:'#0D7A5F',aux:'#E67E22',recepcion:'#607D8B',cocina:'#C0392B',limpieza:'#27AE60',terapia:'#8E44AD',trabajo_social:'#2980B9',voluntario:'#16A085',horas_verdes:'#1E8449',practicante:'#D35400'};
   var esAdmin = SES.rol === 'admin';
   var h = '';
   var listaUsr = esAdmin ? DB.usuarios : DB.usuarios.filter(function(u){ return u.id===SES.id; });
@@ -4507,7 +4591,15 @@ function calcNomina() {
     resCards+='<div><div class="nom-emp">'+u.nombre+'</div>';
     resCards+='<div class="nom-rol">'+rolL(u.rol)+(salHora?' · $'+salHora.toFixed(2)+'/h':' · ⚠️ Sin tarifa')+'</div></div></div>';
 
-    if (salHora===0) {
+    var esVolunt = ['voluntario','horas_verdes','practicante'].indexOf(u.rol) >= 0;
+    if (esVolunt) {
+      var hTotV = totalMinEmp/60;
+      resCards+='<div style="background:var(--vc);border-radius:8px;padding:10px;margin-top:6px">';
+      resCards+='<div style="font-size:13px;color:var(--vs);font-weight:700">'+rolL(u.rol)+'</div>';
+      resCards+='<div style="font-size:22px;font-weight:800;color:var(--vs)">'+fmt2(hTotV)+'</div>';
+      resCards+='<div style="font-size:11px;color:var(--gm)">Horas registradas — sin costo salarial</div>';
+      resCards+='</div>';
+    } else if (salHora===0) {
       resCards+='<div style="color:var(--na);font-size:12px">⚠️ Asigna salario/hora en Usuarios.</div>';
     } else {
       resCards+='<table class="ded-tabla">';
@@ -5970,7 +6062,7 @@ function initEmpleados() {
 function rEmpSelector() {
   var div = document.getElementById('empSelectorLista');
   if (!div) return;
-  var cols = {admin:'#1A3A5C',medico:'#7B2D8B',enfermera:'#0D7A5F',aux:'#E67E22',recepcion:'#607D8B'};
+  var cols = {admin:'#1A3A5C',medico:'#7B2D8B',enfermera:'#0D7A5F',aux:'#E67E22',recepcion:'#607D8B',cocina:'#C0392B',limpieza:'#27AE60',terapia:'#8E44AD',trabajo_social:'#2980B9',voluntario:'#16A085',horas_verdes:'#1E8449',practicante:'#D35400'};
   var h = '';
   window._uEmpIds = [];
   DB.usuarios.forEach(function(u){
@@ -6008,7 +6100,7 @@ function selEmpleado(uid) {
   var u = DB.usuarios.find(function(x){ return x.id===uid; });
   if (!u) return;
   // Header
-  var cols = {admin:'#1A3A5C',medico:'#7B2D8B',enfermera:'#0D7A5F',aux:'#E67E22',recepcion:'#607D8B'};
+  var cols = {admin:'#1A3A5C',medico:'#7B2D8B',enfermera:'#0D7A5F',aux:'#E67E22',recepcion:'#607D8B',cocina:'#C0392B',limpieza:'#27AE60',terapia:'#8E44AD',trabajo_social:'#2980B9',voluntario:'#16A085',horas_verdes:'#1E8449',practicante:'#D35400'};
   var ini = u.nombre.split(' ').map(function(x){ return x[0]; }).join('').substring(0,2).toUpperCase();
   document.getElementById('edAvatar').textContent = ini;
   document.getElementById('edAvatar').style.background = cols[u.rol]||'#607D8B';
@@ -7000,16 +7092,20 @@ function resetTimeout() {
 function cerrarSesion(auto) {
   clearTimeout(_timeoutTimer);
   clearTimeout(_timeoutWarn);
-  // Limpiar sesión
-  logAudit('Logout','Cierre de sesión'+(auto?' (inactividad)':''));
+  if (SES && SES.nombre) logAudit('Logout','Cierre de sesión'+(auto?' (inactividad)':''));
   SES = {};
-  localStorage.removeItem('chses');
-  // Mostrar login
-  document.getElementById('lgs').style.display = 'flex';
-  document.getElementById('app').style.display = 'none';
+  // Ocultar la app y mostrar el modal de login
+  var navBar = document.getElementById('navBar');
+  var main   = document.querySelector('.main');
+  if (navBar) navBar.style.display = 'none';
+  if (main)   main.style.display   = 'none';
+  document.getElementById('timeoutWarn').style.display = 'none';
+  // Limpiar campos del login
   document.getElementById('luU').value = '';
   document.getElementById('luP').value = '';
-  if (auto) toast('🔒 Sesión cerrada por inactividad');
+  document.getElementById('luErr').style.display = 'none';
+  openM('mLogin');
+  if (auto) setTimeout(function(){ toast('🔒 Sesión cerrada por inactividad'); }, 300);
 }
 
 function mostrarSesionInfo() {
@@ -7077,6 +7173,84 @@ function syncAlergiasExpediente(rid) {
   }
 }
 
+// ===== MEDICAMENTOS DEL EXPEDIENTE =====
+function rExpMeds(rid) {
+  var div = document.getElementById('expMedLista');
+  var aDiv = document.getElementById('expMedAler');
+  if (!div) return;
+  var r = DB.residentes.find(function(x){ return x.id===rid; });
+  if (!r) return;
+
+  // Mostrar alergias
+  var al = [];
+  if (r.alerMed)  al.push('💊 Med: '+r.alerMed);
+  if (r.alerAlim) al.push('🍎 Alim: '+r.alerAlim);
+  if (r.alerOtra) al.push('⚠️ '+r.alerOtra);
+  if (aDiv) {
+    if (al.length) { aDiv.innerHTML='⚠️ ALERGIAS: '+al.join(' · '); aDiv.style.display='block'; }
+    else aDiv.style.display='none';
+  }
+
+  // Medicamentos recetados del perfil
+  var medsRec = r.medsRecetados || '';
+  var h = '';
+  if (medsRec) {
+    var lineas = medsRec.replace(/,/g, '|').split('|').map(function(s){return s.trim();}).filter(Boolean);
+    h += '<div style="background:var(--ac);border-radius:8px;padding:10px 14px;margin-bottom:10px">';
+    h += '<div style="font-size:12px;font-weight:700;color:var(--am);margin-bottom:6px">📋 Medicamentos recetados</div>';
+    lineas.forEach(function(l){
+      h += '<div style="padding:5px 0;border-bottom:1px solid var(--gc);font-size:13px"><span style="color:var(--vs)">💊</span> '+l+'</div>';
+    });
+    h += '</div>';
+  }
+
+  // Historial (últimos 30 días)
+  var hace30 = new Date(); hace30.setDate(hace30.getDate()-30);
+  var historial = (DB.medicamentos||[]).filter(function(m){
+    return m.residenteId===rid;
+  }).slice(-50).reverse();
+
+  h += '<div style="font-size:12px;font-weight:700;color:var(--gm);margin-bottom:6px;padding:0 12px">📊 Historial reciente</div>';
+  if (!historial.length) {
+    h += '<div style="color:var(--gm);font-size:13px;padding:10px;text-align:center">Sin registros.</div>';
+  } else {
+    var porMed = {};
+    historial.forEach(function(m){
+      var k = m.medicamento||'—';
+      if (!porMed[k]) porMed[k]={adm:0,pend:0,rech:0,ultima:'',dosis:'',via:''};
+      if (m.estado==='Administrado') porMed[k].adm++;
+      else if (m.estado==='Pendiente') porMed[k].pend++;
+      else porMed[k].rech++;
+      if (!porMed[k].ultima) { porMed[k].ultima=m.ts||''; porMed[k].dosis=m.dosis||''; porMed[k].via=m.via||''; }
+    });
+    Object.keys(porMed).sort().forEach(function(med){
+      var d=porMed[med], tot=d.adm+d.pend+d.rech;
+      var pct=tot>0?Math.round(d.adm/tot*100):0;
+      var bc=pct>=80?'var(--vs)':pct>=50?'var(--na)':'var(--ra)';
+      h += '<div style="padding:10px 12px;border-bottom:1px solid var(--gc)">';
+      h += '<div style="display:flex;justify-content:space-between"><strong style="font-size:13px">'+med+'</strong>';
+      h += '<span style="font-size:11px;background:'+bc+';color:white;border-radius:8px;padding:2px 6px">'+pct+'%</span></div>';
+      if (d.dosis) h += '<div style="font-size:11px;color:var(--gm)">'+d.dosis+(d.via?' · '+d.via:'')+'</div>';
+      h += '<div style="font-size:11px;color:var(--gm)">✅ '+d.adm+(d.pend?' ⏳ '+d.pend:'')+(d.rech?' ❌ '+d.rech:'')+'</div>';
+      h += '<div style="height:4px;background:var(--gc);border-radius:2px;margin-top:4px"><div style="height:4px;background:'+bc+';border-radius:2px;width:'+pct+'%"></div></div>';
+      h += '</div>';
+    });
+  }
+  div.innerHTML = h;
+}
+
+function mostrarPanelMed(rid) {
+  mostrarAlergias(rid, 'alertaAlerMed');
+  var p = document.getElementById('medPanelRecetados');
+  if (!p) return;
+  var r = rid ? DB.residentes.find(function(x){return x.id===rid;}) : null;
+  if (!r || !r.medsRecetados) { p.style.display='none'; return; }
+  var lineas = r.medsRecetados.replace(/,/g,'|').split('|').map(function(s){return s.trim();}).filter(Boolean);
+  p.innerHTML = '<div style="font-size:11px;font-weight:700;color:var(--am);margin-bottom:4px">📋 Medicamentos recetados:</div>'+
+    lineas.map(function(l){ return '<div style="font-size:13px">💊 '+l+'</div>'; }).join('');
+  p.style.display = 'block';
+}
+
 // ===== INIT =====
 // Garantizar que todas las tablas existen
 ['fallecidos','cuarentenas','ponches','aseos','auditoria','compras','mensajes','tareas','visitasMed','planAct','terapias','planSemanal'].forEach(function(k){
@@ -7093,7 +7267,9 @@ applyPerm();
 dash(); dCharts(); rRes(); rMed(); rSV(); rAlim(); rAct(); rInc(); rVis(); rTur(); rUsr();
 calcAlerts();
 setInterval(calcAlerts, 300000);
-initPonchador(); // actualizar alertas cada 5 minutos
+initPonchador();
+// Abrir modal de login al iniciar
+openM('mLogin');
 </script>
 <script>
 // Registrar Service Worker solo en GitHub Pages
