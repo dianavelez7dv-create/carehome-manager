@@ -1646,8 +1646,9 @@ tr:hover td{background:var(--ac);}
       <div id="luErr" class="al alr" style="display:none">⚠️ <span id="luErrMsg">Usuario o contraseña incorrectos.</span></div>
       <div class="ab"><button class="btn bam" onclick="doLogin()" style="width:100%;font-size:16px;padding:14px">🔐 Iniciar Sesión</button></div>
       <div class="dv"></div>
-      <div style="text-align:center;margin-top:8px">
-        <a href="#" onclick="resetearAdmin();return false;" style="font-size:11px;color:var(--gm);text-decoration:underline">¿Problemas de acceso? Restaurar admin</a>
+      <div style="text-align:center;margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <button onclick="resetearAdmin()" style="background:none;border:1px solid var(--bo);border-radius:6px;padding:6px 10px;font-size:11px;color:var(--gm);cursor:pointer">🔑 Restaurar admin</button>
+        <button onclick="resetTodo()" style="background:none;border:1px solid var(--ra);border-radius:6px;padding:6px 10px;font-size:11px;color:var(--ra);cursor:pointer">⚠️ Borrar caché y reiniciar</button>
       </div>
       <p style="font-size:12px;color:var(--gm);font-weight:700;text-transform:uppercase;margin-bottom:6px">Accesos disponibles</p>
       <div style="font-size:12px;color:var(--gm);line-height:1.9">
@@ -7150,6 +7151,12 @@ function verificarPINEmp(pinInputId, resultId, storageKey) {
 
 
 // ===== RESETEAR ADMIN =====
+function resetTodo() {
+  if (!confirm('¿Borrar TODOS los datos guardados y reiniciar la app?\n\nEsto borrará residentes, registros, etc.\nSolo hacerlo si la app no abre correctamente.')) return;
+  localStorage.removeItem('chdb4');
+  location.reload();
+}
+
 function resetearAdmin() {
   if (!confirm('¿Restaurar el usuario administrador?\n\nUsuario: admin\nContraseña: admin123\n\nEsto NO borra los datos de los residentes.')) return;
   // Buscar si ya existe admin
