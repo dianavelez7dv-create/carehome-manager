@@ -141,345 +141,12 @@ function rDash() {
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="CareHome">
 <meta name="theme-color" content="#1A3A5C">
-<title>CareHome Manager v6</title>
+<title>CareHome Manager v7</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-<style>
-:root{--am:#1A3A5C;--az:#2563A8;--ac:#EBF3FC;--vs:#0D7A5F;--vc:#E6F5F1;--ra:#C0392B;--rc:#FDECEA;--na:#E67E22;--nc:#FEF3E2;--mo:#7B2D8B;--mc:#F3E8F7;--go:#2C3E50;--gm:#6B7A8D;--gc:#F0F4F8;--bl:#FFFFFF;--bo:#D1DCE8;}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--gc);color:var(--go);font-size:15px;}
-.header{background:var(--am);color:white;padding:0 16px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2);}
-.hlogo{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:700;}
-.hr{display:flex;align-items:center;gap:10px;}
-.hu{font-size:11px;opacity:.9;text-align:right;line-height:1.4;}
-.hu b{font-size:13px;}
-.boutl{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:white;padding:6px 10px;border-radius:7px;font-size:12px;cursor:pointer;font-weight:600;}
-.nav{background:var(--bl);border-bottom:2px solid var(--bo);display:none;overflow-x:auto;scrollbar-width:none;position:relative;}
-.nav-salir{position:sticky;right:0;background:var(--bl);border-left:2px solid var(--bo);padding:0 10px;display:flex;align-items:center;gap:6px;flex-shrink:0;z-index:10;min-width:80px;}
-.nav::-webkit-scrollbar{display:none;}
-.nt{padding:13px 14px;font-size:13px;font-weight:600;color:var(--gm);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;display:flex;align-items:center;gap:5px;flex-shrink:0;}
-.nt:hover{color:var(--az);background:var(--ac);}
-.nt.on{color:var(--am);border-bottom-color:var(--am);}
-.main{padding:16px;max-width:1100px;margin:0 auto;display:none;}
-.sec{display:none;}.sec.on{display:block;}
-.card{background:var(--bl);border-radius:12px;border:1px solid var(--bo);box-shadow:0 2px 10px rgba(26,58,92,.08);margin-bottom:18px;overflow:hidden;}
-.ch{color:white;padding:13px 18px;font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px;}
-.ch.am{background:var(--am);}.ch.vs{background:var(--vs);}.ch.ra{background:var(--ra);}.ch.na{background:var(--na);}.ch.mo{background:var(--mo);}
-.cb{padding:18px;}
-.fg{display:grid;grid-template-columns:1fr 1fr;gap:13px;}
-.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px;}
-.ff{grid-column:1/-1;}
-.fi{display:flex;flex-direction:column;gap:4px;}
-.fi label{font-size:11px;font-weight:700;color:var(--gm);text-transform:uppercase;letter-spacing:.4px;}
-.fi input,.fi select,.fi textarea{border:1.5px solid var(--bo);border-radius:8px;padding:10px 12px;font-size:15px;font-family:inherit;color:var(--go);background:var(--bl);width:100%;}
-.fi input:focus,.fi select:focus,.fi textarea:focus{outline:none;border-color:var(--az);background:var(--ac);}
-.fi textarea{resize:vertical;min-height:76px;}
-.btn{padding:10px 18px;border-radius:8px;border:none;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
-.bam{background:var(--am);color:white;}.bvs{background:var(--vs);color:white;}.bra{background:var(--ra);color:white;}.bna{background:var(--na);color:white;}.bmo{background:var(--mo);color:white;}.bol{background:transparent;border:2px solid var(--am);color:var(--am);}
-.bsm{padding:7px 12px;font-size:13px;}.bxs{padding:5px 9px;font-size:12px;}
-.tw{overflow-x:auto;}
-table{width:100%;border-collapse:collapse;font-size:14px;}
-thead{background:var(--am);color:white;}
-th{padding:11px 13px;text-align:left;font-size:12px;font-weight:700;letter-spacing:.4px;}
-td{padding:10px 13px;border-bottom:1px solid var(--bo);vertical-align:middle;}
-tr:last-child td{border-bottom:none;}
-tr:hover td{background:var(--ac);}
-.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;}
-.bvd{background:var(--vc);color:var(--vs);}.brd{background:var(--rc);color:var(--ra);}.bnd{background:var(--nc);color:var(--na);}.bad{background:var(--ac);color:var(--am);}
-.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:18px;}
-.sc{background:var(--bl);border-radius:12px;padding:16px;box-shadow:0 2px 10px rgba(26,58,92,.08);border:1px solid var(--bo);text-align:center;}
-.si{font-size:26px;margin-bottom:4px;}.sn{font-size:26px;font-weight:800;color:var(--am);}.sl{font-size:11px;color:var(--gm);text-transform:uppercase;font-weight:700;margin-top:3px;}
-.al{border-radius:8px;padding:11px 15px;margin-bottom:10px;display:flex;align-items:flex-start;gap:9px;font-size:14px;}
-.alv{background:var(--vc);border-left:4px solid var(--vs);color:#0B5345;}
-.alr{background:var(--rc);border-left:4px solid var(--ra);color:#7B241C;}
-.aln{background:var(--nc);border-left:4px solid var(--na);color:#784212;}
-.it{display:flex;gap:4px;margin-bottom:14px;flex-wrap:wrap;}
-.itb{padding:7px 14px;border-radius:8px;background:var(--gc);border:1.5px solid var(--bo);font-size:13px;font-weight:700;cursor:pointer;color:var(--gm);}
-.itb.on{background:var(--am);color:white;border-color:var(--am);}
-.is{display:none;}.is.on{display:block;}
-.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;padding:16px;}
-.mo.on{display:flex;}
-.md{background:white;border-radius:14px;width:100%;max-width:680px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);}
-.mh{color:white;padding:15px 18px;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:15px;border-radius:14px 14px 0 0;}
-.mh.am{background:var(--am);}.mh.vs{background:var(--vs);}.mh.ra{background:var(--ra);}.mh.na{background:var(--na);}.mh.mo{background:var(--mo);}
-.mx{background:none;border:none;color:white;font-size:22px;cursor:pointer;line-height:1;}
-.mb{padding:18px;}
-.ab{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap;}
-.dv{border:none;border-top:1px solid var(--bo);margin:16px 0;}
-.sb{display:flex;gap:9px;margin-bottom:14px;align-items:center;flex-wrap:wrap;}
-.sb input{flex:1;border:1.5px solid var(--bo);border-radius:8px;padding:10px 13px;font-size:15px;font-family:inherit;}
-.sb input:focus{outline:none;border-color:var(--az);}
-.es{text-align:center;padding:36px 20px;color:var(--gm);}
-.ei{font-size:44px;margin-bottom:8px;}
-.cbx{position:relative;height:240px;}
-.gg{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px;}
-.tl{position:relative;padding-left:22px;}
-.tl::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:2px;background:var(--bo);}
-.tli{position:relative;margin-bottom:14px;}
-.tld{position:absolute;left:-19px;top:4px;width:11px;height:11px;border-radius:50%;background:var(--vs);border:2px solid white;box-shadow:0 0 0 2px var(--vs);}
-.tlt{font-size:11px;color:var(--gm);font-weight:700;}.tltx{font-size:14px;margin-top:2px;}
-.uc{display:flex;align-items:center;gap:12px;padding:13px;border:1.5px solid var(--bo);border-radius:10px;margin-bottom:9px;}
-.ua{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:white;flex-shrink:0;}
-.ui{flex:1;}.un{font-weight:700;font-size:14px;}.ur{font-size:12px;color:var(--gm);}
-/* FOTO */
-.foto-wrap{text-align:center;margin-bottom:16px;}
-.foto-lbl{display:block;font-size:11px;font-weight:700;color:var(--gm);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;}
-.foto-circle{width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid var(--bo);}
-.foto-ph{width:100px;height:100px;border-radius:50%;background:var(--gc);border:2px dashed var(--bo);display:flex;align-items:center;justify-content:center;font-size:38px;margin:0 auto;}
-.foto-btn{display:inline-block;cursor:pointer;color:var(--az);font-size:13px;font-weight:600;margin-top:6px;padding:5px 12px;border:1.5px solid var(--az);border-radius:7px;}
-.res-av{width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--bo);flex-shrink:0;}
-.res-ini{width:40px;height:40px;border-radius:50%;background:var(--am);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0;}
-/* TOAST */
-.alert-panel{background:var(--bl);border-radius:12px;border:1px solid var(--bo);margin-bottom:18px;overflow:hidden;box-shadow:0 2px 10px rgba(26,58,92,.08);}
-.alert-hdr{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;background:var(--am);color:white;font-weight:700;font-size:15px;}
-.alert-hdr-badge{background:rgba(255,255,255,.25);border-radius:20px;padding:2px 10px;font-size:13px;font-weight:800;}
-.alert-body{padding:12px;}
-.alert-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:8px;margin-bottom:8px;border-left:4px solid;}
-.alert-item:last-child{margin-bottom:0;}
-.alert-item.crit{background:#fdecea;border-color:#C0392B;}.alert-item.warn{background:#FEF3E2;border-color:#E67E22;}.alert-item.info{background:#EBF3FC;border-color:#2563A8;}.alert-item.ok{background:#E6F5F1;border-color:#0D7A5F;}
-.alert-ico{font-size:20px;flex-shrink:0;margin-top:1px;}
-.alert-txt{flex:1;}
-.alert-txt strong{display:block;font-size:14px;color:var(--go);}
-.alert-txt span{font-size:12px;color:var(--gm);}
-.alert-time{font-size:11px;color:var(--gm);white-space:nowrap;margin-top:2px;}
-.alert-empty{text-align:center;padding:20px;color:var(--gm);font-size:14px;}
-.notif-dot{width:8px;height:8px;border-radius:50%;background:#C0392B;display:inline-block;margin-left:4px;vertical-align:middle;}
-.tab-alerta{position:relative;}
-#alertBadge{position:absolute;top:6px;right:2px;background:#C0392B;color:white;border-radius:10px;font-size:10px;font-weight:800;padding:1px 5px;display:none;}
-.plan-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:16px;}
-.plan-dia{background:var(--gc);border-radius:8px;padding:8px;border:1px solid var(--bo);}
-.plan-dia-hdr{font-size:11px;font-weight:800;color:var(--am);text-transform:uppercase;text-align:center;padding:4px 0;border-bottom:1px solid var(--bo);margin-bottom:6px;}
-.plan-item{background:white;border-radius:6px;padding:6px 8px;margin-bottom:5px;font-size:12px;border-left:3px solid var(--vs);cursor:pointer;}
-.plan-item.na{border-left-color:var(--na);}.plan-item.mo{border-left-color:var(--mo);}.plan-item.ra{border-left-color:var(--ra);}
-.plan-item-hora{font-size:10px;color:var(--gm);font-weight:700;}
-.plan-item-nom{font-weight:600;color:var(--go);}
-@media(max-width:680px){.plan-grid{grid-template-columns:repeat(2,1fr);}}
-.ponch-reloj{text-align:center;padding:24px 16px;background:var(--am);color:white;border-radius:12px;margin-bottom:16px;}
-.ponch-hora{font-size:52px;font-weight:800;letter-spacing:2px;line-height:1;}
-.ponch-fecha{font-size:14px;opacity:.8;margin-top:6px;}
-.ponch-btns{display:flex;gap:12px;justify-content:center;margin-top:16px;flex-wrap:wrap;}
-.ponch-btn-in{background:#0D7A5F;color:white;border:none;border-radius:10px;padding:14px 28px;font-size:16px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:8px;}
-.ponch-btn-out{background:#C0392B;color:white;border:none;border-radius:10px;padding:14px 28px;font-size:16px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:8px;}
-.ponch-btn-in:active,.ponch-btn-out:active{opacity:.8;}
-.ponch-estado{text-align:center;padding:10px;font-size:14px;font-weight:700;border-radius:8px;margin-top:10px;}
-.ponch-dentro{background:var(--vc);color:var(--vs);}.ponch-fuera{background:var(--rc);color:var(--ra);}
-.emp-card{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--bo);border-radius:10px;margin-bottom:8px;background:var(--bl);}
-.emp-av{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:white;flex-shrink:0;}
-.emp-info{flex:1;}.emp-nom{font-weight:700;font-size:14px;}.emp-det{font-size:12px;color:var(--gm);}
-.emp-status{font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;}
-.emp-in{background:var(--vc);color:var(--vs);}.emp-out{background:var(--rc);color:var(--ra);}.emp-off{background:var(--gc);color:var(--gm);}
-.reporte-fila-nom{font-weight:700;}.reporte-horas{font-size:13px;color:var(--am);font-weight:700;}
-.msg-burbuja{max-width:75%;padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.4;position:relative;word-break:break-word;}
-.msg-yo{background:var(--am);color:white;border-bottom-right-radius:4px;align-self:flex-end;}
-.msg-otro{background:var(--gc);color:var(--go);border-bottom-left-radius:4px;align-self:flex-start;}
-.msg-broadcast{background:#FFF3CD;color:#856404;border:1px solid #FFD54F;border-radius:10px;align-self:center;text-align:center;max-width:90%;}
-.msg-remitente{font-size:11px;font-weight:700;opacity:.7;margin-bottom:3px;}
-.msg-hora{font-size:10px;opacity:.6;margin-top:3px;text-align:right;}
-.msg-area{display:flex;flex-direction:column;gap:8px;padding:12px;height:320px;overflow-y:auto;background:var(--ac);border-radius:10px;margin-bottom:10px;}
-.tarea-card{background:var(--bl);border:1.5px solid var(--bo);border-radius:10px;padding:12px 14px;margin-bottom:8px;}
-.tarea-card.vencida{border-color:var(--ra);background:#FFF5F5;}
-.tarea-card.completada{opacity:.6;border-color:var(--vs);}
-.tarea-titulo{font-weight:700;font-size:14px;}
-.tarea-meta{font-size:12px;color:var(--gm);margin-top:3px;}
-.tarea-prioridad-alta{color:var(--ra);font-weight:700;}
-.tarea-prioridad-media{color:var(--na);font-weight:700;}
-.tarea-prioridad-baja{color:var(--gm);}
-.online-dot{width:9px;height:9px;border-radius:50%;background:#2ecc71;display:inline-block;margin-right:4px;}
-.canal-btn{padding:8px 12px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;border:1.5px solid var(--bo);background:var(--bl);margin-bottom:4px;display:flex;align-items:center;gap:8px;}
-.canal-btn.activo{background:var(--am);color:white;border-color:var(--am);}
-.badge-msg{background:var(--ra);color:white;border-radius:10px;padding:1px 6px;font-size:10px;font-weight:800;margin-left:auto;}
-.depto-tab{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
-.depto-btn{padding:8px 14px;border-radius:20px;border:1.5px solid var(--bo);background:var(--bl);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;}
-.depto-btn.activo{background:var(--am);color:white;border-color:var(--am);}
-.depto-btn .depto-count{background:rgba(0,0,0,.15);border-radius:10px;padding:1px 6px;font-size:11px;}
-.item-compra{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--gc);}
-.item-compra:last-child{border-bottom:none;}
-.item-compra.comprado{opacity:.5;}
-.item-compra input[type=checkbox]{width:20px;height:20px;accent-color:var(--vs);cursor:pointer;flex-shrink:0;}
-.item-compra .item-nombre{flex:1;font-size:14px;font-weight:600;}
-.item-compra.comprado .item-nombre{text-decoration:line-through;color:var(--gm);}
-.item-compra .item-cant{font-size:12px;color:var(--am);font-weight:700;white-space:nowrap;}
-.item-compra .item-nota{font-size:11px;color:var(--gm);}
-.item-compra .item-precio{font-size:12px;color:var(--vs);font-weight:700;white-space:nowrap;}
-.urgente-tag{background:var(--rc);color:var(--ra);font-size:10px;font-weight:700;border-radius:6px;padding:2px 6px;margin-left:4px;}
-.abono-item{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-bottom:1px solid var(--gc);font-size:13px;}
-.abono-item:last-child{border-bottom:none;}
-.abono-total{display:flex;justify-content:space-between;padding:8px 10px;font-weight:700;font-size:14px;background:var(--gc);border-radius:0 0 8px 8px;}
-.pago-card{background:var(--bl);border:1.5px solid var(--bo);border-radius:10px;padding:12px 14px;margin-bottom:8px;}
-.pago-card.pagado{border-color:var(--vs);background:#F0FFF4;}
-.pago-card.vencido{border-color:var(--ra);background:#FFF5F5;}
-.pago-card.pendiente{border-color:var(--na);}
-.pago-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
-.pago-nom{font-size:14px;font-weight:700;}
-.pago-monto{font-size:18px;font-weight:800;color:var(--am);}
-.pago-meta{font-size:12px;color:var(--gm);}
-.pago-estado{font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px;}
-.pago-pagado{background:var(--vc);color:var(--vs);}
-.pago-vencido{background:var(--rc);color:var(--ra);}
-.pago-pendiente{background:#FFF3CD;color:#856404;}
-.ded-tabla{width:100%;font-size:12px;border-collapse:collapse;margin-top:8px;}
-.ded-tabla td{padding:5px 8px;border-bottom:1px solid var(--gc);}
-.ded-tabla tr:last-child td{border-bottom:none;}
-.ded-tabla .ded-lbl{color:var(--gm);}
-.ded-tabla .ded-val{text-align:right;font-weight:600;}
-.ded-tabla .ded-sub{text-align:right;color:var(--ra);font-weight:700;}
-.ded-tabla .ded-neto{text-align:right;color:var(--vs);font-weight:800;font-size:14px;}
-.ded-tabla .ded-hdr{background:var(--gc);font-weight:700;font-size:11px;text-transform:uppercase;color:var(--gm);}
-.ded-toggle{font-size:11px;color:var(--am);cursor:pointer;margin-top:4px;text-decoration:underline;}
-.nom-resumen{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:18px;}
-.nom-card{background:var(--bl);border-radius:10px;border:1px solid var(--bo);padding:14px;box-shadow:0 2px 8px rgba(26,58,92,.07);}
-.nom-emp{font-weight:700;font-size:14px;color:var(--go);margin-bottom:2px;}
-.nom-rol{font-size:11px;color:var(--gm);margin-bottom:10px;}
-.nom-row{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;border-bottom:1px solid var(--gc);}
-.nom-row:last-child{border-bottom:none;}
-.nom-row span:first-child{color:var(--gm);}
-.nom-row span:last-child{font-weight:700;}
-.nom-total{display:flex;justify-content:space-between;font-size:15px;font-weight:800;padding:8px 0 0;margin-top:4px;color:var(--am);}
-.nom-overtime{color:var(--na);}
-.nom-bruto{color:var(--vs);}
-.perm-check{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1.5px solid var(--bo);border-radius:8px;cursor:pointer;}
-.perm-check:hover{border-color:var(--mo);background:var(--mc);}
-.perm-check input[type=checkbox]{width:18px;height:18px;accent-color:var(--mo);cursor:pointer;}
-.perm-check label{font-size:13px;font-weight:600;cursor:pointer;}
-.doc-req{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--gc);}
-.doc-req:last-child{border-bottom:none;}
-.doc-req-ico{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-.doc-req-info{flex:1;}
-.doc-req-nom{font-size:13px;font-weight:700;}
-.doc-req-det{font-size:11px;color:var(--gm);}
-.doc-badge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:10px;white-space:nowrap;}
-.doc-ok{background:var(--vc);color:var(--vs);}
-.doc-pend{background:#FFF3CD;color:#856404;}
-.doc-venc{background:var(--rc);color:var(--ra);}
-.doc-falt{background:var(--gc);color:var(--gm);}
-.memo-card{background:var(--bl);border:1.5px solid var(--bo);border-radius:10px;padding:12px 14px;margin-bottom:8px;}
-.memo-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
-.memo-tipo{font-size:11px;font-weight:700;padding:2px 8px;border-radius:8px;}
-.memo-advert{background:#FFF3CD;color:#856404;}
-.memo-correc{background:var(--rc);color:var(--ra);}
-.memo-recono{background:var(--vc);color:var(--vs);}
-.memo-info{background:var(--ac);color:var(--am);}
-.memo-body{font-size:13px;color:var(--go);margin-bottom:6px;}
-.memo-firma{font-size:11px;color:var(--gm);font-style:italic;}
-.emp-selector-card{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--bo);border-radius:10px;cursor:pointer;margin-bottom:6px;background:var(--bl);}
-.emp-selector-card:hover,.emp-selector-card.sel{background:var(--ac);border-color:var(--am);}
-.emp-selector-card.sel{border-width:2px;}
-.aseo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin-bottom:14px;}
-.aseo-card{background:var(--bl);border:1.5px solid var(--bo);border-radius:10px;padding:0;overflow:hidden;}
-.aseo-card-hdr{padding:10px 14px;font-weight:700;font-size:13px;display:flex;align-items:center;gap:8px;}
-.aseo-card-body{padding:10px 14px;}
-.aseo-check{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--gc);cursor:pointer;}
-.aseo-check:last-child{border-bottom:none;}
-.aseo-check input[type=checkbox]{width:20px;height:20px;accent-color:var(--vs);flex-shrink:0;}
-.aseo-check label{font-size:13px;cursor:pointer;flex:1;}
-.aseo-check.hecho label{text-decoration:line-through;color:var(--gm);}
-.aseo-resumen{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-bottom:14px;}
-.aseo-res-card{background:var(--bl);border-radius:8px;border:1px solid var(--bo);padding:10px;display:flex;gap:10px;align-items:center;}
-.aseo-res-foto{width:40px;height:40px;border-radius:50%;object-fit:cover;background:var(--gc);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-.aseo-res-info{flex:1;min-width:0;}
-.aseo-res-nom{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.aseo-res-pct{font-size:11px;color:var(--gm);}
-.aseo-barra{height:5px;border-radius:3px;background:var(--gc);margin-top:3px;}
-.aseo-barra-fill{height:5px;border-radius:3px;background:var(--vs);}
-.pin-emp-wrap{background:var(--ac);border:1.5px solid var(--bo);border-radius:10px;padding:10px 12px;margin-bottom:6px;}
-.pin-emp-row{display:flex;gap:8px;align-items:center;}
-.pin-emp-input{border:1.5px solid var(--bo);border-radius:8px;padding:9px 12px;font-size:18px;letter-spacing:6px;width:100px;text-align:center;font-family:inherit;}
-.pin-emp-input:focus{outline:none;border-color:var(--az);}
-.pin-emp-result{flex:1;padding:8px 12px;border-radius:8px;font-size:13px;font-weight:600;}
-.pin-emp-ok{background:var(--vc);color:var(--vs);}
-.pin-emp-err{background:var(--rc);color:var(--ra);}
-.pin-emp-idle{background:var(--gc);color:var(--gm);}
-.audit-row{display:flex;gap:10px;padding:9px 12px;border-bottom:1px solid var(--gc);font-size:13px;align-items:center;}
-.audit-row:last-child{border-bottom:none;}
-.audit-row:hover{background:var(--ac);}
-.audit-ico{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
-.audit-det{flex:1;}
-.audit-ts{font-size:11px;color:var(--gm);white-space:nowrap;}
-.reporte-kpi{background:var(--bl);border:1.5px solid var(--bo);border-radius:10px;padding:16px;text-align:center;}
-.reporte-kpi-val{font-size:28px;font-weight:800;color:var(--am);}
-.reporte-kpi-lbl{font-size:12px;color:var(--gm);margin-top:2px;}
-.guia-seccion{margin-bottom:20px;}
-.guia-seccion h3{font-size:15px;font-weight:800;color:var(--am);border-bottom:2px solid var(--am);padding-bottom:6px;margin-bottom:10px;}
-.guia-mod{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;}
-.guia-card{background:var(--bl);border:1.5px solid var(--bo);border-radius:10px;padding:12px 14px;}
-.guia-card-ico{font-size:22px;margin-bottom:6px;}
-.guia-card-titulo{font-weight:700;font-size:13px;color:var(--am);margin-bottom:4px;}
-.guia-card-desc{font-size:12px;color:var(--gm);line-height:1.5;}
-.guia-card-pasos{font-size:12px;color:var(--go);padding-left:14px;margin-top:6px;line-height:1.7;}
-.timeout-bar{height:4px;background:var(--ra);border-radius:2px;transition:width linear;}
-.filtro-wrap{margin-bottom:6px;position:relative;}
-.filtro-inp{width:100%;border:1.5px solid var(--bo);border-radius:8px;padding:10px 12px 10px 36px;font-size:16px;font-family:inherit;background:var(--bl);}
-.filtro-inp:focus{outline:none;border-color:var(--az);background:var(--ac);}
-.filtro-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none;}
-#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--go);color:white;padding:11px 22px;border-radius:9px;font-size:14px;font-weight:600;transition:transform .3s;z-index:999;pointer-events:none;}
-#toast.on{transform:translateX(-50%) translateY(0);}
-#toast.vs{background:var(--vs);}
-@media(max-width:680px){
-  /* Layout general */
-  .main{padding:8px;}
-  .card{border-radius:8px;margin-bottom:12px;}
-  .cb{padding:12px;}
-  .ch{padding:11px 14px;font-size:14px;}
-
-  /* Header compacto */
-  .header{padding:0 10px;height:52px;}
-  .hlogo{font-size:14px;gap:6px;}
-  .hlogo div div:last-child{display:none;}
-  .hu{display:none;}
-  .boutl{padding:5px 8px;font-size:11px;}
-
-  /* Nav */
-  .nt{padding:10px 10px;font-size:12px;gap:3px;}
-
-  /* Stats en 2 columnas */
-  .sg{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px;}
-  .sc{padding:12px 8px;}
-  .si{font-size:22px;}.sn{font-size:22px;}.sl{font-size:10px;}
-
-  /* Formularios 1 columna */
-  .fg,.fg3{grid-template-columns:1fr;gap:10px;}
-  .gg{grid-template-columns:1fr;gap:12px;}
-
-  /* Inputs y botones */
-  .fi input,.fi select,.fi textarea{font-size:16px;padding:11px 12px;}
-  .btn{font-size:14px;padding:11px 14px;}
-  .bsm{padding:8px 10px;font-size:13px;}
-
-  /* Barra de búsqueda */
-  .sb{flex-wrap:wrap;gap:8px;}
-  .sb input{font-size:16px;min-width:0;}
-  .sb .btn{width:100%;}
-
-  /* Tabla - scroll horizontal */
-  .tw{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-  table{font-size:13px;min-width:520px;}
-  th{padding:9px 10px;font-size:11px;}
-  td{padding:8px 10px;}
-
-  /* Modal en móvil - centrado con scroll */
-  .mo{padding:8px;}
-  .md{border-radius:12px;max-width:100%;max-height:92vh;width:100%;overflow-y:auto;}
-  .mh{border-radius:12px 12px 0 0;padding:13px 14px;}
-  .mb{padding:13px;}
-
-  /* Botones pegados al fondo con fondo blanco */
-  .ab{position:sticky;bottom:0;background:white;padding:10px 0 4px;margin-top:10px;flex-direction:column-reverse;border-top:1px solid var(--bo);}
-  .ab .btn{width:100%;justify-content:center;}
-
-  /* Gráficas más pequeñas */
-  .cbx{height:200px;}
-
-  /* Inner tabs scroll */
-  .it{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px;-webkit-overflow-scrolling:touch;}
-  .itb{white-space:nowrap;flex-shrink:0;}
-
-  /* Acciones en tabla */
-  .acciones-col{white-space:nowrap;}
-}
-@media print{.nav,.btn,.ab,.sb,.mo,#toast{display:none!important;}.sec{display:block!important;}.card{box-shadow:none;border:1px solid #ccc;page-break-inside:avoid;}}
-</style>
+<style>:root{--am:#1A3A5C;--az:#2563A8;--ac:#EBF3FC;--vs:#0D7A5F;--vc:#E6F5F1;--ra:#C0392B;--rc:#FDECEA;--na:#E67E22;--nc:#FEF3E2;--mo:#7B2D8B;--mc:#F3E8F7;--go:#2C3E50;--gm:#6B7A8D;--gc:#F0F4F8;--bl:#FFFFFF;--bo:#D1DCE8}*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--gc);color:var(--go);font-size:15px}.header{background:var(--am);color:white;padding:0 16px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2)}.hlogo{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:700}.hr{display:flex;align-items:center;gap:10px}.hu{font-size:11px;opacity:.9;text-align:right;line-height:1.4}.hu b{font-size:13px}.boutl{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:white;padding:6px 10px;border-radius:7px;font-size:12px;cursor:pointer;font-weight:600}.nav{background:var(--bl);border-bottom:2px solid var(--bo);display:none;overflow-x:auto;scrollbar-width:none;position:relative}.nav-salir{position:sticky;right:0;background:var(--bl);border-left:2px solid var(--bo);padding:0 10px;display:flex;align-items:center;gap:6px;flex-shrink:0;z-index:10;min-width:80px}.nav::-webkit-scrollbar{display:none}.nt{padding:13px 14px;font-size:13px;font-weight:600;color:var(--gm);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;display:flex;align-items:center;gap:5px;flex-shrink:0}.nt:hover{color:var(--az);background:var(--ac)}.nt.on{color:var(--am);border-bottom-color:var(--am)}.main{padding:16px;max-width:1100px;margin:0 auto;display:none}.sec{display:none}.sec.on{display:block}.card{background:var(--bl);border-radius:12px;border:1px solid var(--bo);box-shadow:0 2px 10px rgba(26,58,92,.08);margin-bottom:18px;overflow:hidden}.ch{color:white;padding:13px 18px;font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}.ch.am{background:var(--am)}.ch.vs{background:var(--vs)}.ch.ra{background:var(--ra)}.ch.na{background:var(--na)}.ch.mo{background:var(--mo)}.cb{padding:18px}.fg{display:grid;grid-template-columns:1fr 1fr;gap:13px}.fg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px}.ff{grid-column:1/-1}.fi{display:flex;flex-direction:column;gap:4px}.fi label{font-size:11px;font-weight:700;color:var(--gm);text-transform:uppercase;letter-spacing:.4px}.fi input,.fi select,.fi textarea{border:1.5px solid var(--bo);border-radius:8px;padding:10px 12px;font-size:15px;font-family:inherit;color:var(--go);background:var(--bl);width:100%}.fi input:focus,.fi select:focus,.fi textarea:focus{outline:none;border-color:var(--az);background:var(--ac)}.fi textarea{resize:vertical;min-height:76px}.btn{padding:10px 18px;border-radius:8px;border:none;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px}.bam{background:var(--am);color:white}.bvs{background:var(--vs);color:white}.bra{background:var(--ra);color:white}.bna{background:var(--na);color:white}.bmo{background:var(--mo);color:white}.bol{background:transparent;border:2px solid var(--am);color:var(--am)}.bsm{padding:7px 12px;font-size:13px}.bxs{padding:5px 9px;font-size:12px}.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px}thead{background:var(--am);color:white}th{padding:11px 13px;text-align:left;font-size:12px;font-weight:700;letter-spacing:.4px}td{padding:10px 13px;border-bottom:1px solid var(--bo);vertical-align:middle}tr:last-child td{border-bottom:none}tr:hover td{background:var(--ac)}.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase}.bvd{background:var(--vc);color:var(--vs)}.brd{background:var(--rc);color:var(--ra)}.bnd{background:var(--nc);color:var(--na)}.bad{background:var(--ac);color:var(--am)}.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:18px}.sc{background:var(--bl);border-radius:12px;padding:16px;box-shadow:0 2px 10px rgba(26,58,92,.08);border:1px solid var(--bo);text-align:center}.si{font-size:26px;margin-bottom:4px}.sn{font-size:26px;font-weight:800;color:var(--am)}.sl{font-size:11px;color:var(--gm);text-transform:uppercase;font-weight:700;margin-top:3px}.al{border-radius:8px;padding:11px 15px;margin-bottom:10px;display:flex;align-items:flex-start;gap:9px;font-size:14px}.alv{background:var(--vc);border-left:4px solid var(--vs);color:#0B5345}.alr{background:var(--rc);border-left:4px solid var(--ra);color:#7B241C}.aln{background:var(--nc);border-left:4px solid var(--na);color:#784212}.it{display:flex;gap:4px;margin-bottom:14px;flex-wrap:wrap}.itb{padding:7px 14px;border-radius:8px;background:var(--gc);border:1.5px solid var(--bo);font-size:13px;font-weight:700;cursor:pointer;color:var(--gm)}.itb.on{background:var(--am);color:white;border-color:var(--am)}.is{display:none}.is.on{display:block}.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;padding:16px}.mo.on{display:flex}.md{background:white;border-radius:14px;width:100%;max-width:680px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}.mh{color:white;padding:15px 18px;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:15px;border-radius:14px 14px 0 0}.mh.am{background:var(--am)}.mh.vs{background:var(--vs)}.mh.ra{background:var(--ra)}.mh.na{background:var(--na)}.mh.mo{background:var(--mo)}.mx{background:none;border:none;color:white;font-size:22px;cursor:pointer;line-height:1}.mb{padding:18px}.ab{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap}.dv{border:none;border-top:1px solid var(--bo);margin:16px 0}.sb{display:flex;gap:9px;margin-bottom:14px;align-items:center;flex-wrap:wrap}.sb input{flex:1;border:1.5px solid var(--bo);border-radius:8px;padding:10px 13px;font-size:15px;font-family:inherit}.sb input:focus{outline:none;border-color:var(--az)}.es{text-align:center;padding:36px 20px;color:var(--gm)}.ei{font-size:44px;margin-bottom:8px}.cbx{position:relative;height:240px}.gg{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}.tl{position:relative;padding-left:22px}.tl::before{content:'';position:absolute;left:7px;top:0;bottom:0;width:2px;background:var(--bo)}.tli{position:relative;margin-bottom:14px}.tld{position:absolute;left:-19px;top:4px;width:11px;height:11px;border-radius:50%;background:var(--vs);border:2px solid white;box-shadow:0 0 0 2px var(--vs)}.tlt{font-size:11px;color:var(--gm);font-weight:700}.tltx{font-size:14px;margin-top:2px}.uc{display:flex;align-items:center;gap:12px;padding:13px;border:1.5px solid var(--bo);border-radius:10px;margin-bottom:9px}.ua{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:white;flex-shrink:0}.ui{flex:1}.un{font-weight:700;font-size:14px}.ur{font-size:12px;color:var(--gm)}.foto-wrap{text-align:center;margin-bottom:16px}.foto-lbl{display:block;font-size:11px;font-weight:700;color:var(--gm);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px}.foto-circle{width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid var(--bo)}.foto-ph{width:100px;height:100px;border-radius:50%;background:var(--gc);border:2px dashed var(--bo);display:flex;align-items:center;justify-content:center;font-size:38px;margin:0 auto}.foto-btn{display:inline-block;cursor:pointer;color:var(--az);font-size:13px;font-weight:600;margin-top:6px;padding:5px 12px;border:1.5px solid var(--az);border-radius:7px}.res-av{width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--bo);flex-shrink:0}.res-ini{width:40px;height:40px;border-radius:50%;background:var(--am);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0}.alert-panel{background:var(--bl);border-radius:12px;border:1px solid var(--bo);margin-bottom:18px;overflow:hidden;box-shadow:0 2px 10px rgba(26,58,92,.08)}.alert-hdr{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;background:var(--am);color:white;font-weight:700;font-size:15px}.alert-hdr-badge{background:rgba(255,255,255,.25);border-radius:20px;padding:2px 10px;font-size:13px;font-weight:800}.alert-body{padding:12px}.alert-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:8px;margin-bottom:8px;border-left:4px solid}.alert-item:last-child{margin-bottom:0}.alert-item.crit{background:#fdecea;border-color:#C0392B}.alert-item.warn{background:#FEF3E2;border-color:#E67E22}.alert-item.info{background:#EBF3FC;border-color:#2563A8}.alert-item.ok{background:#E6F5F1;border-color:#0D7A5F}.alert-ico{font-size:20px;flex-shrink:0;margin-top:1px}.alert-txt{flex:1}.alert-txt strong{display:block;font-size:14px;color:var(--go)}.alert-txt span{font-size:12px;color:var(--gm)}.alert-time{font-size:11px;color:var(--gm);white-space:nowrap;margin-top:2px}.alert-empty{text-align:center;padding:20px;color:var(--gm);font-size:14px}.notif-dot{width:8px;height:8px;border-radius:50%;background:#C0392B;display:inline-block;margin-left:4px;vertical-align:middle}.tab-alerta{position:relative}#alertBadge{position:absolute;top:6px;right:2px;background:#C0392B;color:white;border-radius:10px;font-size:10px;font-weight:800;padding:1px 5px;display:none}.plan-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:16px}.plan-dia{background:var(--gc);border-radius:8px;padding:8px;border:1px solid var(--bo)}.plan-dia-hdr{font-size:11px;font-weight:800;color:var(--am);text-transform:uppercase;text-align:center;padding:4px 0;border-bottom:1px solid var(--bo);margin-bottom:6px}.plan-item{background:white;border-radius:6px;padding:6px 8px;margin-bottom:5px;font-size:12px;border-left:3px solid var(--vs);cursor:pointer}.plan-item.na{border-left-color:var(--na)}.plan-item.mo{border-left-color:var(--mo)}.plan-item.ra{border-left-color:var(--ra)}.plan-item-hora{font-size:10px;color:var(--gm);font-weight:700}.plan-item-nom{font-weight:600;color:var(--go)}@media(max-width:680px){.plan-grid{grid-template-columns:repeat(2,1fr)}}.ponch-reloj{text-align:center;padding:24px 16px;background:var(--am);color:white;border-radius:12px;margin-bottom:16px}.ponch-hora{font-size:52px;font-weight:800;letter-spacing:2px;line-height:1}.ponch-fecha{font-size:14px;opacity:.8;margin-top:6px}.ponch-btns{display:flex;gap:12px;justify-content:center;margin-top:16px;flex-wrap:wrap}.ponch-btn-in{background:#0D7A5F;color:white;border:none;border-radius:10px;padding:14px 28px;font-size:16px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:8px}.ponch-btn-out{background:#C0392B;color:white;border:none;border-radius:10px;padding:14px 28px;font-size:16px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:8px}.ponch-btn-in:active,.ponch-btn-out:active{opacity:.8}.ponch-estado{text-align:center;padding:10px;font-size:14px;font-weight:700;border-radius:8px;margin-top:10px}.ponch-dentro{background:var(--vc);color:var(--vs)}.ponch-fuera{background:var(--rc);color:var(--ra)}.emp-card{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--bo);border-radius:10px;margin-bottom:8px;background:var(--bl)}.emp-av{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:white;flex-shrink:0}.emp-info{flex:1}.emp-nom{font-weight:700;font-size:14px}.emp-det{font-size:12px;color:var(--gm)}.emp-status{font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px}.emp-in{background:var(--vc);color:var(--vs)}.emp-out{background:var(--rc);color:var(--ra)}.emp-off{background:var(--gc);color:var(--gm)}.reporte-fila-nom{font-weight:700}.reporte-horas{font-size:13px;color:var(--am);font-weight:700}.msg-burbuja{max-width:75%;padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.4;position:relative;word-break:break-word}.msg-yo{background:var(--am);color:white;border-bottom-right-radius:4px;align-self:flex-end}.msg-otro{background:var(--gc);color:var(--go);border-bottom-left-radius:4px;align-self:flex-start}.msg-broadcast{background:#FFF3CD;color:#856404;border:1px solid #FFD54F;border-radius:10px;align-self:center;text-align:center;max-width:90%}.msg-remitente{font-size:11px;font-weight:700;opacity:.7;margin-bottom:3px}.msg-hora{font-size:10px;opacity:.6;margin-top:3px;text-align:right}.msg-area{display:flex;flex-direction:column;gap:8px;padding:12px;height:320px;overflow-y:auto;background:var(--ac);border-radius:10px;margin-bottom:10px}.tarea-card{background:var(--bl);border:1.5px solid var(--bo);border-radius:10px;padding:12px 14px;margin-bottom:8px}.tarea-card.vencida{border-color:var(--ra);background:#FFF5F5}.tarea-card.completada{opacity:.6;border-color:var(--vs)}.tarea-titulo{font-weight:700;font-size:14px}.tarea-meta{font-size:12px;color:var(--gm);margin-top:3px}.tarea-prioridad-alta{color:var(--ra);font-weight:700}.tarea-prioridad-media{color:var(--na);font-weight:700}.tarea-prioridad-baja{color:var(--gm)}.online-dot{width:9px;height:9px;border-radius:50%;background:#2ecc71;display:inline-block;margin-right:4px}.canal-btn{padding:8px 12px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;border:1.5px solid var(--bo);background:var(--bl);margin-bottom:4px;display:flex;align-items:center;gap:8px}.canal-btn.activo{background:var(--am);color:white;border-color:var(--am)}.badge-msg{background:var(--ra);color:white;border-radius:10px;padding:1px 6px;font-size:10px;font-weight:800;margin-left:auto}.depto-tab{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}.depto-btn{padding:8px 14px;border-radius:20px;border:1.5px solid var(--bo);background:var(--bl);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px}.depto-btn.activo{background:var(--am);color:white;border-color:var(--am)}.depto-btn .depto-count{background:rgba(0,0,0,.15);border-radius:10px;padding:1px 6px;font-size:11px}.item-compra{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--gc)}.item-compra:last-child{border-bottom:none}.item-compra.comprado{opacity:.5}.item-compra input[type=checkbox]{width:20px;height:20px;accent-color:var(--vs);cursor:pointer;flex-shrink:0}.item-compra .item-nombre{flex:1;font-size:14px;font-weight:600}.item-compra.comprado .item-nombre{text-decoration:line-through;color:var(--gm)}.item-compra .item-cant{font-size:12px;color:var(--am);font-weight:700;white-space:nowrap}.item-compra .item-nota{font-size:11px;color:var(--gm)}.item-compra .item-precio{font-size:12px;color:var(--vs);font-weight:700;white-space:nowrap}.urgente-tag{background:var(--rc);color:var(--ra);font-size:10px;font-weight:700;border-radius:6px;padding:2px 6px;margin-left:4px}.abono-item{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-bottom:1px solid var(--gc);font-size:13px}.abono-item:last-child{border-bottom:none}.abono-total{display:flex;justify-content:space-between;padding:8px 10px;font-weight:700;font-size:14px;background:var(--gc);border-radius:0 0 8px 8px}.pago-card{background:var(--bl);border:1.5px solid var(--bo);border-radius:10px;padding:12px 14px;margin-bottom:8px}.pago-card.pagado{border-color:var(--vs);background:#F0FFF4}.pago-card.vencido{border-color:var(--ra);background:#FFF5F5}.pago-card.pendiente{border-color:var(--na)}.pago-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.pago-nom{font-size:14px;font-weight:700}.pago-monto{font-size:18px;font-weight:800;color:var(--am)}.pago-meta{font-size:12px;color:var(--gm)}.pago-estado{font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px}.pago-pagado{background:var(--vc);color:var(--vs)}.pago-vencido{background:var(--rc);color:var(--ra)}.pago-pendiente{background:#FFF3CD;color:#856404}.ded-tabla{width:100%;font-size:12px;border-collapse:collapse;margin-top:8px}.ded-tabla td{padding:5px 8px;border-bottom:1px solid var(--gc)}.ded-tabla tr:last-child td{border-bottom:none}.ded-tabla .ded-lbl{color:var(--gm)}.ded-tabla .ded-val{text-align:right;font-weight:600}.ded-tabla .ded-sub{text-align:right;color:var(--ra);font-weight:700}.ded-tabla .ded-neto{text-align:right;color:var(--vs);font-weight:800;font-size:14px}.ded-tabla .ded-hdr{background:var(--gc);font-weight:700;font-size:11px;text-transform:uppercase;color:var(--gm)}.ded-toggle{font-size:11px;color:var(--am);cursor:pointer;margin-top:4px;text-decoration:underline}.nom-resumen{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:18px}.nom-card{background:var(--bl);border-radius:10px;border:1px solid var(--bo);padding:14px;box-shadow:0 2px 8px rgba(26,58,92,.07)}.nom-emp{font-weight:700;font-size:14px;color:var(--go);margin-bottom:2px}.nom-rol{font-size:11px;color:var(--gm);margin-bottom:10px}.nom-row{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;border-bottom:1px solid var(--gc)}.nom-row:last-child{border-bottom:none}.nom-row span:first-child{color:var(--gm)}.nom-row span:last-child{font-weight:700}.nom-total{display:flex;justify-content:space-between;font-size:15px;font-weight:800;padding:8px 0 0;margin-top:4px;color:var(--am)}.nom-overtime{color:var(--na)}.nom-bruto{color:var(--vs)}.perm-check{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1.5px solid var(--bo);border-radius:8px;cursor:pointer}.perm-check:hover{border-color:var(--mo);background:var(--mc)}.perm-check input[type=checkbox]{width:18px;height:18px;accent-color:var(--mo);cursor:pointer}.perm-check label{font-size:13px;font-weight:600;cursor:pointer}.doc-req{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--gc)}.doc-req:last-child{border-bottom:none}.doc-req-ico{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}.doc-req-info{flex:1}.doc-req-nom{font-size:13px;font-weight:700}.doc-req-det{font-size:11px;color:var(--gm)}.doc-badge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:10px;white-space:nowrap}.doc-ok{background:var(--vc);color:var(--vs)}.doc-pend{background:#FFF3CD;color:#856404}.doc-venc{background:var(--rc);color:var(--ra)}.doc-falt{background:var(--gc);color:var(--gm)}.memo-card{background:var(--bl);border:1.5px solid var(--bo);border-radius:10px;padding:12px 14px;margin-bottom:8px}.memo-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}.memo-tipo{font-size:11px;font-weight:700;padding:2px 8px;border-radius:8px}.memo-advert{background:#FFF3CD;color:#856404}.memo-correc{background:var(--rc);color:var(--ra)}.memo-recono{background:var(--vc);color:var(--vs)}.memo-info{background:var(--ac);color:var(--am)}.memo-body{font-size:13px;color:var(--go);margin-bottom:6px}.memo-firma{font-size:11px;color:var(--gm);font-style:italic}.emp-selector-card{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--bo);border-radius:10px;cursor:pointer;margin-bottom:6px;background:var(--bl)}.emp-selector-card:hover,.emp-selector-card.sel{background:var(--ac);border-color:var(--am)}.emp-selector-card.sel{border-width:2px}.aseo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin-bottom:14px}.aseo-card{background:var(--bl);border:1.5px solid var(--bo);border-radius:10px;padding:0;overflow:hidden}.aseo-card-hdr{padding:10px 14px;font-weight:700;font-size:13px;display:flex;align-items:center;gap:8px}.aseo-card-body{padding:10px 14px}.aseo-check{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--gc);cursor:pointer}.aseo-check:last-child{border-bottom:none}.aseo-check input[type=checkbox]{width:20px;height:20px;accent-color:var(--vs);flex-shrink:0}.aseo-check label{font-size:13px;cursor:pointer;flex:1}.aseo-check.hecho label{text-decoration:line-through;color:var(--gm)}.aseo-resumen{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-bottom:14px}.aseo-res-card{background:var(--bl);border-radius:8px;border:1px solid var(--bo);padding:10px;display:flex;gap:10px;align-items:center}.aseo-res-foto{width:40px;height:40px;border-radius:50%;object-fit:cover;background:var(--gc);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}.aseo-res-info{flex:1;min-width:0}.aseo-res-nom{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.aseo-res-pct{font-size:11px;color:var(--gm)}.aseo-barra{height:5px;border-radius:3px;background:var(--gc);margin-top:3px}.aseo-barra-fill{height:5px;border-radius:3px;background:var(--vs)}.pin-emp-wrap{background:var(--ac);border:1.5px solid var(--bo);border-radius:10px;padding:10px 12px;margin-bottom:6px}.pin-emp-row{display:flex;gap:8px;align-items:center}.pin-emp-input{border:1.5px solid var(--bo);border-radius:8px;padding:9px 12px;font-size:18px;letter-spacing:6px;width:100px;text-align:center;font-family:inherit}.pin-emp-input:focus{outline:none;border-color:var(--az)}.pin-emp-result{flex:1;padding:8px 12px;border-radius:8px;font-size:13px;font-weight:600}.pin-emp-ok{background:var(--vc);color:var(--vs)}.pin-emp-err{background:var(--rc);color:var(--ra)}.pin-emp-idle{background:var(--gc);color:var(--gm)}.audit-row{display:flex;gap:10px;padding:9px 12px;border-bottom:1px solid var(--gc);font-size:13px;align-items:center}.audit-row:last-child{border-bottom:none}.audit-row:hover{background:var(--ac)}.audit-ico{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}.audit-det{flex:1}.audit-ts{font-size:11px;color:var(--gm);white-space:nowrap}.reporte-kpi{background:var(--bl);border:1.5px solid var(--bo);border-radius:10px;padding:16px;text-align:center}.reporte-kpi-val{font-size:28px;font-weight:800;color:var(--am)}.reporte-kpi-lbl{font-size:12px;color:var(--gm);margin-top:2px}.guia-seccion{margin-bottom:20px}.guia-seccion h3{font-size:15px;font-weight:800;color:var(--am);border-bottom:2px solid var(--am);padding-bottom:6px;margin-bottom:10px}.guia-mod{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}.guia-card{background:var(--bl);border:1.5px solid var(--bo);border-radius:10px;padding:12px 14px}.guia-card-ico{font-size:22px;margin-bottom:6px}.guia-card-titulo{font-weight:700;font-size:13px;color:var(--am);margin-bottom:4px}.guia-card-desc{font-size:12px;color:var(--gm);line-height:1.5}.guia-card-pasos{font-size:12px;color:var(--go);padding-left:14px;margin-top:6px;line-height:1.7}.timeout-bar{height:4px;background:var(--ra);border-radius:2px;transition:width linear}.filtro-wrap{margin-bottom:6px;position:relative}.filtro-inp{width:100%;border:1.5px solid var(--bo);border-radius:8px;padding:10px 12px 10px 36px;font-size:16px;font-family:inherit;background:var(--bl)}.filtro-inp:focus{outline:none;border-color:var(--az);background:var(--ac)}.filtro-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none}#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--go);color:white;padding:11px 22px;border-radius:9px;font-size:14px;font-weight:600;transition:transform .3s;z-index:999;pointer-events:none}#toast.on{transform:translateX(-50%) translateY(0)}#toast.vs{background:var(--vs)}@media(max-width:680px){.main{padding:8px}.card{border-radius:8px;margin-bottom:12px}.cb{padding:12px}.ch{padding:11px 14px;font-size:14px}.header{padding:0 10px;height:52px}.hlogo{font-size:14px;gap:6px}.hlogo div div:last-child{display:none}.hu{display:none}.boutl{padding:5px 8px;font-size:11px}.nt{padding:10px 10px;font-size:12px;gap:3px}.sg{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}.sc{padding:12px 8px}.si{font-size:22px}.sn{font-size:22px}.sl{font-size:10px}.fg,.fg3{grid-template-columns:1fr;gap:10px}.gg{grid-template-columns:1fr;gap:12px}.fi input,.fi select,.fi textarea{font-size:16px;padding:11px 12px}.btn{font-size:14px;padding:11px 14px}.bsm{padding:8px 10px;font-size:13px}.sb{flex-wrap:wrap;gap:8px}.sb input{font-size:16px;min-width:0}.sb .btn{width:100%}.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}table{font-size:13px;min-width:520px}th{padding:9px 10px;font-size:11px}td{padding:8px 10px}.mo{padding:8px}.md{border-radius:12px;max-width:100%;max-height:92vh;width:100%;overflow-y:auto}.mh{border-radius:12px 12px 0 0;padding:13px 14px}.mb{padding:13px}.ab{position:sticky;bottom:0;background:white;padding:10px 0 4px;margin-top:10px;flex-direction:column-reverse;border-top:1px solid var(--bo)}.ab .btn{width:100%;justify-content:center}.cbx{height:200px}.it{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px;-webkit-overflow-scrolling:touch}.itb{white-space:nowrap;flex-shrink:0}.acciones-col{white-space:nowrap}}@media print{.nav,.btn,.ab,.sb,.mo,#toast{display:none!important}.sec{display:block!important}.card{box-shadow:none;border:1px solid #ccc;page-break-inside:avoid}}</style>
 </head>
 <body>
 
@@ -492,7 +159,7 @@ tr:hover td{background:var(--ac);}
   </div>
 </div>
 
-<div class="nav" id="navBar">
+<div class="nav" id="navBar" style="display:none">
   <div class="nt on"  onclick="goTab('dashboard',this)">📊 Dashboard</div>
   <div class="nt"     onclick="goTab('residentes',this)">👴 Residentes</div>
   <div class="nt"     onclick="goTab('expediente',this)">📋 Expediente</div>
@@ -527,7 +194,7 @@ tr:hover td{background:var(--ac);}
   </div>
 </div>
 
-<div class="main">
+<div class="main" style="display:none">
 
 <!-- DASHBOARD -->
 <div class="sec on" id="tab-dashboard">
@@ -3107,7 +2774,7 @@ tr:hover td{background:var(--ac);}
   </div>
 </div>
 
-<!-- Aviso timeout -->
+
 <div id="timeoutWarn" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:9999;align-items:center;justify-content:center">
   <div style="background:white;border-radius:14px;padding:24px;max-width:340px;width:90%;text-align:center">
     <div style="font-size:36px;margin-bottom:10px">⏰</div>
@@ -3121,7 +2788,6 @@ tr:hover td{background:var(--ac);}
 <div id="toast">✅ Guardado</div>
 
 <script>
-// ===== DATOS =====
 var DB = {
   residentes:[], medicamentos:[], signos:[], alimentacion:[],
   actividades:[], incidentes:[], visitas:[], turnos:[], expedientes:{},
@@ -3144,7 +2810,7 @@ function cDB() {
   if (!s) return;
   try {
     var d = JSON.parse(s);
-    // Todas las tablas de la app
+
     ['residentes','medicamentos','signos','alimentacion','actividades',
      'incidentes','visitas','turnos','expedientes',
      'fallecidos','cuarentenas','ponches','aseos','auditoria',
@@ -3153,7 +2819,7 @@ function cDB() {
     ].forEach(function(k){ if(d[k]) DB[k]=d[k]; });
     if (d.usuarios && d.usuarios.length > 0) {
       DB.usuarios = d.usuarios;
-      // Garantizar que siempre existe el admin por defecto
+
       var hasAdmin = DB.usuarios.find(function(u){ return u.rol==='admin'; });
       if (!hasAdmin) {
         DB.usuarios.unshift({id:'U1',nombre:'Administrador',username:'admin',password:'admin123',rol:'admin',turno:'Rotativo'});
@@ -3164,7 +2830,6 @@ function cDB() {
 function sDB() { localStorage.setItem('chdb4', JSON.stringify(DB)); }
 cDB();
 
-// ===== PERMISOS =====
 var PERM = {
   admin:    ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','cuarentena','mensajes','compras','guia','empleados','auditoria','reportes','pagos','fallecidos','usuarios','aseo'],
   medico:   ['dashboard','residentes','expediente','medicamentos','signos','incidentes','graficas','alertas','visitas_med','plan_act','cuarentena','mensajes','guia','aseo'],
@@ -3189,7 +2854,6 @@ function applyPerm() {
   });
 }
 
-// ===== LOGIN =====
 function doLogin() {
   var u = document.getElementById('luU').value.trim().toLowerCase();
   var p = document.getElementById('luP').value;
@@ -3208,13 +2872,13 @@ function doLogin() {
   mostrarSesionInfo();
   var si = document.getElementById('sesionInfo');
   if (si) si.style.display = '';
-// Iniciar timer de inactividad
+
 resetTimeout();
 ['click','keydown','touchstart','mousemove'].forEach(function(ev){
   document.addEventListener(ev, resetTimeout, {passive:true});
 });
   closeM('mLogin');
-  // Mostrar la app
+
   var navBar = document.getElementById('navBar');
   var mainEl = document.querySelector('.main');
   if (navBar) navBar.style.display = 'flex';
@@ -3237,7 +2901,6 @@ function rolL(r) {
   }[r] || r || '—';
 }
 
-// ===== RELOJ =====
 function clock() {
   var n = new Date();
   var ds = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
@@ -3248,7 +2911,14 @@ function clock() {
 }
 clock(); setInterval(clock, 30000);
 
-// ===== NAVEGACIÓN =====
+function goTabName(id) {
+  var btns = document.querySelectorAll('.nt');
+  for (var i=0; i<btns.length; i++) {
+    var onc = btns[i].getAttribute('onclick')||'';
+    if (onc.indexOf("'"+id+"'")>=0||onc.indexOf('"'+id+'"')>=0) { goTab(id, btns[i]); return; }
+  }
+}
+
 function goTab(id, el) {
   document.querySelectorAll('.sec').forEach(function(s){ s.classList.remove('on'); });
   document.querySelectorAll('.nt').forEach(function(t){ t.classList.remove('on'); });
@@ -3288,16 +2958,14 @@ function inTab(g, id, el) {
   if (id==='evol') rEvol();
 }
 
-// ===== MODALES =====
 function openM(id) { document.getElementById(id).classList.add('on'); }
 function closeM(id) {
-  // No cerrar el login si no hay sesión
+
   if (id==='mLogin' && (!SES || !SES.id)) return; document.getElementById(id).classList.remove('on'); }
 document.querySelectorAll('.mo').forEach(function(o){
   o.addEventListener('click', function(e){ if(e.target===o) o.classList.remove('on'); });
 });
 
-// ===== TOAST =====
 function toast(msg, t) {
   var el = document.getElementById('toast');
   el.textContent = msg;
@@ -3305,7 +2973,6 @@ function toast(msg, t) {
   setTimeout(function(){ el.className=''; }, 2500);
 }
 
-// ===== HELPERS =====
 function fh() {
   var n=new Date();
   var h=n.getHours(), m=n.getMinutes(), ampm=h>=12?'PM':'AM';
@@ -3357,7 +3024,6 @@ function pSel(sid) {
 function nr(id) { var r=DB.residentes.find(function(x){return x.id===id;}); return r?r.nombre:'—'; }
 function em(c,i,m) { return '<tr><td colspan="'+c+'"><div class="es"><div class="ei">'+i+'</div><p>'+m+'</p></div></td></tr>'; }
 
-// ===== FOTO =====
 document.getElementById('rFotoInput').addEventListener('change', function(){
   var file = this.files[0]; if (!file) return;
   var inp = this;
@@ -3381,13 +3047,117 @@ function qFoto() {
   document.getElementById('rFotoQuit').style.display = 'none';
 }
 
-// ===== DASHBOARD =====
 function dash() {
-  document.getElementById('s1').textContent = DB.residentes.filter(function(r){ return r.estado==='Activo'; }).length;
-  document.getElementById('s2').textContent = DB.medicamentos.filter(function(m){ return m.fecha===new Date().toISOString().slice(0,10); }).length;
-  var mes = new Date().getMonth();
-  document.getElementById('s3').textContent = DB.incidentes.filter(function(i){ return i.raw && new Date(i.raw).getMonth()===mes; }).length;
-  document.getElementById('s4').textContent = DB.visitas.filter(function(v){ return v.fecha===hoy(); }).length;
+  var hoyStr = new Date().toISOString().slice(0,10);
+  var ahora = new Date();
+  var mes = ahora.getMonth();
+
+  var resActivos = DB.residentes.filter(function(r){ return r.estado==='Activo'||r.estado==='En observación'; });
+  document.getElementById('s1').textContent = resActivos.length;
+  document.getElementById('s2').textContent = (DB.medicamentos||[]).filter(function(m){ return m.fecha===hoyStr || (m.ts&&m.ts.includes(hoyStr.split('-').reverse().join('/'))); }).length;
+  document.getElementById('s3').textContent = (DB.incidentes||[]).filter(function(i){ return i.raw&&new Date(i.raw).getMonth()===mes; }).length;
+  document.getElementById('s4').textContent = (DB.visitas||[]).filter(function(v){ return v.fecha===hoyStr; }).length;
+  var empAct = new Set();
+  (DB.ponches||[]).filter(function(p){ return p.fecha===hoyStr; }).forEach(function(p){
+    if(p.tipo==='entrada') empAct.add(p.userId); else empAct.delete(p.userId);
+  });
+  if(document.getElementById('s5')) document.getElementById('s5').textContent = empAct.size;
+  if(document.getElementById('s6')) document.getElementById('s6').textContent = (DB.cuarentenas||[]).filter(function(q){ return q.estado==='Activo'; }).length;
+  if(document.getElementById('s7')) document.getElementById('s7').textContent = (DB.pagos||[]).filter(function(p){ return p.estado==='Pendiente'||p.estado==='Vencido'; }).length;
+  if(document.getElementById('s8')) document.getElementById('s8').textContent = (DB.tareas||[]).filter(function(t){ return t.estado==='Pendiente'||t.estado==='En progreso'; }).length;
+
+  var estDiv = document.getElementById('dashEstado');
+  if (estDiv) {
+    var enCuar = (DB.cuarentenas||[]).filter(function(q){ return q.estado==='Activo'; }).length;
+    var sinAseo = resActivos.filter(function(r){
+      return !(DB.aseos||[]).some(function(a){ return a.residenteId===r.id&&a.raw&&a.raw.startsWith(hoyStr); });
+    }).length;
+    var medPend = (DB.medicamentos||[]).filter(function(m){ return m.estado==='Pendiente'&&(m.fecha===hoyStr||(m.ts&&m.ts.includes(hoyStr.split('-').reverse().join('/')))); }).length;
+    var pagoVenc = (DB.pagos||[]).filter(function(p){ return p.estado==='Vencido'; }).length;
+    var compUrg  = (DB.compras||[]).filter(function(x){ return x.urgente&&x.estado==='Pendiente'; }).length;
+    var incMes   = (DB.incidentes||[]).filter(function(i){ return i.raw&&new Date(i.raw).getMonth()===mes; }).length;
+    var rows = [
+      ['👴 Residentes activos', resActivos.length, resActivos.length>0?'vs':'gm'],
+      ['🔴 En cuarentena', enCuar, enCuar>0?'ra':'vs'],
+      ['💊 Medicamentos pendientes hoy', medPend, medPend>0?'na':'vs'],
+      ['🧼 Sin aseo registrado hoy', sinAseo, sinAseo>0?'na':'vs'],
+      ['💳 Pagos vencidos', pagoVenc, pagoVenc>0?'ra':'vs'],
+      ['🛒 Compras urgentes', compUrg, compUrg>0?'na':'vs'],
+      ['🚨 Incidentes este mes', incMes, incMes>3?'ra':incMes>0?'na':'vs'],
+    ];
+    estDiv.innerHTML = rows.map(function(r){
+      return '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--gc);font-size:13px"><span>'+r[0]+'</span><strong style="color:var(--'+r[2]+')">'+r[1]+'</strong></div>';
+    }).join('');
+  }
+
+  var persDiv = document.getElementById('dashPersonal');
+  if (persDiv) {
+    var activos = DB.usuarios.filter(function(u){ return empAct.has(u.id); });
+    var cols = {admin:'#1A3A5C',medico:'#7B2D8B',enfermera:'#0D7A5F',aux:'#E67E22',recepcion:'#607D8B',cocina:'#C0392B',limpieza:'#27AE60',terapia:'#8E44AD',trabajo_social:'#2980B9',voluntario:'#16A085',contabilidad:'#117A65'};
+    if (!activos.length) {
+      persDiv.innerHTML = '<div style="color:var(--gm);font-size:13px;text-align:center;padding:10px">Sin empleados en turno ahora.</div>';
+    } else {
+      persDiv.innerHTML = activos.map(function(u){
+        var ini = u.nombre.split(' ').map(function(x){return x[0];}).join('').substring(0,2).toUpperCase();
+        return '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--gc)">' +
+          '<div style="width:32px;height:32px;border-radius:50%;background:'+(cols[u.rol]||'#607D8B')+';color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px">'+ini+'</div>' +
+          '<div><div style="font-size:13px;font-weight:600">'+u.nombre+'</div><div style="font-size:11px;color:var(--gm)">'+rolL(u.rol)+'</div></div>' +
+          '<span style="margin-left:auto;font-size:10px;background:var(--vc);color:var(--vs);border-radius:6px;padding:2px 6px">EN TURNO</span></div>';
+      }).join('');
+    }
+  }
+
+  var cumDiv = document.getElementById('dashCumple');
+  if (cumDiv) {
+    var hoyMD = hoyStr.slice(5);
+    var prox = resActivos.map(function(r){
+      if(!r.fechaNac) return null;
+      var md = r.fechaNac.slice(5);
+      var diff = new Date(hoyStr.slice(0,4)+'-'+md) - new Date(hoyStr);
+      if(diff<0) diff += 365*24*60*60*1000;
+      return {nombre:r.nombre, md:md, dias:Math.round(diff/86400000), hoy:md===hoyMD};
+    }).filter(Boolean).sort(function(a,b){return a.dias-b.dias;}).slice(0,6);
+    cumDiv.innerHTML = !prox.length
+      ? '<div style="color:var(--gm);font-size:13px;text-align:center;padding:10px">Sin cumpleaños próximos.</div>'
+      : prox.map(function(r){
+          var p = r.md.split('-');
+          return '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--gc)">' +
+            '<span style="font-size:20px">'+(r.hoy?'🎂':'🎁')+'</span>' +
+            '<div><div style="font-size:13px;font-weight:600">'+r.nombre+'</div>' +
+            '<div style="font-size:11px;color:var(--gm)">'+p[1]+'/'+p[0]+(r.hoy?' — HOY 🎉':' — en '+r.dias+'d')+'</div></div>' +
+            (r.hoy?'<span style="margin-left:auto;background:var(--na);color:white;border-radius:6px;padding:2px 6px;font-size:10px">HOY</span>':'') +
+            '</div>';
+        }).join('');
+  }
+
+  var fechaEl = document.getElementById('dashFecha');
+  if (fechaEl) {
+    var dias=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+    var meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    fechaEl.textContent = dias[ahora.getDay()]+', '+ahora.getDate()+' de '+meses[ahora.getMonth()]+' '+ahora.getFullYear();
+  }
+  var agDiv = document.getElementById('dashAgenda');
+  if (agDiv) {
+    var hStr = ahora.getHours().toString().padStart(2,'0')+':'+ahora.getMinutes().toString().padStart(2,'0');
+    var agenda = [
+      {h:'07:00',a:'Toma de signos vitales',r:'Enfermería',ok:function(){return (DB.signos||[]).some(function(s){return s.raw&&s.raw.startsWith(hoyStr);});}},
+      {h:'07:30',a:'Medicación de la mañana',r:'Enfermería',ok:function(){return (DB.medicamentos||[]).some(function(m){return (m.fecha===hoyStr||(m.ts&&m.ts.includes(hoyStr.split('-').reverse().join('/'))))&&(m.hora||'')>'06:00'&&(m.hora||'')<'08:00';});}},
+      {h:'08:00',a:'Desayuno',r:'Cocina',ok:function(){return (DB.alimentacion||[]).some(function(a){return a.fecha===hoyStr;});}},
+      {h:'09:30',a:'Aseo personal — mañana 🧼',r:'Auxiliares',ok:function(){return (DB.aseos||[]).some(function(a){return a.raw&&a.raw.startsWith(hoyStr)&&(a.turno||'').includes('Día');});}},
+      {h:'10:00',a:'Actividades terapéuticas',r:'Terapeuta',ok:function(){return (DB.actividades||[]).some(function(a){return a.fecha===hoyStr;});}},
+      {h:'12:00',a:'Almuerzo / Medicación mediodía',r:'Enf. + Cocina',ok:function(){return false;}},
+      {h:'15:00',a:'Visita familiar',r:'Recepción',ok:function(){return (DB.visitas||[]).some(function(v){return v.fecha===hoyStr;});}},
+      {h:'18:00',a:'Cena',r:'Cocina',ok:function(){return false;}},
+      {h:'20:00',a:'Aseo personal — noche 🧼',r:'Auxiliares',ok:function(){return (DB.aseos||[]).some(function(a){return a.raw&&a.raw.startsWith(hoyStr)&&(a.turno||'').includes('Noche');});}},
+      {h:'21:00',a:'Medicación nocturna',r:'Enfermería',ok:function(){return false;}},
+    ];
+    agDiv.innerHTML = '<div class="tw"><table><thead><tr><th>Hora</th><th>Actividad</th><th>Responsable</th><th>Estado</th></tr></thead><tbody>'+
+      agenda.map(function(a){
+        var done=a.ok(), past=a.h<hStr;
+        var badge=done?'<span class="badge bvs">✅ Hecho</span>':past?'<span class="badge bra">⏰ Pendiente</span>':'<span class="badge bnd">Próximo</span>';
+        return '<tr style="background:'+(done?'#F0FFF4':past?'#FFF5F5':'')+'"><td style="font-weight:700;color:var(--am)">'+a.h+'</td><td>'+a.a+'</td><td style="color:var(--gm)">'+a.r+'</td><td>'+badge+'</td></tr>';
+      }).join('')+'</tbody></table></div>';
+  }
 }
 function mkCh(id, cfg) {
   if (CH[id]) { try { CH[id].destroy(); } catch(e){} }
@@ -3413,7 +3183,6 @@ function dCharts() {
   });
 }
 
-// ===== RESIDENTES =====
 function saveRes() {
   var n = document.getElementById('rN').value.trim();
   var h = document.getElementById('rH').value.trim();
@@ -3497,7 +3266,6 @@ function goExp(id) {
   setTimeout(function(){ pSel('selExp'); document.getElementById('selExp').value=id; loadExp(); }, 80);
 }
 
-// ===== EXPEDIENTE =====
 function loadExp() {
   var id = document.getElementById('selExp').value;
   if (!id) { document.getElementById('expCont').style.display='none'; document.getElementById('expVac').style.display='block'; return; }
@@ -3537,7 +3305,7 @@ function loadExp() {
   document.getElementById('eMed').value = co.medico || '';
   document.getElementById('eSeg').value = co.seguro || '';
   rEvol();
-  // Cargar tab de planes
+
   var pc = document.getElementById('expPlanesContent');
   if (pc) {
     pc.innerHTML =
@@ -3577,7 +3345,7 @@ function saveAler() {
   var alim = document.getElementById('eAAlim').value.trim();
   var otra = document.getElementById('eAOtra').value.trim();
   DB.expedientes[id].alergias = {medicamentos:med, alimentos:alim, otras:otra};
-  // Sincronizar con el residente para mostrar en tabla y medicamentos
+
   var r = DB.residentes.find(function(x){ return x.id===id; });
   if (r) { r.alerMed=med; r.alerAlim=alim; r.alerOtra=otra; }
   sDB();
@@ -3609,7 +3377,6 @@ function rEvol() {
   div.innerHTML = h + '</div>';
 }
 
-// ===== MEDICAMENTOS =====
 function openMed() {
   openM('mMed');
   var n = new Date();
@@ -3622,18 +3389,18 @@ function openMed() {
 }
 
 function openMedConRes() {
-  // Pre-seleccionar el residente del filtro si hay uno seleccionado
+
   var filtroRid = document.getElementById('fMedR') ? document.getElementById('fMedR').value : '';
   openM('mMed');
   var n = new Date();
   document.getElementById('mH').value = n.toTimeString().slice(0,5);
   setTimeout(function(){
     pSel('mR');
-    // Si había un residente seleccionado en el filtro, pre-seleccionarlo
+
     if (filtroRid) {
       var sel = document.getElementById('mR');
       if (sel) sel.value = filtroRid;
-      // Actualizar la lupa con el nombre del residente
+
       var r = DB.residentes.find(function(x){ return x.id===filtroRid; });
       var li = document.getElementById('lupa_mR');
       if (li && r) li.value = r.nombre + ' (Hab. ' + r.habitacion + ')';
@@ -3678,16 +3445,15 @@ function rMed() {
   tbody.innerHTML=h;
 }
 
-// ===== SIGNOS VITALES =====
 function saveSV() {
   var rid = document.getElementById('svR').value;
   if (!rid) { toast('⚠️ Selecciona un residente'); return; }
-  // Convertir peso a kg si está en lb
+
   var pesoEl   = document.getElementById('svP');
   var pesoUnit = document.getElementById('svPUnit') ? document.getElementById('svPUnit').value : 'kg';
   var pesoVal  = parseFloat(pesoEl ? pesoEl.value : 0);
   if (pesoVal && pesoUnit === 'lb') pesoVal = parseFloat((pesoVal * 0.453592).toFixed(1));
-  // Obtener empleado del select (puede ser select con size o input)
+
   var svEEl = document.getElementById('svE');
   var enfermera = svEEl ? svEEl.value : '';
   var s = {
@@ -3709,14 +3475,14 @@ function saveSV() {
   closeM('mSV');
   rSV();
   gSV();
-  // Limpiar campos
+
   ['svS','svDi','svF','svFR','svT','svG','svO2','svOb'].forEach(function(id){
     var el = document.getElementById(id); if (el) el.value = '';
   });
   if (pesoEl) pesoEl.value = '';
   if (document.getElementById('svPUnit')) document.getElementById('svPUnit').value = 'kg';
   if (document.getElementById('svPConv')) document.getElementById('svPConv').textContent = '';
-  // Log auditoría
+
   var r = DB.residentes.find(function(x){ return x.id===rid; });
   logAudit('Signos Vitales','Signos registrados'+(r?' para '+r.nombre:'')+(enfermera?' por '+enfermera:''));
   toast('✅ Signos registrados', 'vs');
@@ -3738,7 +3504,6 @@ function gSV() {
   mkCh('cSV',{type:'line',data:{labels:lista.map(function(s){return s.ts||'';}),datasets:[{label:'TAS',data:lista.map(function(s){return s.tas||null;}),borderColor:'#C0392B',tension:.3,fill:false,pointRadius:4},{label:'TAD',data:lista.map(function(s){return s.tad||null;}),borderColor:'#E67E22',tension:.3,fill:false,pointRadius:4},{label:'FC',data:lista.map(function(s){return s.fc||null;}),borderColor:'#0D7A5F',tension:.3,fill:false,pointRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}},scales:{x:{ticks:{maxTicksLimit:6}}}}});
 }
 
-// ===== ALIMENTACION =====
 function saveAlim() {
   var rid=document.getElementById('alR').value; if (!rid) { toast('⚠️ Selecciona un residente'); return; }
   var a={id:'AL'+Date.now(),ts:fh(),raw:new Date().toISOString(),residenteId:rid,comida:document.getElementById('alC').value,menu:document.getElementById('alMn').value.trim(),consumo:document.getElementById('alCo').value,dieta:document.getElementById('alDt').value,asistio:document.getElementById('alAs').value,obs:document.getElementById('alOb').value.trim()};
@@ -3757,7 +3522,6 @@ function rAlim() {
   tbody.innerHTML=h;
 }
 
-// ===== ACTIVIDADES =====
 function saveAct() {
   var n=document.getElementById('acN').value.trim(); if (!n) { toast('⚠️ Escribe el nombre'); return; }
   var a={id:'AC'+Date.now(),ts:fh(),nombre:n,tipo:document.getElementById('acT').value,participantes:document.getElementById('acP').value.trim(),responsable:document.getElementById('acRe').value.trim(),animo:document.getElementById('acA').value,obs:document.getElementById('acO').value.trim()};
@@ -3773,7 +3537,6 @@ function rAct() {
   tbody.innerHTML=h;
 }
 
-// ===== INCIDENTES =====
 function saveInc() {
   var rid=document.getElementById('inR').value, desc=document.getElementById('inD').value.trim();
   if (!rid||!desc) { toast('⚠️ Residente y descripción son obligatorios'); return; }
@@ -3799,7 +3562,6 @@ function rInc() {
   tbody.innerHTML=h;
 }
 
-// ===== VISITAS =====
 function saveVis() {
   var rid=document.getElementById('viR').value, n=document.getElementById('viN').value.trim();
   if (!rid||!n) { toast('⚠️ Residente y visitante son obligatorios'); return; }
@@ -3816,9 +3578,8 @@ function rVis() {
   tbody.innerHTML=h;
 }
 
-// ===== TURNO =====
 function saveTurno() {
-  // Resolver PINs de empleados
+
   function resolverPin(pinId) {
     var pin = document.getElementById(pinId) ? document.getElementById(pinId).value : '';
     if (!pin) return '';
@@ -3838,7 +3599,7 @@ function saveTurno() {
   };
   if (!DB.turnos) DB.turnos=[];
   DB.turnos.push(t); sDB(); rTur();
-  // Limpiar PINs
+
   ['tEnfE','tEnfR'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
   ['tEnfERes','tEnfRRes'].forEach(function(id){ var el=document.getElementById(id); if(el){ el.textContent='Ingresa tu PIN'; el.className='pin-emp-result pin-emp-idle'; }});
   if(document.getElementById('tNov')) document.getElementById('tNov').value='';
@@ -3855,7 +3616,6 @@ function rTur() {
   tbody.innerHTML=h;
 }
 
-// ===== USUARIOS =====
 function resetModalUsr() {
   var hdr = document.querySelector('#mUsr .mh');
   if (hdr) hdr.childNodes[0].textContent = '👤 Nuevo Usuario ';
@@ -3869,7 +3629,7 @@ function resetModalUsr() {
 function editUsr(uid) {
   var u = DB.usuarios.find(function(x){ return x.id===uid; });
   if (!u) return;
-  // Llenar el modal con los datos del usuario
+
   document.getElementById('uN').value   = u.nombre   || '';
   document.getElementById('uU').value   = u.username || '';
   document.getElementById('uP').value   = u.password || '';
@@ -3878,7 +3638,7 @@ function editUsr(uid) {
   document.getElementById('uTel').value = u.tel      || '';
   if (document.getElementById('uSalario'))  document.getElementById('uSalario').value  = u.salario  || '';
   if (document.getElementById('uHorasReg')) document.getElementById('uHorasReg').value = u.horasReg || 40;
-  // Cambiar título y botón
+
   var hdr = document.querySelector('#mUsr .mh');
   if (hdr) hdr.childNodes[0].textContent = '✏️ Editar Usuario ';
   var btn = document.getElementById('btnGuardarUsr');
@@ -3893,10 +3653,10 @@ function actualizarUsr(uid) {
   var username = document.getElementById('uU').value.trim().toLowerCase();
   var p = document.getElementById('uP').value;
   if (!n || !username || !p) { toast('⚠️ Nombre, usuario y contraseña son obligatorios'); return; }
-  // Verificar que el username no esté tomado por otro
+
   var dup = DB.usuarios.find(function(x){ return x.username===username && x.id!==uid; });
   if (dup) { toast('⚠️ Ese nombre de usuario ya está en uso'); return; }
-  // Actualizar
+
   u.nombre   = n;
   u.username = username;
   u.password = p;
@@ -3908,7 +3668,7 @@ function actualizarUsr(uid) {
   sDB();
   closeM('mUsr');
   rUsr();
-  // Restaurar modal a modo "nuevo"
+
   var hdr = document.querySelector('#mUsr .mh');
   if (hdr) hdr.childNodes[0].textContent = '👤 Nuevo Usuario ';
   var btn = document.querySelector('#mUsr .btn.bvs');
@@ -3966,7 +3726,6 @@ function rUsr() {
   div.innerHTML = h || '<div class="es"><div class="ei">👥</div><p>Sin usuarios.</p></div>';
 }
 
-// ===== GRÁFICAS =====
 function allGraf() {
   var rid=document.getElementById('gfR').value;
   var dias=parseInt(document.getElementById('gfP').value)||7;
@@ -3986,7 +3745,6 @@ function allGraf() {
   mkCh('gIN',{type:'bar',data:{labels:cs,datasets:[{label:'% Consumido',data:pr,backgroundColor:['#2563A8','#7B2D8B','#0D7A5F','#E67E22','#1A3A5C']}]},options:{responsive:true,maintainAspectRatio:false,scales:{y:{min:0,max:100}},plugins:{legend:{display:false}}}});
 }
 
-// ===== PDF =====
 function getJP() { return window.jspdf ? window.jspdf.jsPDF : (typeof jspdf!=='undefined' ? jspdf.jsPDF : null); }
 function hdrPDF(doc) {
   doc.setFillColor(26,58,92); doc.rect(0,0,210,20,'F');
@@ -4062,7 +3820,6 @@ function pdfTurno() {
   doc.save('Turno.pdf'); toast('📄 PDF generado','vs');
 }
 
-// ===== VISITAS MÉDICAS =====
 function openVM() {
   openM('mVM');
   setTimeout(function(){ pSel('vmR'); var l=document.getElementById('lupa_vmR'); if(l)l.value=''; },50);
@@ -4096,7 +3853,7 @@ function rVM() {
   var lista=DB.visitasMed.slice().reverse();
   if (rid) lista=lista.filter(function(v){ return v.residenteId===rid; });
   if (med) lista=lista.filter(function(v){ return v.medico===med; });
-  // Poblar filtro de médicos
+
   var medSel=document.getElementById('fVMM');
   var curMed=medSel.value;
   medSel.innerHTML='<option value="">— Todos —</option>';
@@ -4141,7 +3898,6 @@ function rOM() {
   tbody.innerHTML=h;
 }
 
-// ===== PLAN DE ACTIVIDADES =====
 function openAct2() { openM('mAct2'); }
 function openTer()  { openM('mTer'); setTimeout(function(){ pSel('terR'); var l=document.getElementById('lupa_terR'); if(l)l.value=''; },50); }
 function openPlan() { openM('mPlan'); }
@@ -4272,7 +4028,6 @@ function rPlanSemanal() {
   div.innerHTML=h;
 }
 
-// ===== SISTEMA DE ALERTAS =====
 function calcAlerts() {
   var now = new Date();
   var hoy = now.toISOString().slice(0,10);
@@ -4282,7 +4037,6 @@ function calcAlerts() {
 
   var crit=[], warn=[], info=[], ok=[];
 
-  // ── 1. INCIDENTES GRAVES/CRÍTICOS HOY ──────────────────
   DB.incidentes.forEach(function(inc){
     if (!inc.raw) return;
     var d = new Date(inc.raw);
@@ -4297,7 +4051,6 @@ function calcAlerts() {
     }
   });
 
-  // ── 2. MEDICAMENTOS PENDIENTES HOY ─────────────────────
   var medPend = DB.medicamentos.filter(function(m){
     return m.fecha===hoy && m.estado && m.estado.includes('Pendiente');
   });
@@ -4310,7 +4063,6 @@ function calcAlerts() {
     });
   }
 
-  // ── 3. SIGNOS VITALES FUERA DE RANGO ───────────────────
   var svRecientes = DB.signos.filter(function(s){
     return s.raw && (now-new Date(s.raw))/3600000<8;
   });
@@ -4335,7 +4087,6 @@ function calcAlerts() {
     }
   });
 
-  // ── 4. RESIDENTES SIN SIGNOS VITALES HOY ───────────────
   var resActivos = DB.residentes.filter(function(r){ return r.estado==='Activo'; });
   var conSignosHoy = DB.signos.filter(function(s){ return s.raw && new Date(s.raw).toISOString().slice(0,10)===hoy; }).map(function(s){ return s.residenteId; });
   var sinSignos = resActivos.filter(function(r){ return conSignosHoy.indexOf(r.id)<0; });
@@ -4348,7 +4099,6 @@ function calcAlerts() {
     });
   }
 
-  // ── 5. VISITAS MÉDICAS PRÓXIMAS (hoy o mañana) ─────────
   if (DB.visitasMed) {
     DB.visitasMed.forEach(function(v){
       if (!v.proxima) return;
@@ -4360,7 +4110,6 @@ function calcAlerts() {
     });
   }
 
-  // ── 6. TERAPIAS PRÓXIMAS (hoy o mañana) ────────────────
   if (DB.terapias) {
     DB.terapias.forEach(function(t){
       if (!t.proxima) return;
@@ -4372,7 +4121,6 @@ function calcAlerts() {
     });
   }
 
-  // ── 7. REVISIONES DE PLANES PRÓXIMAS ──────────────────
   DB.residentes.forEach(function(r){
     var revs = [
       {fecha:r.cuponesRev, label:'Revisión PAN (Cupones)', res:r.nombre},
@@ -4396,7 +4144,6 @@ function calcAlerts() {
     });
   });
 
-  // ── 8. CUMPLEAÑOS HOY O ESTA SEMANA ──
   var mesActual = now.getMonth()+1;
   var diaActual = now.getDate();
   DB.residentes.forEach(function(r){
@@ -4414,7 +4161,6 @@ function calcAlerts() {
     }
   });
 
-  // ── 8. RESIDENTES SIN ALIMENTACIÓN REGISTRADA HOY ──────
   var conAlimHoy = DB.alimentacion.filter(function(a){ return a.raw && new Date(a.raw).toISOString().slice(0,10)===hoy; }).map(function(a){ return a.residenteId; });
   var sinAlim = resActivos.filter(function(r){ return conAlimHoy.indexOf(r.id)<0; });
   if (sinAlim.length>0 && horaActual>720) { // solo después del mediodía
@@ -4426,14 +4172,12 @@ function calcAlerts() {
     });
   }
 
-  // ── 9. INGESTA BAJA RECIENTE ────────────────────────────
   DB.alimentacion.filter(function(a){ return a.raw && (now-new Date(a.raw))/3600000<24; }).forEach(function(a){
     if (parseInt(a.consumo)<=25) {
       warn.push({ico:'🍽️',titulo:'Ingesta muy baja — '+nr(a.residenteId),detalle:a.comida+': solo '+a.consumo+'% consumido · '+a.ts,tipo:'warn'});
     }
   });
 
-  // ── 10. BUENAS NOTICIAS ─────────────────────────────────
   var totalActivos = resActivos.length;
   if (totalActivos>0) {
     ok.push({ico:'👴',titulo:totalActivos+' residente(s) activo(s)',detalle:'Sistema funcionando correctamente',tipo:'ok'});
@@ -4443,8 +4187,6 @@ function calcAlerts() {
     ok.push({ico:'👨‍👩‍👧',titulo:visitasHoy+' visita(s) familiar(es) hoy',detalle:'Familiares presentes',tipo:'ok'});
   }
 
-  // ── RENDERIZAR ──────────────────────────────────────────
-  // ── REQUISITOS DE EMPLEADOS ──────────────────────────
   var alertasReq = alertasRequisitos();
   alertasReq.slice(0,5).forEach(function(a){ // máximo 5 para no saturar
     if (a.tipo==='crit') crit.push(a);
@@ -4454,13 +4196,11 @@ function calcAlerts() {
     warn.push({ico:'📋',titulo:(alertasReq.length-5)+' requisitos adicionales pendientes',detalle:'Ver pestaña Empleados',tipo:'warn'});
   }
 
-  // ── ASEO: PACIENTES SIN REGISTRO HOY ───────────────
   var hoyAseo = now.toISOString().slice(0,10);
   var conAseoHoy = new Set((DB.aseos||[]).filter(function(a){ return a.raw&&a.raw.startsWith(hoyAseo); }).map(function(a){ return a.residenteId; }));
   var resActivosAseo = DB.residentes.filter(function(r){ return r.estado==='Activo'||r.estado==='En observación'; });
   var sinAseo = resActivosAseo.filter(function(r){ return !conAseoHoy.has(r.id); });
-  // Alerta a las 8am (hora 480) para baño de mañana
-  // y a las 8pm (hora 1200) para baño de noche
+
   if (sinAseo.length > 0 && (horaActual >= 480 && horaActual < 720) ) {
     info.push({ico:'🧼', titulo:'☀️ '+sinAseo.length+' paciente(s) sin aseo de mañana',
       detalle:sinAseo.slice(0,5).map(function(r){ return r.nombre.split(' ')[0]; }).join(', ')+(sinAseo.length>5?' y más':''), tipo:'info'});
@@ -4470,27 +4210,24 @@ function calcAlerts() {
       detalle:sinAseo.slice(0,5).map(function(r){ return r.nombre.split(' ')[0]; }).join(', ')+(sinAseo.length>5?' y más':''), tipo:'info'});
   }
 
-  // ── PAGOS VENCIDOS ───────────────────────────────
   var pagosVenc = (DB.pagos||[]).filter(function(p){ return p.estado==='Vencido'; });
   if (pagosVenc.length>0) {
     warn.push({ico:'💳',titulo:pagosVenc.length+' pago(s) vencido(s)',
       detalle:pagosVenc.slice(0,3).map(function(p){ return p.nombre+' $'+p.monto.toFixed(2); }).join(', '),tipo:'warn'});
   }
 
-  // ── COMPRAS URGENTES ───────────────────────────────
   var comprasUrg = (DB.compras||[]).filter(function(x){ return x.urgente && x.estado==='Pendiente'; });
   if (comprasUrg.length>0) {
     warn.push({ico:'🛒',titulo:comprasUrg.length+' artículo(s) de compra urgente pendiente(s)',
       detalle:comprasUrg.map(function(x){ return x.nombre+' ('+x.depto+')'; }).join(', '),tipo:'warn'});
   }
 
-  // ── CUARENTENAS ACTIVAS ────────────────────────────
   var cuarActivas = (DB.cuarentenas||[]).filter(function(q){ return q.estado==='Activo'; });
   if (cuarActivas.length > 0) {
     warn.push({ico:'🔴', titulo:cuarActivas.length+' paciente(s) en cuarentena activa',
       detalle:cuarActivas.map(function(q){ return q.nombre+' ('+q.tipo+')'; }).join(', '), tipo:'warn'});
   }
-  // Alta estimada vencida
+
   cuarActivas.forEach(function(q){
     if (!q.alta) return;
     var diff = (new Date(q.alta) - new Date(now.toISOString().slice(0,10))) / 86400000;
@@ -4498,7 +4235,6 @@ function calcAlerts() {
     else if (diff === 0) info.push({ico:'🔴',titulo:'Alta de cuarentena HOY — '+q.nombre,detalle:q.tipo,tipo:'info'});
   });
 
-  // ── EMPLEADOS SIN PONCHE HOY ────────────────────────
   var hoyPonch = now.toISOString().slice(0,10);
   var conEntrada = (DB.ponches||[]).filter(function(p){ return p.fecha===hoyPonch && p.tipo==='entrada'; }).map(function(p){ return p.userId; });
   var sinEntrada = DB.usuarios.filter(function(u){ return conEntrada.indexOf(u.id)<0; });
@@ -4510,7 +4246,7 @@ function calcAlerts() {
       tipo:'info'
     });
   }
-  // Empleados dentro (sin salida registrada)
+
   var dentroAhora = DB.usuarios.filter(function(u){
     var regs=(DB.ponches||[]).filter(function(p){ return p.userId===u.id && p.fecha===hoyPonch; });
     return regs.length && regs[regs.length-1].tipo==='entrada';
@@ -4525,7 +4261,6 @@ function calcAlerts() {
   renderAlertBlock('aInfo', info, 'info');
   renderAlertBlock('aOk',   ok,   'ok');
 
-  // Dashboard mini
   var dDiv = document.getElementById('dAlerts');
   var cnt  = document.getElementById('alertCount');
   if (cnt) cnt.textContent = total;
@@ -4538,7 +4273,6 @@ function calcAlerts() {
     }
   }
 
-  // Badge en el nav
   var badge = document.getElementById('alertBadge');
   if (badge) {
     if (total>0) { badge.textContent=total; badge.style.display='inline-block'; }
@@ -4559,10 +4293,9 @@ function renderAlertBlock(id, items, tipo) {
   div.innerHTML = items.map(function(a){ return renderAlertItem(a); }).join('');
 }
 
-// ===== PONCHADOR =====
 function initPonchador() {
   if (!DB.ponches) DB.ponches = [];
-  // Reloj en tiempo real
+
   function tickReloj() {
     var n = new Date();
     var hh=n.getHours(), mm=n.getMinutes(), ss=n.getSeconds(), ap=hh>=12?'PM':'AM';
@@ -4591,16 +4324,12 @@ function poblarSelectEmps() {
       o.value = u.id; o.textContent = u.nombre+' ('+rolL(u.rol)+')';
       sel.appendChild(o);
     });
-    // Si no es admin, pre-seleccionar su usuario
+
     if (!esAdmin) {
       sel.value = SES.id;
     }
   });
 
-  // Si no es admin, solo mostrar su propio nombre (sin ocultar el select)
-  // El select ya está pre-seleccionado arriba
-
-  // Pre-seleccionar el propio usuario si no es admin
   if (!esAdmin) {
     var selPonche = document.getElementById('pEmpSel');
     if (selPonche) selPonche.value = SES.id;
@@ -4639,7 +4368,6 @@ function ponchar(tipo) {
   if (!uid) { toast('⚠️ Selecciona un empleado'); return; }
   if (!pin) { toast('⚠️ Ingresa el PIN'); return; }
 
-  // Verificar PIN (usamos los últimos 4 chars del password como PIN)
   var usr = DB.usuarios.find(function(u){ return u.id===uid; });
   if (!usr) { toast('⚠️ Empleado no encontrado'); return; }
   var pinCorrecto = usr.password.slice(-4);
@@ -4650,7 +4378,6 @@ function ponchar(tipo) {
   var ph=n.getHours(),pm=n.getMinutes(),pap=ph>=12?'PM':'AM'; ph=ph%12; if(!ph)ph=12;
   var hora = String(ph).padStart(2,'0')+':'+String(pm).padStart(2,'0')+' '+pap;
 
-  // Verificar lógica: no puede entrar si ya está dentro, ni salir si no entró
   var registrosHoy = (DB.ponches||[]).filter(function(p){ return p.userId===uid && p.fecha===hoy; });
   var ultimoTipo = registrosHoy.length ? registrosHoy[registrosHoy.length-1].tipo : null;
   if (tipo==='entrada' && ultimoTipo==='entrada') {
@@ -4700,12 +4427,12 @@ function rEmpStatus() {
     var statusClass = ultimoTipo==='entrada' ? 'emp-in' : ultimoTipo==='salida' ? 'emp-out' : 'emp-off';
     var statusTxt   = ultimoTipo==='entrada' ? '🟢 Dentro'  : ultimoTipo==='salida'  ? '🔴 Salió' : '⚫ Sin registro';
     var horaEnt='—', horaSal='—', totalMin=0;
-    // Calcular horas trabajadas del día
+
     var entradas = registros.filter(function(p){ return p.tipo==='entrada'; });
     var salidas  = registros.filter(function(p){ return p.tipo==='salida';  });
     if (entradas.length) horaEnt = entradas[0].hora;
     if (salidas.length)  horaSal = salidas[salidas.length-1].hora;
-    // Sumar todos los pares entrada-salida
+
     for (var i=0; i<Math.min(entradas.length,salidas.length); i++) {
       var eMin = toMin(entradas[i].hora), sMin = toMin(salidas[i].hora);
       if (sMin>eMin) totalMin += sMin-eMin;
@@ -4746,7 +4473,6 @@ function rReporte() {
   var desdeStr = desde.toISOString().slice(0,10);
   var hastaStr = hoy.toISOString().slice(0,10);
 
-  // Obtener fechas únicas en el rango
   var fechas = [...new Set((DB.ponches||[])
     .filter(function(p){ return p.fecha>=desdeStr && p.fecha<=hastaStr && (!uid||p.userId===uid); })
     .map(function(p){ return p.fecha; })
@@ -4784,7 +4510,6 @@ function rReporte() {
       totalHorasPorEmp[u.id].min+=totalMin;
       totalHorasPorEmp[u.id].dias++;
 
-      // Formatear fecha para mostrar
       var fd = fecha.split('-'); var fechaMost=fd[2]+'/'+fd[1]+'/'+fd[0];
 
       h+='<tr>';
@@ -4801,7 +4526,6 @@ function rReporte() {
 
   tbody.innerHTML = h;
 
-  // Resumen por empleado
   var rh='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:10px">';
   Object.values(totalHorasPorEmp).forEach(function(e){
     var hT=Math.floor(e.min/60), mT=e.min%60;
@@ -4831,7 +4555,6 @@ function pdfReporte() {
   var perLabel = {hoy:'Hoy',semana:'Esta semana',mes:'Este mes'}[per]||per;
   doc.text('Período: '+perLabel, 14, y); y+=8;
 
-  // Encabezado tabla
   doc.setFontSize(8); doc.setFont(undefined,'bold'); doc.setTextColor(255,255,255);
   doc.setFillColor(26,58,92); doc.rect(14,y,182,7,'F');
   ['EMPLEADO','ROL','FECHA','ENTR','SAL','BRUTO','DED.','NETO'].forEach(function(h,i){
@@ -4874,7 +4597,6 @@ function pdfReporte() {
   toast('📄 PDF generado','vs');
 }
 
-// ===== NÓMINA =====
 function getRango(per) {
   var hoy = new Date();
   var desde = new Date(), hasta = new Date();
@@ -4900,19 +4622,16 @@ function getRango(per) {
 }
 
 function calcDeduccionesPR(brutoAnual, brutoperiodo) {
-  // Tasas PR 2024-2025 (Hacienda PR + IRS para PR)
-  // FICA - Seguro Social (aplica hasta $168,600 anuales en 2024)
+
   var SS_RATE     = 0.062;   // 6.2%
   var MEDI_RATE   = 0.0145;  // 1.45%
-  // Seguro por Desempleo Estatal (DACO/PRE) - empleado paga 0.3% hasta $7,000
+
   var SUE_RATE    = 0.003;   // 0.3% (límite $7,000 anual)
-  // Seguro de Incapacidad No Ocupacional (SINOT)
+
   var SINOT_RATE  = 0.003;   // 0.3% (límite ~$9,000 anual)
-  // Fondo del Seguro del Estado (FSE/CFSE) - varía por industria ~1.5-3%
+
   var FSE_RATE    = 0.015;   // ~1.5% (estimado para cuidado de salud)
 
-  // Retención de ingresos PR (Hacienda) - tabla simplificada
-  // Estimado básico: 7% para ingresos bajos, 10% medios, 14% altos
   function retencionPR(brutoAnual) {
     if (brutoAnual <= 9000)  return 0;
     if (brutoAnual <= 25000) return (brutoAnual - 9000) * 0.07;
@@ -4956,7 +4675,6 @@ function calcNomina() {
 
   var OVERTIME_MULT = 1.5;
 
-  // Factor de semanas según período (para anualizar y calcular retención)
   var semFactor = {semana:1, quincenal1:2, quincenal2:2, mes:4.33}[per] || 1;
 
   var data = {};
@@ -5009,10 +4727,9 @@ function calcNomina() {
     var hRegEmp=totalMinEmp/60-totalMinExtEmp/60, hExtEmp=totalMinExtEmp/60;
     grandHReg+=hRegEmp; grandHExt+=hExtEmp;
 
-    // Calcular deducciones
     var brutoAnual = totalBruto * (52/semFactor);
     var ded = calcDeduccionesPR(brutoAnual, totalBruto);
-    // Ajustar retención al período
+
     ded.reten = (ded.reten * semFactor);
     ded.total = ded.ss+ded.medi+ded.sue+ded.sinot+ded.fse+ded.reten;
     var neto = totalBruto - ded.total;
@@ -5061,7 +4778,6 @@ function calcNomina() {
   tbody.innerHTML = filas || '<tr><td colspan="9"><div class="es"><div class="ei">💰</div><p>Sin registros.</p></div></td></tr>';
   resumen.innerHTML = resCards || '<div class="es"><div class="ei">💰</div><p>Sin datos.</p></div>';
 
-  // Totales generales
   totDiv.innerHTML = grandBruto>0 ?
     '<div style="background:var(--am);color:white;border-radius:10px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">'+
     '<div><div style="font-size:11px;opacity:.8">H. Regulares</div><div style="font-size:20px;font-weight:800">'+fmt2(grandHReg)+'</div></div>'+
@@ -5078,7 +4794,7 @@ function pdfNomina() {
   var JP = window.jspdf ? window.jspdf.jsPDF : (typeof jspdf!=='undefined'?jspdf.jsPDF:null);
   if (!JP) { toast('⚠️ Cargando PDF...'); setTimeout(pdfNomina,1500); return; }
   var doc = new JP(), y=28;
-  // Header
+
   doc.setFillColor(26,58,92); doc.rect(0,0,210,20,'F');
   doc.setTextColor(255,255,255); doc.setFontSize(13); doc.setFont(undefined,'bold');
   doc.text('CareHome Manager — Nómina',14,13);
@@ -5094,7 +4810,6 @@ function pdfNomina() {
   doc.setFontSize(11); doc.setFont(undefined,'bold'); doc.setTextColor(26,58,92);
   doc.text('Período: '+perLabel+' ('+rango.desde+' al '+rango.hasta+')', 14, y); y+=10;
 
-  // Por empleado
   DB.usuarios.filter(function(u){ return !uidPDF || u.id===uidPDF; }).forEach(function(u){
     var salHora = parseFloat(u.salario)||0;
     var horasRegDia = (parseInt(u.horasReg)||40)/5;
@@ -5130,7 +4845,7 @@ function pdfNomina() {
       [fd[2]+'/'+fd[1],ents[0]||'—',sals[sals.length-1]||'—',fmt2(hR),fmt2(hE),'$'+pR.toFixed(2),'$'+pE.toFixed(2),'$'+pT.toFixed(2)].forEach(function(v,j){ doc.text(String(v),16+j*23,y); });
       y+=6;
     });
-    // Subtotal empleado
+
     doc.setFont(undefined,'bold'); doc.setFillColor(220,235,250); doc.rect(14,y-3,182,7,'F');
     doc.setTextColor(26,58,92);
     doc.text('TOTAL '+u.nombre.toUpperCase().substring(0,16),16,y+1);
@@ -5142,7 +4857,6 @@ function pdfNomina() {
   toast('📄 Nómina PDF generada','vs');
 }
 
-// ===== GESTIÓN DE PERMISOS =====
 var TODOS_MODULOS = [
   {id:'dashboard',    label:'📊 Dashboard'},
   {id:'residentes',   label:'👴 Residentes'},
@@ -5169,17 +4883,14 @@ function abrirPerms(uid) {
   var usr = DB.usuarios.find(function(u){ return u.id===uid; });
   if (!usr) return;
 
-  // Info del usuario
   document.getElementById('permUserInfo').innerHTML =
     '<strong>'+usr.nombre+'</strong> · '+rolL(usr.rol)+'<br>'+
     '<span style="font-size:12px;color:var(--gm)">Los permisos personalizados reemplazan los del rol. Deja todo en blanco para usar permisos del rol por defecto.</span>';
 
-  // Permisos actuales: custom o los del rol
   var actuales = usr.permCustom && usr.permCustom.length > 0
     ? usr.permCustom
     : (PERM[usr.rol] || []);
 
-  // Generar checkboxes
   var box = document.getElementById('permCheckboxes');
   box.innerHTML = '';
   TODOS_MODULOS.forEach(function(m){
@@ -5223,10 +4934,8 @@ function savePerms() {
     if (cb.checked) seleccionados.push(cb.value);
   });
 
-  // Siempre incluir dashboard
   if (seleccionados.indexOf('dashboard') < 0) seleccionados.unshift('dashboard');
 
-  // Si coincide exactamente con los permisos del rol, no guardar como custom
   var permRol = (PERM[usr.rol] || []).slice().sort().join(',');
   var permSel  = seleccionados.slice().sort().join(',');
   if (permRol === permSel) {
@@ -5241,22 +4950,12 @@ function savePerms() {
   closeM('mPerms');
   rUsr();
 
-  // Si el usuario editado es el que está logueado, actualizar nav
   if (_permUserId === SES.id) {
     SES.permCustom = usr.permCustom;
     applyPerm();
   }
 }
 
-// ===== BUSCADOR DE RESIDENTE =====
-// [removida: mkBuscador]
-// [removida: filtrarSel]
-
-
-
-
-
-// ===== PESO KG/LB =====
 function convertirPeso() {
   var val  = parseFloat(document.getElementById('svP').value);
   var unit = document.getElementById('svPUnit').value;
@@ -5269,10 +4968,6 @@ function convertirPeso() {
   }
 }
 
-// saveSV: guardar siempre en kg
-
-
-// ===== LUPA FILTRO DE RESIDENTE =====
 function lupaFiltrar(lupId, selId) {
   var lupEl = document.getElementById(lupId);
   var sel   = document.getElementById(selId);
@@ -5296,7 +4991,7 @@ function lupaFiltrar(lupId, selId) {
 function editRes(id) {
   var r = DB.residentes.find(function(x){ return x.id === id; });
   if (!r) return;
-  // Llenar el modal con los datos del residente
+
   document.getElementById('rN').value = r.nombre || '';
   document.getElementById('rC').value = r.cedula || '';
   document.getElementById('rF').value = r.nacimiento || '';
@@ -5308,7 +5003,7 @@ function editRes(id) {
   document.getElementById('rD').value = r.diagnostico || '';
   document.getElementById('rE').value = r.estado || 'Activo';
   document.getElementById('rO').value = r.obs || '';
-  // Nuevos campos
+
   if (document.getElementById('rClasif')) document.getElementById('rClasif').value = r.clasif || '';
   if (document.getElementById('rNivelCuido')) document.getElementById('rNivelCuido').value = r.nivelCuido || 'Cuidado básico';
   if (document.getElementById('rMedicare')) document.getElementById('rMedicare').value = r.medicare || '';
@@ -5326,7 +5021,7 @@ function editRes(id) {
   if (document.getElementById('rRevPlan')) document.getElementById('rRevPlan').value = r.revPlan || '';
   if (document.getElementById('rRevEspec')) document.getElementById('rRevEspec').value = r.revEspec || '';
   if (document.getElementById('rEspecialista')) document.getElementById('rEspecialista').value = r.especialista || '';
-  // Foto
+
   if (r.foto) {
     document.getElementById('rFotoImg').src = r.foto;
     document.getElementById('rFotoImg').style.display = 'block';
@@ -5334,7 +5029,7 @@ function editRes(id) {
     document.getElementById('rFotoInput')._b64 = r.foto;
     if (document.getElementById('rFotoQuit')) document.getElementById('rFotoQuit').style.display = 'inline-flex';
   }
-  // Cambiar botón de guardar para actualizar en vez de crear
+
   var btnGuardar = document.querySelector('#mRes .btn.bvs');
   if (btnGuardar) {
     btnGuardar.textContent = '💾 Actualizar Residente';
@@ -5350,7 +5045,7 @@ function actualizarRes(id) {
   var idx = DB.residentes.findIndex(function(x){ return x.id === id; });
   if (idx < 0) return;
   var inp = document.getElementById('rFotoInput');
-  // Preservar datos existentes y actualizar
+
   DB.residentes[idx] = Object.assign({}, DB.residentes[idx], {
     foto: (inp._b64 || DB.residentes[idx].foto || ''),
     nombre: n, cedula: document.getElementById('rC').value.trim(),
@@ -5382,20 +5077,19 @@ function actualizarRes(id) {
   });
   sDB(); closeM('mRes'); rRes();
   logAudit('Residente','Nuevo residente registrado',n);
-  // Restaurar botón a "Nuevo"
+
   var btnGuardar = document.querySelector('#mRes .btn.bvs');
   if (btnGuardar) { btnGuardar.textContent = '💾 Registrar Residente'; btnGuardar.onclick = saveRes; }
   qFoto();
   toast('✅ Residente actualizado', 'vs');
 }
 
-// ===== QR - ESCANEAR PACIENTE =====
 function abrirQR(targetSelectId) {
-  // Verificar soporte de cámara
+
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
     toast('⚠️ Tu dispositivo no soporta cámara. Escribe el nombre en la lupa.'); return;
   }
-  // Mostrar modal QR
+
   document.getElementById('qrTargetSelect').value = targetSelectId;
   openM('mQR');
   iniciarCamaraQR();
@@ -5408,7 +5102,7 @@ function iniciarCamaraQR() {
       video.srcObject = stream;
       video.play();
       document.getElementById('qrMsg').textContent = 'Apunta al código QR del paciente...';
-      // Escanear cada 500ms usando canvas
+
       window._qrStream = stream;
       window._qrInterval = setInterval(function(){
         scanQRFrame();
@@ -5426,7 +5120,7 @@ function scanQRFrame() {
   canvas.width = video.videoWidth; canvas.height = video.videoHeight;
   var ctx = canvas.getContext('2d');
   ctx.drawImage(video, 0, 0);
-  // Usar BarcodeDetector si disponible
+
   if ('BarcodeDetector' in window) {
     var bd = new BarcodeDetector({formats:['qr_code']});
     bd.detect(canvas).then(function(codes){
@@ -5439,17 +5133,17 @@ function scanQRFrame() {
 }
 
 function seleccionarPacienteQR(qrValue) {
-  // El QR contiene el ID del residente
+
   var r = DB.residentes.find(function(x){ return x.id === qrValue || x.cedula === qrValue; });
   if (!r) {
     document.getElementById('qrMsg').textContent = '⚠️ Paciente no encontrado: '+qrValue;
     return;
   }
-  // Seleccionar en el select objetivo
+
   var targetId = document.getElementById('qrTargetSelect').value;
   var sel = document.getElementById(targetId);
   if (sel) { sel.value = r.id; }
-  // Actualizar lupa si existe
+
   var lupaId = 'lupa_'+targetId;
   var lupa = document.getElementById(lupaId);
   if (lupa) lupa.value = r.nombre;
@@ -5463,19 +5157,17 @@ function cerrarQR() {
   closeM('mQR');
 }
 
-// ===== GENERAR QR DEL PACIENTE =====
 function generarQRResidente(id) {
   var r = DB.residentes.find(function(x){ return x.id===id; });
   if (!r) return;
   document.getElementById('qrGenNombre').textContent = r.nombre;
-  // QR con el ID del residente usando API pública
+
   var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data='+encodeURIComponent(r.id);
   document.getElementById('qrGenImg').src = qrUrl;
   document.getElementById('qrGenHab').textContent = 'Hab. '+r.habitacion;
   openM('mQRGen');
 }
 
-// ===== INACTIVAR / FALLECIDOS =====
 function inactivarRes(id) {
   var r = DB.residentes.find(function(x){ return x.id===id; });
   if (!r) return;
@@ -5505,7 +5197,7 @@ function registrarFallecido() {
   var fecha = document.getElementById('fallFecha').value;
   if (!fecha) { toast('⚠️ Ingresa la fecha de fallecimiento'); return; }
   if (!DB.fallecidos) DB.fallecidos = [];
-  // Hora en 12h
+
   var horaRaw = document.getElementById('fallHora').value;
   var horaDisplay = horaRaw;
   if (horaRaw) {
@@ -5532,7 +5224,7 @@ function registrarFallecido() {
     obs: document.getElementById('fallObs').value.trim(),
     registrado: fh()
   });
-  // Marcar residente como fallecido
+
   r.estado = 'Fallecido';
   r.fechaFallecido = fecha;
   sDB();
@@ -5605,7 +5297,6 @@ function pdfFallecido(fid) {
   toast('📄 PDF generado','vs');
 }
 
-// ===== COMPRAS =====
 var _deptoActivo = '';
 
 var DEPTOS = [
@@ -5693,7 +5384,6 @@ function rCompras() {
     return true;
   });
 
-  // Resumen por depto
   if (resDiv) {
     var deptos = {};
     (DB.compras||[]).forEach(function(x){
@@ -5716,7 +5406,6 @@ function rCompras() {
     return;
   }
 
-  // Agrupar por departamento
   var grupos = {};
   lista.forEach(function(x){
     if (!grupos[x.depto]) grupos[x.depto] = [];
@@ -5780,7 +5469,7 @@ function marcarTodosComprados() {
   var count = 0;
   checkboxes.forEach(function(cb){
     cb.checked = true;
-    // Encontrar el id del artículo
+
     var wrap = cb.closest('.item-compra');
     if (!wrap) return;
     var id = wrap.id.replace('ic_','');
@@ -5849,7 +5538,6 @@ function pdfListaCompras() {
   toast('📄 PDF generado','vs');
 }
 
-// ===== MENSAJERÍA =====
 var _canalActivo = 'general';
 var _directoUsuario = null;
 
@@ -5906,7 +5594,7 @@ function selDireto(uid, nombre, btn) {
   document.querySelectorAll('.canal-btn').forEach(function(b){ b.classList.remove('activo'); });
   btn.classList.add('activo');
   document.getElementById('canalTitulo').textContent = '💬 '+nombre;
-  // Marcar como leídos
+
   (DB.mensajes||[]).forEach(function(m){
     if (m.canal===_canalActivo && m.autorId!==SES.id) m.leido=true;
   });
@@ -5962,7 +5650,7 @@ function enviarBroadcast() {
   var txt = document.getElementById('msgTexto').value.trim();
   if (!txt) { toast('⚠️ Escribe el anuncio primero'); return; }
   if (!DB.mensajes) DB.mensajes = [];
-  // Enviar a todos los canales principales
+
   ['general','enfermeria','medicos','admin'].forEach(function(canal){
     DB.mensajes.push({
       id: 'M'+Date.now()+canal,
@@ -5981,7 +5669,6 @@ function enviarBroadcast() {
   toast('📢 Anuncio enviado a todos los canales','vs');
 }
 
-// ===== TAREAS =====
 function openTarea() {
   pSelEmps('tareaAsig');
   document.getElementById('tareaTitle').value = '';
@@ -6013,7 +5700,7 @@ function saveTarea() {
   closeM('mTarea');
   rTareas();
   if (SES.rol==='admin') rTareasAdmin();
-  // Notificar via mensaje en canal general
+
   if (!DB.mensajes) DB.mensajes = [];
   DB.mensajes.push({
     id:'M'+Date.now(), canal:'general',
@@ -6030,7 +5717,7 @@ function rTareas() {
   if (!div) return;
   var est = document.getElementById('fTareaEst') ? document.getElementById('fTareaEst').value : '';
   var hoy = new Date().toISOString().slice(0,10);
-  // Ver mis tareas + tareas para todos
+
   var lista = (DB.tareas||[]).filter(function(t){
     var mia = !t.asignadoNombre || t.asignadoNombre==='Todos' || t.asignadoNombre===SES.nombre;
     if (!mia) return false;
@@ -6115,7 +5802,7 @@ function eliminarTarea(id) {
   var t = (DB.tareas||[]).find(function(x){ return x.id===id; });
   if (!t) return;
   if (!confirm('¿Eliminar la tarea "'+t.titulo+'"?')) return;
-  // Guardar en auditoría antes de borrar
+
   logAudit('Tarea','Tarea eliminada: '+t.titulo, SES.nombre+' · estado anterior: '+t.estado);
   DB.tareas = (DB.tareas||[]).filter(function(x){ return x.id!==id; });
   sDB(); rTareas();
@@ -6123,7 +5810,6 @@ function eliminarTarea(id) {
   toast('🗑️ Tarea eliminada — registrado en auditoría');
 }
 
-// Contador de mensajes no leídos en el nav
 function contarNoLeidos() {
   if (!SES || !DB.mensajes) return;
   var n = DB.mensajes.filter(function(m){
@@ -6131,7 +5817,7 @@ function contarNoLeidos() {
       (m.canal==='general'||m.canal==='urgente'||
        m.canal.startsWith('dm_')&&m.canal.includes(SES.id));
   }).length;
-  // Buscar el tab de mensajes
+
   document.querySelectorAll('.nt').forEach(function(el){
     if (el.textContent.includes('Mensajes')) {
       el.innerHTML = n>0 ? '💬 Mensajes <span style="background:#e74c3c;color:white;border-radius:10px;padding:1px 6px;font-size:10px">'+n+'</span>' : '💬 Mensajes';
@@ -6139,7 +5825,6 @@ function contarNoLeidos() {
   });
 }
 
-// ===== CUARENTENA =====
 function openCuarentena() {
   openM('mCuarentena');
   setTimeout(function(){
@@ -6184,7 +5869,7 @@ function saveCuarentena() {
     estado: 'Activo',
     registrado: fh()
   });
-  // Marcar residente en cuarentena
+
   r.enCuarentena = true;
   r.tipoCuarentena = document.getElementById('cuarTipo').value;
   sDB();
@@ -6209,7 +5894,6 @@ function rCuarentena() {
     return true;
   }).slice().reverse();
 
-  // Resumen
   var activos = DB.cuarentenas.filter(function(q){ return q.estado==='Activo'; }).length;
   var res = document.getElementById('cuarResumen');
   if (res) {
@@ -6229,7 +5913,7 @@ function rCuarentena() {
     window._cqIds[i] = q.id;
     var activo = q.estado === 'Activo';
     var nivelColor = q.nivel && q.nivel.includes('🔴') ? '#C0392B' : q.nivel && q.nivel.includes('🟡') ? '#F57F17' : q.nivel && q.nivel.includes('🔵') ? '#1565C0' : '#2D6A4F';
-    // Días en cuarentena
+
     var dias = '';
     if (q.inicio) {
       var diff = Math.floor((new Date() - new Date(q.inicio)) / 86400000);
@@ -6278,7 +5962,7 @@ function levantarCuarentena() {
   q.medicoAlta = document.getElementById('levantarMedico').value.trim();
   q.obsAlta = document.getElementById('levantarObs').value.trim();
   q.altaRegistrada = fh();
-  // Actualizar residente
+
   var r = DB.residentes.find(function(x){ return x.id===q.residenteId; });
   if (r) { r.enCuarentena = false; r.tipoCuarentena = ''; }
   sDB();
@@ -6328,7 +6012,6 @@ function pdfCuarentena(cid) {
   toast('📄 PDF generado','vs');
 }
 
-// ===== MODO COMEDOR QR =====
 var _comedorSession = []; // registros de esta sesión
 
 function abrirComedorQR() {
@@ -6336,7 +6019,7 @@ function abrirComedorQR() {
   document.getElementById('comedorLista').innerHTML = '';
   document.getElementById('comedorResult').style.display = 'none';
   document.getElementById('comedorObs').value = '';
-  // Hora actual para pre-seleccionar comida
+
   var h = new Date().getHours();
   var sel = document.getElementById('comedorComida');
   if (h>=5  && h<11) sel.value = '☀️ Desayuno';
@@ -6389,13 +6072,13 @@ function registrarComedorQR(qrVal) {
     document.getElementById('comedorMsg').textContent = '⚠️ Paciente no encontrado: '+qrVal;
     return;
   }
-  // Verificar si ya fue registrado en esta sesión
+
   var yaReg = _comedorSession.find(function(s){ return s.residenteId === r.id; });
   if (yaReg) {
     mostrarComedorResult(r, '✅ Ya registrado', false);
     return;
   }
-  // Registrar alimentación
+
   var comida = document.getElementById('comedorComida').value;
   var consumo = document.getElementById('comedorConsumo').value;
   var obs = document.getElementById('comedorObs').value.trim();
@@ -6417,7 +6100,7 @@ function registrarComedorQR(qrVal) {
   rAlim();
   mostrarComedorResult(r, '✅ Registrado: '+comida, true);
   actualizarListaComedor();
-  // Limpiar obs para siguiente paciente
+
   document.getElementById('comedorObs').value = '';
 }
 
@@ -6429,7 +6112,7 @@ function mostrarComedorResult(r, msg, nuevo) {
   document.getElementById('comedorResNombre').textContent = r.nombre;
   document.getElementById('comedorResHab').textContent = 'Hab. ' + r.habitacion + ' · ' + r.sexo;
   document.getElementById('comedorResMsg').textContent = msg + (nuevo ? ' · ' + consumoSel : '');
-  // Ocultar después de 3 segundos
+
   setTimeout(function(){
     div.style.display = 'none';
   }, 3000);
@@ -6463,17 +6146,13 @@ function cerrarComedorQR() {
   }
 }
 
-// ===== EMPLEADOS: REQUISITOS Y MEMOS =====
 var _empSelId = null;
 
-// Requisitos obligatorios PR (Ley 85-2018 y Depto. Salud)
-// Requisitos — Ley 300 (Hogares Ancianos PR), Ley 85-2018 y Depto. de Salud
 var REQUISITOS_PR = [
-  // ── IDENTIFICACIÓN ─────────────────────────────────
+
   {id:'id_gov',     nom:'ID Gubernamental / Licencia de Conducir',           vence:false, obligatorio:true,  ley:'General'},
   {id:'ss',         nom:'Tarjeta de Seguro Social',                           vence:false, obligatorio:true,  ley:'General'},
 
-  // ── LEY 300 — REQUISITOS ESPECÍFICOS HOGARES ANCIANOS ──
   {id:'orient300',  nom:'Orientación Ley 300 — Derechos del Residente',      vence:true,  meses:12, obligatorio:true,  ley:'Ley 300'},
   {id:'maltrato',   nom:'Certificación: Libre de Maltrato de Ancianos',       vence:true,  meses:12, obligatorio:true,  ley:'Ley 300'},
   {id:'regist300',  nom:'Registro de Empleado (ASSMCA / Depto. Salud)',       vence:true,  meses:12, obligatorio:true,  ley:'Ley 300'},
@@ -6484,24 +6163,20 @@ var REQUISITOS_PR = [
   {id:'caidas',     nom:'Adiestramiento: Prevención de Caídas',               vence:true,  meses:12, obligatorio:true,  ley:'Ley 300'},
   {id:'hipaa',      nom:'Adiestramiento: Confidencialidad / HIPAA',           vence:true,  meses:12, obligatorio:true,  ley:'Ley 300'},
 
-  // ── SALUD Y VACUNAS ─────────────────────────────────
   {id:'salud',      nom:'Certificado de Salud (OGPe)',                         vence:true,  meses:12, obligatorio:true,  ley:'Depto. Salud'},
   {id:'ppd',        nom:'Prueba de Tuberculosis (PPD) o RX de Tórax',         vence:true,  meses:12, obligatorio:true,  ley:'Depto. Salud'},
   {id:'influenza',  nom:'Vacuna Influenza (anual)',                             vence:true,  meses:12, obligatorio:true,  ley:'Depto. Salud'},
   {id:'hepatitis',  nom:'Vacuna / Certificación Hepatitis B',                  vence:false, obligatorio:true,  ley:'Depto. Salud'},
   {id:'covid',      nom:'Vacunación COVID-19',                                  vence:false, obligatorio:true,  ley:'Depto. Salud'},
 
-  // ── SEGURIDAD Y ANTECEDENTES ────────────────────────
   {id:'penal',      nom:'Certificado de Antecedentes Penales',                 vence:true,  meses:12, obligatorio:true,  ley:'Ley 300'},
   {id:'asume',      nom:'Certificación Negativa de ASUME',                     vence:true,  meses:12, obligatorio:true,  ley:'Ley 300'},
   {id:'dfams',      nom:'Certificación DFAMS (Maltrato a Menores/Ancianos)',   vence:true,  meses:12, obligatorio:true,  ley:'Ley 300'},
 
-  // ── CAPACITACIÓN ────────────────────────────────────
   {id:'cpr',        nom:'CPR / Primeros Auxilios certificado',                 vence:true,  meses:24, obligatorio:true,  ley:'Ley 300'},
   {id:'segur',      nom:'Adiestramiento: Seguridad contra Incendios',          vence:true,  meses:12, obligatorio:true,  ley:'Ley 300'},
   {id:'aliment',    nom:'Manipulación de Alimentos (si aplica)',               vence:true,  meses:12, obligatorio:false, ley:'Ley 300'},
 
-  // ── DOCUMENTOS DE EMPLEO ────────────────────────────
   {id:'contrato',   nom:'Contrato de Empleo firmado',                          vence:false, obligatorio:true,  ley:'General'},
   {id:'licprof',    nom:'Licencia Profesional (RN/LPN/CNA si aplica)',         vence:true,  meses:12, obligatorio:false, ley:'General'},
   {id:'diploma',    nom:'Diploma / Certificado de Estudios',                   vence:false, obligatorio:false, ley:'General'},
@@ -6524,7 +6199,7 @@ function rEmpSelector() {
     var ini = u.nombre.split(' ').map(function(x){ return x[0]; }).join('').substring(0,2).toUpperCase();
     var docs = DB.empDocs[u.id] || [];
     var memos = DB.empMemos[u.id] || [];
-    // Calcular requisitos pendientes
+
     var vencidos = 0, faltantes = 0;
     REQUISITOS_PR.forEach(function(r){
       var doc = docs.find(function(d){ return d.reqId===r.id; });
@@ -6554,7 +6229,7 @@ function selEmpleado(uid) {
   _empSelId = uid;
   var u = DB.usuarios.find(function(x){ return x.id===uid; });
   if (!u) return;
-  // Header
+
   var cols = {admin:'#1A3A5C',medico:'#7B2D8B',enfermera:'#0D7A5F',aux:'#E67E22',recepcion:'#607D8B',cocina:'#C0392B',limpieza:'#27AE60',terapia:'#8E44AD',trabajo_social:'#2980B9',voluntario:'#16A085',horas_verdes:'#1E8449',practicante:'#D35400'};
   var ini = u.nombre.split(' ').map(function(x){ return x[0]; }).join('').substring(0,2).toUpperCase();
   document.getElementById('edAvatar').textContent = ini;
@@ -6563,7 +6238,7 @@ function selEmpleado(uid) {
   document.getElementById('edRol').textContent = rolL(u.rol)+' · @'+u.username+(u.turno?' · '+u.turno:'');
   document.getElementById('empDetalle').style.display = '';
   document.getElementById('empDetalleVacio').style.display = 'none';
-  // Pre-llenar supervisor con usuario actual
+
   if (document.getElementById('memoSupervisor')) document.getElementById('memoSupervisor').value = SES.nombre;
   rEmpSelector();
   edSubTab('req', document.getElementById('edTab_req'));
@@ -6581,7 +6256,6 @@ function edSubTab(tab, btn) {
   });
 }
 
-// ─── REQUISITOS ────────────────────────────────
 function rRequisitos() {
   var div = document.getElementById('reqLista');
   var res = document.getElementById('reqResumen');
@@ -6623,7 +6297,7 @@ function rRequisitos() {
     h += '</div>';
   });
   div.innerHTML = h;
-  // Delegación eventos
+
   div.addEventListener('click', function(e){
     var b = e.target.closest('button');
     if (!b) return;
@@ -6659,7 +6333,6 @@ function openDocumento() {
   openM('mDocumento');
 }
 
-// Listener de archivo
 document.addEventListener('DOMContentLoaded', function(){
   var inp = document.getElementById('docArchivoInput');
   if (!inp) return;
@@ -6690,7 +6363,7 @@ function saveDocumento() {
 
   function guardarDoc(b64) {
     if (!DB.empDocs[_empSelId]) DB.empDocs[_empSelId] = [];
-    // Eliminar doc anterior del mismo tipo si existe
+
     DB.empDocs[_empSelId] = DB.empDocs[_empSelId].filter(function(d){ return d.reqId!==reqId; });
     DB.empDocs[_empSelId].push({
       id: 'D'+Date.now(),
@@ -6712,7 +6385,7 @@ function saveDocumento() {
   }
 
   if (inp.files[0]) {
-    // Verificar tamaño (max 1.5MB para localStorage)
+
     if (inp.files[0].size > 1500000) {
       toast('⚠️ El archivo es muy grande. Máximo 1.5MB. Toma una foto más pequeña.');
       return;
@@ -6758,7 +6431,7 @@ function verDoc(key) {
   var docs = DB.empDocs[uid] || [];
   var doc = docs.find(function(d){ return d.reqId===reqId; });
   if (!doc || !doc.archivo) { toast('⚠️ Sin archivo guardado'); return; }
-  // Abrir en nueva pestaña
+
   var w = window.open();
   w.document.write('<img src="'+doc.archivo+'" style="max-width:100%"><p>'+doc.tipo+'</p>');
 }
@@ -6771,7 +6444,6 @@ function eliminarDoc(id) {
   toast('🗑️ Documento eliminado');
 }
 
-// ─── MEMOS ─────────────────────────────────────
 function openMemo() {
   if (!_empSelId) { toast('⚠️ Selecciona un empleado primero'); return; }
   document.getElementById('memoAsunto').value = '';
@@ -6893,7 +6565,6 @@ function eliminarMemo(id) {
   toast('🗑️ Memo eliminado');
 }
 
-// ═══ Alertas: requisitos vencidos ═══
 function alertasRequisitos() {
   var alertas = [];
   var hoy = new Date();
@@ -6914,15 +6585,14 @@ function alertasRequisitos() {
   return alertas;
 }
 
-// ===== PAGOS Y MENSUALIDADES =====
 function initPagos() {
   if (!DB.pagos) DB.pagos = [];
-  // Poblar filtro de residentes
+
   var sel = document.getElementById('fPagoRes');
   if (sel) {
     pSel('fPagoRes');  // siempre refrescar — pSel ya ordena alfabéticamente
   }
-  // Mes actual por defecto
+
   var mesEl = document.getElementById('fPagoMes');
   if (mesEl && !mesEl.value) mesEl.value = new Date().toISOString().slice(0,7);
   rPagos();
@@ -6949,7 +6619,7 @@ function savePago() {
   if (!monto || monto <= 0) { toast('⚠️ Ingresa el monto'); return; }
   var tipo    = document.getElementById('pagoTipo').value;
   var periodo = document.getElementById('pagoPeriodo').value;
-  // Verificar duplicado del mismo tipo y período
+
   if (periodo) {
     var dup = (DB.pagos||[]).find(function(p){
       return p.residenteId===rid && p.tipo===tipo && p.periodo===periodo;
@@ -7008,8 +6678,6 @@ function rPagos() {
     return (b.periodo||'').localeCompare(a.periodo||'') || b.ts.localeCompare(a.ts);
   });
 
-  // KPIs
-  // KPIs sobre la lista filtrada
   var totalCobrado   = lista.filter(function(p){ return p.estado==='Pagado'; }).reduce(function(a,p){return a+p.monto;},0);
   var totalAbonos    = lista.filter(function(p){ return p.estado==='Plan de pago'; }).reduce(function(a,p){
     return a + (p.abonos||[]).reduce(function(x,b){ return x+b.monto; },0);
@@ -7045,7 +6713,7 @@ function rPagos() {
     h += '</div>';
     h += '<div class="pago-meta">'+p.metodo+(p.vence?' · Vence: '+p.vence:'')+(p.nota?' · '+p.nota:'')+'</div>';
     h += '<div class="pago-meta">Por: '+p.creadoPor+' · '+p.ts+'</div>';
-    // Mostrar abonos si es plan de pago
+
     if (p.estado === 'Plan de pago') {
       var abonos = p.abonos || [];
       var totalAbonado = abonos.reduce(function(a,b){ return a+b.monto; }, 0);
@@ -7146,7 +6814,7 @@ function saveAbono() {
     fecha:   new Date().toLocaleDateString('es-PR'),
     ts:      fh()
   });
-  // Si el total abonado cubre el monto, marcar como pagado automáticamente
+
   var totalAbonado = p.abonos.reduce(function(a,b){ return a+b.monto; }, 0);
   if (totalAbonado >= p.monto) {
     p.estado = 'Pagado';
@@ -7174,7 +6842,6 @@ function pdfEstadoCuenta() {
   var doc = new JP({unit:'mm',format:'letter'});
   var W=215.9, M=20, y=0;
 
-  // Encabezado
   doc.setFillColor(26,58,92); doc.rect(0,0,W,30,'F');
   doc.setTextColor(255,255,255);
   doc.setFontSize(16); doc.setFont(undefined,'bold'); doc.text('ESTADO DE CUENTA',W/2,12,{align:'center'});
@@ -7182,7 +6849,6 @@ function pdfEstadoCuenta() {
   doc.setFontSize(8); doc.text('Generado: '+fh(),W-M,27,{align:'right'});
   y=38;
 
-  // Datos del residente
   doc.setFillColor(245,248,252); doc.roundedRect(M,y,W-2*M,30,3,3,'F');
   doc.setTextColor(26,58,92); doc.setFontSize(13); doc.setFont(undefined,'bold');
   doc.text(r?r.nombre:'Residente', M+4, y+10);
@@ -7194,7 +6860,6 @@ function pdfEstadoCuenta() {
   doc.text('Período: '+perTxt, M+4, y+24);
   y+=38;
 
-  // Tabla de movimientos
   doc.setFillColor(26,58,92); doc.rect(M,y,W-2*M,8,'F');
   doc.setTextColor(255,255,255); doc.setFontSize(8); doc.setFont(undefined,'bold');
   ['FECHA','CONCEPTO','PERÍODO','MONTO','ESTADO','MÉTODO'].forEach(function(h,i){
@@ -7215,7 +6880,7 @@ function pdfEstadoCuenta() {
     doc.text(p.estado,M+128,y);
     doc.setTextColor(40,40,40);
     doc.text(p.metodo||'—',M+152,y);
-    // Abonos
+
     if(p.abonos&&p.abonos.length){
       y+=5;
       var ab=p.abonos.reduce(function(a,b){return a+b.monto;},0);
@@ -7229,7 +6894,6 @@ function pdfEstadoCuenta() {
     y+=7;
   });
 
-  // Resumen
   y+=5;
   doc.setFillColor(26,58,92); doc.rect(M,y,W-2*M,24,'F');
   doc.setTextColor(255,255,255); doc.setFont(undefined,'bold'); doc.setFontSize(10);
@@ -7239,7 +6903,6 @@ function pdfEstadoCuenta() {
   doc.text('Pendiente: $'+pendiente.toFixed(2), M+60, y+16);
   doc.text('TOTAL: $'+total.toFixed(2), W-M-2, y+16, {align:'right'});
 
-  // Firma
   y+=32;
   doc.setTextColor(100,100,100); doc.setFont(undefined,'normal'); doc.setFontSize(8);
   doc.setDrawColor(180,180,180); doc.setLineWidth(0.3);
@@ -7264,7 +6927,6 @@ function imprimirRecibo(id) {
   var doc = new JP({unit:'mm', format:'letter'});
   var W = 215.9, M = 20; // letter, margen 20mm
 
-  // ══════ ENCABEZADO ══════
   doc.setFillColor(26,58,92);
   doc.rect(0,0,W,28,'F');
   doc.setTextColor(255,255,255);
@@ -7277,11 +6939,9 @@ function imprimirRecibo(id) {
   doc.setFontSize(8); doc.setFont(undefined,'normal');
   doc.text('No. '+p.id.replace('PG','REC-'), W-M, 22, {align:'right'});
 
-  // ══════ DATOS DEL RECIBO ══════
   var y = 36;
   doc.setTextColor(40,40,40);
 
-  // Caja izquierda — datos del residente
   doc.setFillColor(245,248,252);
   doc.roundedRect(M, y, 80, 42, 3, 3, 'F');
   doc.setFontSize(8); doc.setFont(undefined,'bold'); doc.setTextColor(26,58,92);
@@ -7295,7 +6955,6 @@ function imprimirRecibo(id) {
     if (r.medicare) doc.text('Medicare/Medicaid', M+4, y+34);
   }
 
-  // Caja derecha — datos del recibo
   doc.setFillColor(26,58,92);
   doc.roundedRect(W-M-80, y, 80, 42, 3, 3, 'F');
   doc.setFontSize(8); doc.setFont(undefined,'bold'); doc.setTextColor(255,255,255);
@@ -7312,7 +6971,6 @@ function imprimirRecibo(id) {
     doc.setFont(undefined,'normal'); doc.text(row[1]||'—', W-M-50, y+15+i*7);
   });
 
-  // ══════ DETALLE DEL PAGO ══════
   y += 50;
   doc.setTextColor(40,40,40);
   doc.setFontSize(10); doc.setFont(undefined,'bold'); doc.setTextColor(26,58,92);
@@ -7320,7 +6978,6 @@ function imprimirRecibo(id) {
   doc.setDrawColor(26,58,92); doc.setLineWidth(0.5);
   doc.line(M, y, W-M, y); y+=6;
 
-  // Encabezado tabla
   doc.setFillColor(235,241,250);
   doc.rect(M, y-4, W-2*M, 8, 'F');
   doc.setFontSize(9); doc.setFont(undefined,'bold'); doc.setTextColor(26,58,92);
@@ -7335,7 +6992,6 @@ function imprimirRecibo(id) {
   doc.text('$'+p.monto.toFixed(2), W-M, y, {align:'right'});
   y+=8;
 
-  // Abonos si es plan de pago
   if (p.abonos && p.abonos.length) {
     doc.setFontSize(8); doc.setTextColor(100,100,100);
     p.abonos.forEach(function(ab){
@@ -7350,10 +7006,8 @@ function imprimirRecibo(id) {
     y+=8;
   }
 
-  // Línea total
   doc.setDrawColor(26,58,92); doc.line(M, y, W-M, y); y+=6;
 
-  // TOTAL
   doc.setFillColor(26,58,92);
   doc.rect(M, y-2, W-2*M, 12, 'F');
   doc.setTextColor(255,255,255); doc.setFontSize(12); doc.setFont(undefined,'bold');
@@ -7361,13 +7015,11 @@ function imprimirRecibo(id) {
   doc.text('$'+p.monto.toFixed(2), W-M-2, y+6, {align:'right'});
   y+=18;
 
-  // Notas
   if (p.nota) {
     doc.setTextColor(100,100,100); doc.setFontSize(8); doc.setFont(undefined,'normal');
     doc.text('Referencia: '+p.nota, M, y); y+=8;
   }
 
-  // ══════ FIRMAS ══════
   y += 10;
   doc.setDrawColor(180,180,180); doc.setLineWidth(0.3);
   doc.line(M, y, M+70, y);
@@ -7377,7 +7029,6 @@ function imprimirRecibo(id) {
   doc.text('Firma del administrador / receptor', W-M-70, y+5);
   doc.text(p.creadoPor||'', W-M-70, y+10);
 
-  // ══════ PIE DE PÁGINA ══════
   y += 22;
   doc.setFillColor(245,248,252);
   doc.rect(M, y, W-2*M, 18, 'F');
@@ -7389,7 +7040,6 @@ function imprimirRecibo(id) {
   ];
   pie.forEach(function(l,i){ doc.text(l, W/2, y+5+i*5, {align:'center'}); });
 
-  // Abrir en nueva pestaña para imprimir
   var pdfBlob = doc.output('blob');
   var url = URL.createObjectURL(pdfBlob);
   var w = window.open(url, '_blank');
@@ -7462,7 +7112,7 @@ function pdfPagos() {
     doc.text(h,[16,46,96,118,140,162][i],y+4);
   });
   y+=8; doc.setTextColor(40,40,40); doc.setFont(undefined,'normal');
-  // Subtítulo
+
   doc.setFontSize(9); doc.setFont(undefined,'normal'); doc.setTextColor(80,80,80);
   doc.text('Residente: '+resTxt+' · '+lista.length+' registros',14,y); y+=6;
   var total=0, cobrado=0, pendiente=0;
@@ -7475,7 +7125,7 @@ function pdfPagos() {
     total+=p.monto; y+=6;
   });
   y+=4;
-  // Resumen financiero
+
   lista.forEach(function(p){ if(p.estado==='Pagado') cobrado+=p.monto; else if(p.estado==='Pendiente'||p.estado==='Vencido') pendiente+=p.monto; });
   doc.setFillColor(235,241,250); doc.rect(14,y,182,20,'F');
   doc.setFont(undefined,'bold'); doc.setFontSize(9); doc.setTextColor(26,58,92);
@@ -7509,7 +7159,6 @@ function actualizarPpto() {
     '</div>';
 }
 
-// ===== ASEO PERSONAL =====
 var _aseoRid = null;
 
 function initAseo() {
@@ -7532,7 +7181,7 @@ function openAseoManual() {
 }
 
 function openAseoQR() {
-  // Abrir modal de aseo con escáner QR activo
+
   _aseoRid = null;
   openM('mAseo');
   setTimeout(function(){
@@ -7545,11 +7194,11 @@ function openAseoQR() {
 }
 
 function iniciarCamaraAseo() {
-  // Usar el mismo sistema de cámara del QR principal
+
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
     toast('⚠️ Cámara no disponible'); return;
   }
-  // Crear un overlay de cámara temporal
+
   var overlay = document.createElement('div');
   overlay.id = 'aseoCamOverlay';
   overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px';
@@ -7593,14 +7242,14 @@ function selAseoQR(qrVal) {
     return;
   }
   cerrarCamaraAseo();
-  // Mostrar resultado en el modal
+
   _aseoRid = r.id;
   document.getElementById('aseoResidenteId').value = r.id;
   document.getElementById('aseoQRResult').style.display = 'block';
   document.getElementById('aseoQRNombre').textContent = r.nombre;
   document.getElementById('aseoQRHab').textContent = 'Hab. '+r.habitacion+' · '+r.sexo;
   document.getElementById('aseoResidenteSelector').style.display = 'none';
-  // Pre-seleccionar también en el select por si acaso
+
   var sel = document.getElementById('aseoR');
   if (sel) sel.value = r.id;
   toast('✅ Paciente: '+r.nombre, 'vs');
@@ -7643,14 +7292,12 @@ function saveAseo() {
             (document.getElementById('aseoR') ? document.getElementById('aseoR').value : '');
   if (!rid) { toast('⚠️ Selecciona o escanea un paciente'); return; }
 
-  // Resolver PIN
   var pin = document.getElementById('aseoPin') ? document.getElementById('aseoPin').value : '';
   var emp = pin ? DB.usuarios.find(function(u){ return u.password && u.password.slice(-4)===pin; }) : null;
   if (!emp) { toast('⚠️ Ingresa tu PIN para registrar'); return; }
 
   var r = DB.residentes.find(function(x){ return x.id===rid; });
 
-  // Recoger checklist
   var items = {
     banio:     document.getElementById('aseoBanio')    ? document.getElementById('aseoBanio').checked    : false,
     esponja:   document.getElementById('aseoEsponja')  ? document.getElementById('aseoEsponja').checked  : false,
@@ -7704,7 +7351,6 @@ function rAseo() {
     return true;
   }).slice().reverse();
 
-  // Resumen por residente
   var resDiv = document.getElementById('aseoResumen');
   if (resDiv) {
     var hoy = new Date().toISOString().slice(0,10);
@@ -7727,7 +7373,6 @@ function rAseo() {
     resDiv.innerHTML = h || '<div class="es"><div class="ei">🧼</div><p>Sin residentes activos.</p></div>';
   }
 
-  // Tabla
   var tbody = document.getElementById('tAseo');
   if (!tbody) return;
   if (!lista.length) {
@@ -7770,7 +7415,6 @@ function pdfAseo() {
   doc.text('Fecha: '+fecha+' · Generado: '+fh(),280,13,'right');
   doc.setTextColor(40,40,40);
 
-  // Encabezado tabla
   doc.setFontSize(8); doc.setFont(undefined,'bold'); doc.setFillColor(13,122,95);
   doc.setTextColor(255,255,255); doc.rect(14,y,269,6,'F');
   var cols = ['Paciente','Turno','Baño','Oral','Cabello','Uñas','Afeitar','Ropa','Cama','Piel','Empleado','Hora'];
@@ -7795,7 +7439,6 @@ function pdfAseo() {
   toast('📄 Reporte de aseo generado','vs');
 }
 
-// ===== AUDITORÍA =====
 function logAudit(tipo, detalle, extra) {
   if (!DB.auditoria) DB.auditoria = [];
   DB.auditoria.push({
@@ -7808,7 +7451,7 @@ function logAudit(tipo, detalle, extra) {
     ts: fh(),
     raw: new Date().toISOString()
   });
-  // Guardar solo los últimos 1000 registros
+
   if (DB.auditoria.length > 1000) DB.auditoria = DB.auditoria.slice(-1000);
   sDB();
 }
@@ -7819,7 +7462,6 @@ function rAuditoria() {
   if (!lista_div) return;
   if (!DB.auditoria) DB.auditoria = [];
 
-  // Poblar filtro de usuarios
   var fAU = document.getElementById('fAudUser');
   if (fAU && fAU.options.length <= 1) {
     var users = [...new Set(DB.auditoria.map(function(a){ return a.usuario; }))].sort();
@@ -7837,13 +7479,12 @@ function rAuditoria() {
     return true;
   }).slice().reverse();
 
-  // Resumen
   var cols = {Login:'#0D7A5F',Logout:'#607D8B',Residente:'#1A3A5C',Medicamento:'#7B2D8B',
     'Signos Vitales':'#E67E22',Incidente:'#C0392B','Visita Médica':'#2980B9',
     Cuarentena:'#C0392B',Fallecido:'#555',Usuario:'#1A3A5C',Ponche:'#0D7A5F',Compra:'#2D6A4F'};
 
   if (res_div) {
-    // Conteo por empleado
+
     var byEmp = {};
     (DB.auditoria||[]).forEach(function(a){
       if (!byEmp[a.usuario]) byEmp[a.usuario] = 0;
@@ -7927,7 +7568,6 @@ function pdfAuditoria() {
   toast('📄 PDF generado','vs');
 }
 
-// ===== REPORTES =====
 function rReportes() {
   var per = document.getElementById('rRepPer') ? document.getElementById('rRepPer').value : 'mes';
   var hoy = new Date();
@@ -7944,7 +7584,6 @@ function rReportes() {
     return d >= desdeStr && d <= hastaStr;
   }
 
-  // KPIs
   var resActivos  = DB.residentes.filter(function(r){ return r.estado==='Activo'||r.estado==='En observación'; }).length;
   var resFallec   = (DB.fallecidos||[]).filter(function(f){ return f.fecha>=desdeStr&&f.fecha<=hastaStr; }).length;
   var medAdm      = (DB.medicamentos||[]).filter(function(m){ return m.estado==='Administrado'&&enRango(m.ts); }).length;
@@ -7969,7 +7608,6 @@ function rReportes() {
     return '<div class="reporte-kpi"><div class="reporte-kpi-val" style="color:'+k.color+'">'+k.val+'</div><div class="reporte-kpi-lbl">'+k.lbl+'</div></div>';
   }).join('');
 
-  // Residentes
   var rDiv = document.getElementById('repResidentes');
   if (rDiv) {
     var byEst = {}; DB.residentes.forEach(function(r){ byEst[r.estado]=(byEst[r.estado]||0)+1; });
@@ -7983,7 +7621,6 @@ function rReportes() {
     rDiv.innerHTML = h || '<div class="es"><div class="ei">👴</div><p>Sin datos.</p></div>';
   }
 
-  // Medicamentos
   var mDiv = document.getElementById('repMedicamentos');
   if (mDiv) {
     var meds = (DB.medicamentos||[]).filter(function(m){ return enRango(m.ts); });
@@ -8001,7 +7638,6 @@ function rReportes() {
     mDiv.innerHTML = h2 || '<p style="color:var(--gm);font-size:13px">Sin registros en este período.</p>';
   }
 
-  // Incidentes
   var iDiv = document.getElementById('repIncidentes');
   if (iDiv) {
     var incs = (DB.incidentes||[]).filter(function(i){ return enRango(i.ts); });
@@ -8016,7 +7652,6 @@ function rReportes() {
     iDiv.innerHTML = incs.length ? h3 : '<p style="color:var(--gm);font-size:13px">Sin incidentes en este período.</p>';
   }
 
-  // Signos vitales - alertas
   var sDiv = document.getElementById('repSignos');
   if (sDiv) {
     var svs = (DB.signos||[]).filter(function(s){ return enRango(s.ts); });
@@ -8032,7 +7667,6 @@ function rReportes() {
       '</table>';
   }
 
-  // Cuarentenas
   var cDiv = document.getElementById('repCuarentenas');
   if (cDiv) {
     var cuars = (DB.cuarentenas||[]);
@@ -8046,7 +7680,6 @@ function rReportes() {
     cDiv.innerHTML = h4;
   }
 
-  // Asistencia empleados
   var aDiv = document.getElementById('repAsistencia');
   if (aDiv) {
     var ponches = (DB.ponches||[]).filter(function(p){ return p.fecha>=desdeStr&&p.fecha<=hastaStr; });
@@ -8096,7 +7729,7 @@ function pdfReporteGeneral() {
         texts.forEach(function(t,i){ doc.text(t, 14+i*65, y); });
         y+=6;
       });
-      // KPIs como texto
+
       var kpis2 = el.querySelectorAll('.reporte-kpi');
       kpis2.forEach(function(k){
         if(y>275){doc.addPage();y=20;}
@@ -8112,7 +7745,6 @@ function pdfReporteGeneral() {
   toast('📄 Reporte PDF generado','vs');
 }
 
-// ===== CIERRE DE SESIÓN Y TIMEOUT =====
 var _timeoutTimer = null;
 var _timeoutWarn = null;
 var _TIMEOUT_MS = 30 * 60 * 1000;  // 30 minutos
@@ -8122,11 +7754,11 @@ function resetTimeout() {
   clearTimeout(_timeoutTimer);
   clearTimeout(_timeoutWarn);
   _timeoutWarn = setTimeout(function(){
-    // Mostrar advertencia 2 min antes
+
     var div = document.getElementById('timeoutWarn');
     if (div) {
       div.style.display = 'flex';
-      // Barra de progreso
+
       var bar = document.getElementById('timeoutBar');
       if (bar) { bar.style.width = '100%'; bar.style.transition = 'width 120s linear'; setTimeout(function(){ bar.style.width='0%'; },100); }
     }
@@ -8134,7 +7766,7 @@ function resetTimeout() {
   _timeoutTimer = setTimeout(function(){
     cerrarSesion(true);
   }, _TIMEOUT_MS);
-  // Ocultar advertencia si hay actividad
+
   var div = document.getElementById('timeoutWarn');
   if (div) div.style.display = 'none';
 }
@@ -8144,13 +7776,13 @@ function cerrarSesion(auto) {
   clearTimeout(_timeoutWarn);
   if (SES && SES.nombre) logAudit('Logout','Cierre de sesión'+(auto?' (inactividad)':''));
   SES = {};
-  // Ocultar la app y mostrar el modal de login
+
   var navBar = document.getElementById('navBar');
   var main   = document.querySelector('.main');
   if (navBar) navBar.style.display = 'none';
   if (main)   main.style.display   = 'none';
   document.getElementById('timeoutWarn').style.display = 'none';
-  // Limpiar campos del login
+
   document.getElementById('luU').value = '';
   document.getElementById('luP').value = '';
   document.getElementById('luErr').style.display = 'none';
@@ -8163,7 +7795,6 @@ function mostrarSesionInfo() {
   if (el && SES.nombre) el.textContent = SES.nombre + ' · ' + rolL(SES.rol);
 }
 
-// ===== PIN DE EMPLEADO =====
 function verificarPINEmp(pinInputId, resultId, storageKey) {
   var pin = document.getElementById(pinInputId) ? document.getElementById(pinInputId).value : '';
   var res = document.getElementById(resultId);
@@ -8180,9 +7811,6 @@ function verificarPINEmp(pinInputId, resultId, storageKey) {
   return emp.nombre;
 }
 
-
-
-// ===== RESETEAR ADMIN =====
 function resetTodo() {
   if (!confirm('¿Borrar TODOS los datos guardados y reiniciar la app?\n\nEsto borrará residentes, registros, etc.\nSolo hacerlo si la app no abre correctamente.')) return;
   localStorage.removeItem('chdb4');
@@ -8191,11 +7819,11 @@ function resetTodo() {
 
 function resetearAdmin() {
   if (!confirm('¿Restaurar el usuario administrador?\n\nUsuario: admin\nContraseña: admin123\n\nEsto NO borra los datos de los residentes.')) return;
-  // Buscar si ya existe admin
+
   var adminIdx = DB.usuarios.findIndex(function(u){ return u.id==='U1' || u.rol==='admin'; });
   var adminUser = {id:'U1',nombre:'Administrador',username:'admin',password:'admin123',rol:'admin',turno:'Rotativo'};
   if (adminIdx >= 0) {
-    // Actualizar contraseña del admin existente
+
     DB.usuarios[adminIdx].password = 'admin123';
     DB.usuarios[adminIdx].username = 'admin';
     toast('✅ Contraseña del admin restaurada a: admin123');
@@ -8206,7 +7834,6 @@ function resetearAdmin() {
   sDB();
 }
 
-// ===== TELÉFONO Y MAPA =====
 function actualizarTelLink() {
   var tel = document.getElementById('rTel') ? document.getElementById('rTel').value.trim() : '';
   var link = document.getElementById('rTelLink');
@@ -8230,7 +7857,6 @@ function actualizarMapLink() {
   }
 }
 
-// ===== ALERGIAS =====
 function mostrarAlergias(rid, divId) {
   var div = document.getElementById(divId);
   if (!div) return;
@@ -8241,7 +7867,7 @@ function mostrarAlergias(rid, divId) {
   if (r.alerMed)  al.push('💊 ' + r.alerMed);
   if (r.alerAlim) al.push('🍎 ' + r.alerAlim);
   if (r.alerOtra) al.push('⚠️ ' + r.alerOtra);
-  // También buscar en expediente
+
   if (DB.expedientes && DB.expedientes[rid] && DB.expedientes[rid].alergias) {
     var ea = DB.expedientes[rid].alergias;
     if (ea.medicamentos && !r.alerMed) al.push('💊 ' + ea.medicamentos);
@@ -8262,7 +7888,7 @@ function syncAlergiasExpediente(rid) {
   if (aMed  && !aMed.value  && r.alerMed)  aMed.value  = r.alerMed;
   if (aAlim && !aAlim.value && r.alerAlim) aAlim.value = r.alerAlim;
   if (aOtra && !aOtra.value && r.alerOtra) aOtra.value = r.alerOtra;
-  // También cargar del expediente si existe
+
   if (DB.expedientes && DB.expedientes[rid] && DB.expedientes[rid].alergias) {
     var ea = DB.expedientes[rid].alergias;
     if (aMed  && !aMed.value  && ea.medicamentos) aMed.value  = ea.medicamentos;
@@ -8271,7 +7897,6 @@ function syncAlergiasExpediente(rid) {
   }
 }
 
-// ===== MEDICAMENTOS DEL EXPEDIENTE =====
 function rExpMeds(rid) {
   var div = document.getElementById('expMedLista');
   var aDiv = document.getElementById('expMedAler');
@@ -8279,7 +7904,6 @@ function rExpMeds(rid) {
   var r = DB.residentes.find(function(x){ return x.id===rid; });
   if (!r) return;
 
-  // Mostrar alergias
   var al = [];
   if (r.alerMed)  al.push('💊 Med: '+r.alerMed);
   if (r.alerAlim) al.push('🍎 Alim: '+r.alerAlim);
@@ -8289,7 +7913,6 @@ function rExpMeds(rid) {
     else aDiv.style.display='none';
   }
 
-  // Medicamentos recetados del perfil
   var medsRec = r.medsRecetados || '';
   var h = '';
   if (medsRec) {
@@ -8302,7 +7925,6 @@ function rExpMeds(rid) {
     h += '</div>';
   }
 
-  // Historial (últimos 30 días)
   var hace30 = new Date(); hace30.setDate(hace30.getDate()-30);
   var historial = (DB.medicamentos||[]).filter(function(m){
     return m.residenteId===rid;
@@ -8349,8 +7971,6 @@ function mostrarPanelMed(rid) {
   p.style.display = 'block';
 }
 
-// ===== INIT =====
-// Garantizar que todas las tablas existen
 ['fallecidos','cuarentenas','ponches','aseos','auditoria','compras','mensajes','tareas','visitasMed','planAct','terapias','planSemanal','pagos'].forEach(function(k){
   if (!DB[k]) DB[k] = [];
 });
@@ -8366,7 +7986,7 @@ dash(); dCharts(); rRes(); rMed(); rSV(); rAlim(); rAct(); rInc(); rVis(); rTur(
 calcAlerts();
 setInterval(calcAlerts, 300000);
 initPonchador();
-// Abrir modal de login al iniciar
+
 openM('mLogin');
 </script>
 <script>
