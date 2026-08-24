@@ -3135,9 +3135,12 @@ function pSel(sid) {
   if (!sel) return;
   var cur = sel.value;
   sel.innerHTML = '<option value="">— Seleccionar —</option>';
-  DB.residentes.filter(function(r){
+  var activos = DB.residentes.filter(function(r){
     return r.estado !== 'Fallecido' && r.estado !== 'Inactivo';
-  }).forEach(function(r){
+  }).slice().sort(function(a,b){
+    return a.nombre.localeCompare(b.nombre, 'es');
+  });
+  activos.forEach(function(r){
     var o = document.createElement('option');
     o.value = r.id;
     o.textContent = r.nombre + ' (Hab. ' + r.habitacion + ')';
@@ -3252,6 +3255,7 @@ function rRes(filtro) {
   var tbody = document.getElementById('tRes');
   var lista = DB.residentes.filter(function(r){ return r.estado !== 'Fallecido'; });
   if (filtro) { var f=filtro.toLowerCase(); lista=lista.filter(function(r){ return r.nombre.toLowerCase().includes(f)||r.habitacion.toLowerCase().includes(f); }); }
+  lista.sort(function(a,b){ return a.nombre.localeCompare(b.nombre,'es'); });
   if (!lista.length) { tbody.innerHTML = em(7,'👴','Sin residentes. Agrega el primero.'); return; }
   var h = '';
   lista.forEach(function(r){
@@ -3727,7 +3731,8 @@ function rUsr() {
   var cols={admin:'#1A3A5C',medico:'#7B2D8B',enfermera:'#0D7A5F',aux:'#E67E22',recepcion:'#607D8B',cocina:'#C0392B',limpieza:'#27AE60',terapia:'#8E44AD',trabajo_social:'#2980B9',voluntario:'#16A085',horas_verdes:'#1E8449',practicante:'#D35400',contabilidad:'#117A65'};
   window._uIds = [];
   var h='';
-  DB.usuarios.forEach(function(u){
+  var usuariosOrdenados = DB.usuarios.slice().sort(function(a,b){ return a.nombre.localeCompare(b.nombre,'es'); });
+  usuariosOrdenados.forEach(function(u){
     var i = window._uIds.length;
     window._uIds.push(u.id);
     var ini=u.nombre.split(' ').map(function(x){ return x[0]; }).join('').substring(0,2).toUpperCase();
@@ -5062,18 +5067,26 @@ function convertirPeso() {
 
 
 // ===== LUPA FILTRO DE RESIDENTE =====
-function lupaFiltrar(inputId, selectId) {
-  var inp = document.getElementById(inputId);
-  var sel = document.getElementById(selectId);
-  if (!inp || !sel) return;
-  var f = inp.value.toLowerCase();
-  Array.from(sel.options).forEach(function(o, i) {
-    if (i === 0) return;
-    o.hidden = f ? !o.textContent.toLowerCase().includes(f) : false;
+function lupaFiltrar(lupId, selId) {
+  var lupEl = document.getElementById(lupId);
+  var sel   = document.getElementById(selId);
+  if (!lupEl || !sel) return;
+  var q   = lupEl.value.toLowerCase();
+  var cur = sel.value;
+  sel.innerHTML = '<option value="">— Seleccionar —</option>';
+  DB.residentes.filter(function(r){
+    return r.estado !== 'Fallecido' && r.estado !== 'Inactivo' &&
+           r.nombre.toLowerCase().includes(q);
+  }).slice().sort(function(a,b){
+    return a.nombre.localeCompare(b.nombre, 'es');
+  }).forEach(function(r){
+    var o = document.createElement('option');
+    o.value = r.id;
+    o.textContent = r.nombre + ' (Hab. ' + r.habitacion + ')';
+    sel.appendChild(o);
   });
+  if (cur) sel.value = cur;
 }
-
-// ===== EDITAR RESIDENTE =====
 function editRes(id) {
   var r = DB.residentes.find(function(x){ return x.id === id; });
   if (!r) return;
@@ -6700,8 +6713,8 @@ function initPagos() {
   if (!DB.pagos) DB.pagos = [];
   // Poblar filtro de residentes
   var sel = document.getElementById('fPagoRes');
-  if (sel && sel.options.length <= 1) {
-    pSel('fPagoRes');
+  if (sel) {
+    pSel('fPagoRes');  // siempre refrescar — pSel ya ordena alfabéticamente
   }
   // Mes actual por defecto
   var mesEl = document.getElementById('fPagoMes');
@@ -6710,16 +6723,17 @@ function initPagos() {
 }
 
 function openPago() {
+  openM('mPago');
   setTimeout(function(){
     pSel('pagoR');
-    document.getElementById('lupa_pagoR').value = '';
+    var lupaEl = document.getElementById('lupa_pagoR');
+    if (lupaEl) lupaEl.value = '';
     var hoy = new Date();
-    document.getElementById('pagoPeriodo').value = hoy.toISOString().slice(0,7);
-    document.getElementById('pagoVence').value   = '';
-    document.getElementById('pagoMonto').value   = '';
-    document.getElementById('pagoNota').value    = '';
-  }, 50);
-  openM('mPago');
+    if (document.getElementById('pagoPeriodo')) document.getElementById('pagoPeriodo').value = hoy.toISOString().slice(0,7);
+    if (document.getElementById('pagoVence'))   document.getElementById('pagoVence').value   = '';
+    if (document.getElementById('pagoMonto'))   document.getElementById('pagoMonto').value   = '';
+    if (document.getElementById('pagoNota'))    document.getElementById('pagoNota').value    = '';
+  }, 100);
 }
 
 function savePago() {
@@ -6727,6 +6741,20 @@ function savePago() {
   if (!rid) { toast('⚠️ Selecciona un residente'); return; }
   var monto = parseFloat(document.getElementById('pagoMonto').value);
   if (!monto || monto <= 0) { toast('⚠️ Ingresa el monto'); return; }
+  var tipo    = document.getElementById('pagoTipo').value;
+  var periodo = document.getElementById('pagoPeriodo').value;
+  // Verificar duplicado del mismo tipo y período
+  if (periodo) {
+    var dup = (DB.pagos||[]).find(function(p){
+      return p.residenteId===rid && p.tipo===tipo && p.periodo===periodo;
+    });
+    if (dup) {
+      var r2 = DB.residentes.find(function(x){ return x.id===rid; });
+      if (!confirm('⚠️ Ya existe un registro de "'+tipo+'" para '+
+        (r2?r2.nombre:'este residente')+' en el período '+periodo+
+        '.\n¿Deseas registrar otro de todas formas?')) return;
+    }
+  }
   var r = DB.residentes.find(function(x){ return x.id===rid; });
   if (!DB.pagos) DB.pagos = [];
   DB.pagos.push({
