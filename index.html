@@ -2501,8 +2501,8 @@ tr:hover td{background:var(--ac);}
       <div class="fg">
         <div class="fi ff">
           <label>Residente *</label>
-          <input type="text" id="lupa_pagoR" placeholder="🔍 Buscar..." oninput="lupaFiltrar('lupa_pagoR','pagoR')" style="border:1.5px solid var(--bo);border-radius:8px;padding:9px;font-size:15px;width:100%;margin-bottom:4px">
-          <select id="pagoR" size="3" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px"><option value="">— Seleccionar —</option></select>
+          <input type="text" id="lupa_pagoR" placeholder="🔍 Escribe el nombre del paciente..." oninput="lupaFiltrar('lupa_pagoR','pagoR')" style="border:1.5px solid var(--bo);border-radius:8px;padding:9px;font-size:15px;width:100%;margin-bottom:4px">
+          <select id="pagoR" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:10px"><option value="">— Seleccionar paciente —</option></select>
         </div>
         <div class="fi"><label>Tipo de pago *</label>
           <select id="pagoTipo">
@@ -6848,6 +6848,7 @@ function rPagos() {
     if (p.estado!=='Pagado') h += '<button class="btn bsm bvs" onclick="marcarPagado(window._pgIds['+i+'])">✅ Marcar Pagado</button>';
     if (p.estado==='Plan de pago') h += '<button class="btn bsm" style="background:#117A65;color:white" onclick="openAbono(window._pgIds['+i+'])">💵 Abonar</button>';
     h += '<button class="btn bsm bmo" onclick="editarEstadoPago(window._pgIds['+i+'])">✏️ Estado</button>';
+    h += '<button class="btn bsm" style="background:#1A3A5C;color:white" onclick="imprimirRecibo(window._pgIds['+i+'])">🧾 Recibo</button>';
     h += '<button class="btn bsm bra" onclick="eliminarPago(window._pgIds['+i+'])">🗑️</button>';
     h += '</div></div>';
   });
@@ -6941,6 +6942,151 @@ function saveAbono() {
   closeM('mAbono');
   rPagos();
   logAudit('Pago','Abono $'+monto.toFixed(2)+' a plan de pago: '+p.tipo, p.nombre+' · por: '+SES.nombre);
+}
+
+function imprimirRecibo(id) {
+  var JP = window.jspdf ? window.jspdf.jsPDF : null;
+  if (!JP) { toast('⚠️ Cargando PDF...'); setTimeout(function(){ imprimirRecibo(id); },1500); return; }
+  var p = (DB.pagos||[]).find(function(x){ return x.id===id; });
+  if (!p) return;
+  var r = DB.residentes.find(function(x){ return x.id===p.residenteId; });
+
+  var doc = new JP({unit:'mm', format:'letter'});
+  var W = 215.9, M = 20; // letter, margen 20mm
+
+  // ══════ ENCABEZADO ══════
+  doc.setFillColor(26,58,92);
+  doc.rect(0,0,W,28,'F');
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(18); doc.setFont(undefined,'bold');
+  doc.text('CareHome Manager', M, 12);
+  doc.setFontSize(10); doc.setFont(undefined,'normal');
+  doc.text('Hogar de Ancianos — Puerto Rico', M, 19);
+  doc.setFontSize(11); doc.setFont(undefined,'bold');
+  doc.text('RECIBO DE PAGO', W-M, 16, {align:'right'});
+  doc.setFontSize(8); doc.setFont(undefined,'normal');
+  doc.text('No. '+p.id.replace('PG','REC-'), W-M, 22, {align:'right'});
+
+  // ══════ DATOS DEL RECIBO ══════
+  var y = 36;
+  doc.setTextColor(40,40,40);
+
+  // Caja izquierda — datos del residente
+  doc.setFillColor(245,248,252);
+  doc.roundedRect(M, y, 80, 42, 3, 3, 'F');
+  doc.setFontSize(8); doc.setFont(undefined,'bold'); doc.setTextColor(26,58,92);
+  doc.text('PACIENTE / RESIDENTE', M+4, y+7);
+  doc.setFont(undefined,'normal'); doc.setTextColor(40,40,40); doc.setFontSize(10);
+  doc.text(p.nombre, M+4, y+15);
+  if (r) {
+    doc.setFontSize(8);
+    doc.text('Hab. '+r.habitacion, M+4, y+22);
+    if (r.tel) doc.text('Tel: '+r.tel, M+4, y+28);
+    if (r.medicare) doc.text('Medicare/Medicaid', M+4, y+34);
+  }
+
+  // Caja derecha — datos del recibo
+  doc.setFillColor(26,58,92);
+  doc.roundedRect(W-M-80, y, 80, 42, 3, 3, 'F');
+  doc.setFontSize(8); doc.setFont(undefined,'bold'); doc.setTextColor(255,255,255);
+  doc.text('INFORMACIÓN DEL PAGO', W-M-76, y+7);
+  doc.setFont(undefined,'normal'); doc.setFontSize(9);
+  var rows = [
+    ['Fecha:', p.ts||fh()],
+    ['Período:', p.periodo||'—'],
+    ['Método:', p.metodo||'—'],
+    ['Estado:', p.estado],
+  ];
+  rows.forEach(function(row,i){
+    doc.setFont(undefined,'bold'); doc.text(row[0], W-M-76, y+15+i*7);
+    doc.setFont(undefined,'normal'); doc.text(row[1]||'—', W-M-50, y+15+i*7);
+  });
+
+  // ══════ DETALLE DEL PAGO ══════
+  y += 50;
+  doc.setTextColor(40,40,40);
+  doc.setFontSize(10); doc.setFont(undefined,'bold'); doc.setTextColor(26,58,92);
+  doc.text('DETALLE', M, y); y+=6;
+  doc.setDrawColor(26,58,92); doc.setLineWidth(0.5);
+  doc.line(M, y, W-M, y); y+=6;
+
+  // Encabezado tabla
+  doc.setFillColor(235,241,250);
+  doc.rect(M, y-4, W-2*M, 8, 'F');
+  doc.setFontSize(9); doc.setFont(undefined,'bold'); doc.setTextColor(26,58,92);
+  doc.text('Descripción', M+2, y+1);
+  doc.text('Período', W-M-60, y+1);
+  doc.text('Monto', W-M, y+1, {align:'right'});
+  y+=10;
+
+  doc.setFont(undefined,'normal'); doc.setTextColor(40,40,40); doc.setFontSize(10);
+  doc.text(p.tipo, M+2, y);
+  doc.text(p.periodo||'—', W-M-60, y);
+  doc.text('$'+p.monto.toFixed(2), W-M, y, {align:'right'});
+  y+=8;
+
+  // Abonos si es plan de pago
+  if (p.abonos && p.abonos.length) {
+    doc.setFontSize(8); doc.setTextColor(100,100,100);
+    p.abonos.forEach(function(ab){
+      doc.text('  Abono — '+ab.fecha+' ('+ab.metodo+')', M+2, y);
+      doc.text('+$'+ab.monto.toFixed(2), W-M, y, {align:'right'});
+      y+=6;
+    });
+    var totalAbonado = p.abonos.reduce(function(a,b){ return a+b.monto; },0);
+    doc.setTextColor(40,40,40); doc.setFontSize(9);
+    doc.text('Pendiente:', W-M-60, y);
+    doc.text('$'+Math.max(0,p.monto-totalAbonado).toFixed(2), W-M, y, {align:'right'});
+    y+=8;
+  }
+
+  // Línea total
+  doc.setDrawColor(26,58,92); doc.line(M, y, W-M, y); y+=6;
+
+  // TOTAL
+  doc.setFillColor(26,58,92);
+  doc.rect(M, y-2, W-2*M, 12, 'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(12); doc.setFont(undefined,'bold');
+  doc.text('TOTAL', M+4, y+6);
+  doc.text('$'+p.monto.toFixed(2), W-M-2, y+6, {align:'right'});
+  y+=18;
+
+  // Notas
+  if (p.nota) {
+    doc.setTextColor(100,100,100); doc.setFontSize(8); doc.setFont(undefined,'normal');
+    doc.text('Referencia: '+p.nota, M, y); y+=8;
+  }
+
+  // ══════ FIRMAS ══════
+  y += 10;
+  doc.setDrawColor(180,180,180); doc.setLineWidth(0.3);
+  doc.line(M, y, M+70, y);
+  doc.line(W-M-70, y, W-M, y);
+  doc.setFontSize(8); doc.setTextColor(100,100,100);
+  doc.text('Firma del responsable del pago', M, y+5);
+  doc.text('Firma del administrador / receptor', W-M-70, y+5);
+  doc.text(p.creadoPor||'', W-M-70, y+10);
+
+  // ══════ PIE DE PÁGINA ══════
+  y += 22;
+  doc.setFillColor(245,248,252);
+  doc.rect(M, y, W-2*M, 18, 'F');
+  doc.setFontSize(7.5); doc.setTextColor(100,100,100); doc.setFont(undefined,'normal');
+  var pie = [
+    'Este recibo es un comprobante oficial de pago. Consérvelo para sus archivos.',
+    'CareHome Manager — Sistema de Gestión de Hogar de Ancianos — Puerto Rico',
+    'Generado el: '+fh()+' · No. '+p.id,
+  ];
+  pie.forEach(function(l,i){ doc.text(l, W/2, y+5+i*5, {align:'center'}); });
+
+  // Abrir en nueva pestaña para imprimir
+  var pdfBlob = doc.output('blob');
+  var url = URL.createObjectURL(pdfBlob);
+  var w = window.open(url, '_blank');
+  if (!w) {
+    doc.save('Recibo_'+p.nombre.replace(/ /g,'_')+'_'+p.id+'.pdf');
+  }
+  toast('🧾 Recibo generado','vs');
 }
 
 function pdfPagos() {
