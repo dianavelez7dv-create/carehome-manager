@@ -1,3 +1,133 @@
+function rDash() {
+  var hoy = new Date().toISOString().slice(0,10);
+  var mes = hoy.slice(0,7);
+  var ahora = new Date();
+
+  // ── KPIs ─────────────────────────────────────────
+  var resActivos = DB.residentes.filter(function(r){ return r.estado==='Activo'||r.estado==='En observación'; });
+  document.getElementById('s1').textContent = resActivos.length;
+  document.getElementById('s2').textContent = (DB.medicamentos||[]).filter(function(m){ return m.ts&&m.ts.includes(hoy.split('-').reverse().join('/')); }).length;
+  document.getElementById('s3').textContent = (DB.incidentes||[]).filter(function(i){ return i.ts&&i.ts.includes(mes.split('-').reverse().join('/')||i.ts.slice(0,7)===mes); }).length;
+  document.getElementById('s4').textContent = (DB.visitas||[]).filter(function(v){ return v.fecha===hoy; }).length;
+  // Empleados con entrada hoy sin salida
+  var empActivos = new Set();
+  (DB.ponches||[]).filter(function(p){ return p.fecha===hoy; }).forEach(function(p){
+    if (p.tipo==='entrada') empActivos.add(p.userId);
+    else empActivos.delete(p.userId);
+  });
+  document.getElementById('s5').textContent = empActivos.size;
+  document.getElementById('s6').textContent = (DB.cuarentenas||[]).filter(function(q){ return q.estado==='Activo'; }).length;
+  document.getElementById('s7').textContent = (DB.pagos||[]).filter(function(p){ return p.estado==='Pendiente'||p.estado==='Vencido'; }).length;
+  document.getElementById('s8').textContent = (DB.tareas||[]).filter(function(t){ return t.estado==='Pendiente'||t.estado==='En progreso'; }).length;
+
+  // ── ESTADO DEL HOGAR ──────────────────────────────
+  var estDiv = document.getElementById('dashEstado');
+  if (estDiv) {
+    var enCuar = (DB.cuarentenas||[]).filter(function(q){ return q.estado==='Activo'; }).length;
+    var sinAseo = resActivos.filter(function(r){
+      return !(DB.aseos||[]).some(function(a){ return a.residenteId===r.id && a.raw && a.raw.startsWith(hoy); });
+    }).length;
+    var medPend = (DB.medicamentos||[]).filter(function(m){ return m.estado==='Pendiente' && m.ts && m.ts.includes(hoy.split('-').reverse().join('/')); }).length;
+    var pagoVenc = (DB.pagos||[]).filter(function(p){ return p.estado==='Vencido'; }).length;
+    var compUrg  = (DB.compras||[]).filter(function(x){ return x.urgente && x.estado==='Pendiente'; }).length;
+    var incMes   = (DB.incidentes||[]).filter(function(i){ return i.ts && i.ts.slice(0,7)===mes; }).length;
+    var rows = [
+      ['👴 Residentes activos', resActivos.length, resActivos.length>0?'vs':'gm'],
+      ['🔴 En cuarentena', enCuar, enCuar>0?'ra':'vs'],
+      ['💊 Medicamentos pendientes hoy', medPend, medPend>0?'na':'vs'],
+      ['🧼 Sin aseo registrado hoy', sinAseo, sinAseo>0?'na':'vs'],
+      ['💳 Pagos vencidos', pagoVenc, pagoVenc>0?'ra':'vs'],
+      ['🛒 Compras urgentes', compUrg, compUrg>0?'na':'vs'],
+      ['🚨 Incidentes este mes', incMes, incMes>3?'ra':incMes>0?'na':'vs'],
+    ];
+    estDiv.innerHTML = rows.map(function(r){
+      return '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--gc);font-size:13px">'+
+        '<span>'+r[0]+'</span><strong style="color:var(--'+r[2]+')">'+r[1]+'</strong></div>';
+    }).join('');
+  }
+
+  // ── PERSONAL EN TURNO ─────────────────────────────
+  var persDiv = document.getElementById('dashPersonal');
+  if (persDiv) {
+    var activos = DB.usuarios.filter(function(u){ return empActivos.has(u.id); });
+    var cols = {admin:'#1A3A5C',medico:'#7B2D8B',enfermera:'#0D7A5F',aux:'#E67E22',recepcion:'#607D8B',cocina:'#C0392B',limpieza:'#27AE60',terapia:'#8E44AD',trabajo_social:'#2980B9',voluntario:'#16A085',contabilidad:'#117A65'};
+    if (!activos.length) {
+      persDiv.innerHTML = '<div style="color:var(--gm);font-size:13px;text-align:center;padding:10px">Sin empleados en turno ahora.</div>';
+    } else {
+      persDiv.innerHTML = activos.map(function(u){
+        var ini = u.nombre.split(' ').map(function(x){ return x[0]; }).join('').substring(0,2).toUpperCase();
+        return '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--gc)">'+
+          '<div style="width:32px;height:32px;border-radius:50%;background:'+(cols[u.rol]||'#607D8B')+';color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px">'+ini+'</div>'+
+          '<div><div style="font-size:13px;font-weight:600">'+u.nombre+'</div><div style="font-size:11px;color:var(--gm)">'+rolL(u.rol)+'</div></div>'+
+          '<span style="margin-left:auto;font-size:10px;background:var(--vc);color:var(--vs);border-radius:6px;padding:2px 6px">EN TURNO</span></div>';
+      }).join('');
+    }
+  }
+
+  // ── CUMPLEAÑOS ────────────────────────────────────
+  var cumDiv = document.getElementById('dashCumple');
+  if (cumDiv) {
+    var hoyMD = hoy.slice(5); // MM-DD
+    var prox = resActivos.map(function(r){
+      if (!r.fechaNac) return null;
+      var fn = r.fechaNac; // YYYY-MM-DD
+      var md = fn.slice(5);
+      var diff = (new Date(hoy.slice(0,4)+'-'+md) - new Date(hoy));
+      if (diff < 0) diff += 365*24*60*60*1000;
+      return {nombre:r.nombre, md:md, diasFaltan:Math.round(diff/86400000), hoy:md===hoyMD};
+    }).filter(Boolean).sort(function(a,b){ return a.diasFaltan-b.diasFaltan; }).slice(0,8);
+    if (!prox.length) {
+      cumDiv.innerHTML = '<div style="color:var(--gm);font-size:13px;text-align:center;padding:10px">Sin fechas de nacimiento registradas.</div>';
+    } else {
+      cumDiv.innerHTML = prox.map(function(r){
+        var partes = r.md.split('-');
+        var fecha = partes[1]+'/'+partes[0];
+        return '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--gc)">' +
+          '<span style="font-size:20px">'+(r.hoy?'🎂':'🎁')+'</span>' +
+          '<div><div style="font-size:13px;font-weight:600">'+r.nombre+'</div>' +
+          '<div style="font-size:11px;color:var(--gm)">'+fecha+(r.hoy?' — ¡HOY! 🎉':' — en '+r.diasFaltan+' días')+'</div></div>' +
+          (r.hoy?'<span style="margin-left:auto;background:var(--na);color:white;border-radius:6px;padding:2px 6px;font-size:10px;font-weight:700">HOY</span>':'') +
+          '</div>';
+      }).join('');
+    }
+  }
+
+  // ── AGENDA DEL DÍA ────────────────────────────────
+  var fechaEl = document.getElementById('dashFecha');
+  if (fechaEl) {
+    var dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+    var meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    fechaEl.textContent = dias[ahora.getDay()]+', '+ahora.getDate()+' de '+meses[ahora.getMonth()]+' '+ahora.getFullYear();
+  }
+  var agDiv = document.getElementById('dashAgenda');
+  if (agDiv) {
+    var agenda = [
+      {hora:'07:00',act:'Toma de signos vitales',resp:'Enfermería',check:function(){ return (DB.signos||[]).some(function(s){ return s.ts&&s.ts.includes(hoy.split('-').reverse().join('/')); }); }},
+      {hora:'07:30',act:'Administración de medicamentos — mañana',resp:'Enfermería',check:function(){ return (DB.medicamentos||[]).some(function(m){ return m.ts&&m.ts.includes(hoy.split('-').reverse().join('/'))&&m.hora<'08:00'; }); }},
+      {hora:'08:00',act:'Desayuno',resp:'Cocina / Nutrición',check:function(){ return (DB.alimentacion||[]).some(function(a){ return a.fecha===hoy&&a.comida&&a.comida.toLowerCase().includes('desayuno'); }); }},
+      {hora:'09:30',act:'Aseo personal — turno mañana 🧼',resp:'Auxiliares',check:function(){ return (DB.aseos||[]).some(function(a){ return a.raw&&a.raw.startsWith(hoy)&&a.turno&&a.turno.includes('Día'); }); }},
+      {hora:'10:00',act:'Actividades terapéuticas',resp:'Terapeuta',check:function(){ return (DB.actividades||[]).some(function(a){ return a.fecha===hoy; }); }},
+      {hora:'12:00',act:'Almuerzo / Medicación mediodía',resp:'Enf. + Cocina',check:function(){ return (DB.alimentacion||[]).some(function(a){ return a.fecha===hoy&&a.comida&&a.comida.toLowerCase().includes('almuerzo'); }); }},
+      {hora:'15:00',act:'Visita familiar',resp:'Recepción',check:function(){ return (DB.visitas||[]).some(function(v){ return v.fecha===hoy; }); }},
+      {hora:'17:00',act:'Merienda / Signos tarde',resp:'Enfermería',check:function(){ return (DB.signos||[]).some(function(s){ return s.ts&&s.ts.includes(hoy.split('-').reverse().join('/'))&&s.ts>'17:00'; }); }},
+      {hora:'18:00',act:'Cena',resp:'Cocina / Nutrición',check:function(){ return (DB.alimentacion||[]).some(function(a){ return a.fecha===hoy&&a.comida&&a.comida.toLowerCase().includes('cena'); }); }},
+      {hora:'20:00',act:'Aseo personal — turno noche 🧼',resp:'Auxiliares',check:function(){ return (DB.aseos||[]).some(function(a){ return a.raw&&a.raw.startsWith(hoy)&&a.turno&&a.turno.includes('Noche'); }); }},
+      {hora:'21:00',act:'Medicación nocturna',resp:'Enfermería',check:function(){ return (DB.medicamentos||[]).some(function(m){ return m.ts&&m.ts.includes(hoy.split('-').reverse().join('/'))&&m.hora>'20:00'; }); }},
+    ];
+    var horaActualStr = ahora.getHours().toString().padStart(2,'0')+':'+ahora.getMinutes().toString().padStart(2,'0');
+    agDiv.innerHTML = '<table style="width:100%;font-size:13px"><thead><tr><th style="width:70px">Hora</th><th>Actividad</th><th>Responsable</th><th style="width:90px">Estado</th></tr></thead><tbody>'+
+      agenda.map(function(a){
+        var done = a.check();
+        var pasada = a.hora < horaActualStr;
+        var estado = done ? '<span class="badge bvs">✅ Hecho</span>' : pasada ? '<span class="badge bra">⏰ Pendiente</span>' : '<span class="badge bnd">Próximo</span>';
+        var bg = done ? '#F0FFF4' : pasada ? '#FFF5F5' : '';
+        return '<tr style="background:'+bg+'"><td style="font-weight:700;color:var(--am)">'+a.hora+'</td><td>'+a.act+'</td><td style="color:var(--gm)">'+a.resp+'</td><td>'+estado+'</td></tr>';
+      }).join('') +
+      '</tbody></table>';
+  }
+
+  calcAlerts();
+}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -401,39 +531,82 @@ tr:hover td{background:var(--ac);}
 
 <!-- DASHBOARD -->
 <div class="sec on" id="tab-dashboard">
-  <div class="sg">
-    <div class="sc"><div class="si">👴</div><div class="sn" id="s1">0</div><div class="sl">Residentes activos</div></div>
-    <div class="sc"><div class="si">💊</div><div class="sn" id="s2">0</div><div class="sl">Medicamentos hoy</div></div>
-    <div class="sc"><div class="si">🚨</div><div class="sn" id="s3">0</div><div class="sl">Incidentes del mes</div></div>
-    <div class="sc"><div class="si">👨‍👩‍👧</div><div class="sn" id="s4">0</div><div class="sl">Visitas hoy</div></div>
-  </div>
-  <div class="alert-panel">
-    <div class="alert-hdr">
-      🔔 Centro de Alertas
-      <span class="alert-hdr-badge" id="alertCount">0</span>
-    </div>
-    <div class="alert-body" id="dAlerts">
-      <div class="alert-empty">✅ Calculando alertas...</div>
-    </div>
-  </div>
-  <div class="gg">
-    <div class="card"><div class="ch vs">📈 Signos Recientes</div><div class="cb"><div class="cbx"><canvas id="cSD"></canvas></div></div></div>
-    <div class="card"><div class="ch na">🍽️ Ingesta Promedio</div><div class="cb"><div class="cbx"><canvas id="cAD"></canvas></div></div></div>
-  </div>
-  <div class="card"><div class="ch am">📅 Agenda del Día</div><div class="cb">
-    <table><thead><tr><th>Hora</th><th>Actividad</th><th>Responsable</th><th>Estado</th></tr></thead>
-    <tbody>
-      <tr><td>07:00</td><td>Toma de signos vitales</td><td>Enfermería</td><td><span class="badge bnd">Pendiente</span></td></tr>
-      <tr><td>08:00</td><td>Desayuno / Medicación</td><td>Enf. + Cocina</td><td><span class="badge bnd">Pendiente</span></td></tr>
-      <tr><td>09:30</td><td>Baño asistido (grupo A)</td><td>Auxiliares</td><td><span class="badge bnd">Pendiente</span></td></tr>
-      <tr><td>10:00</td><td>Terapia ocupacional</td><td>Terapeuta</td><td><span class="badge bnd">Pendiente</span></td></tr>
-      <tr><td>12:00</td><td>Almuerzo / Medicación</td><td>Enfermería</td><td><span class="badge bnd">Pendiente</span></td></tr>
-      <tr><td>15:00</td><td>Visita familiar</td><td>Recepción</td><td><span class="badge bnd">Pendiente</span></td></tr>
-      <tr><td>18:00</td><td>Cena / Medicación nocturna</td><td>Enfermería</td><td><span class="badge bnd">Pendiente</span></td></tr>
-    </tbody></table>
-  </div></div>
-</div>
 
+  <!-- KPIs principales -->
+  <div class="sg" style="grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:14px">
+    <div class="sc" onclick="goTabName('residentes')" style="cursor:pointer">
+      <div class="si">👴</div><div class="sn" id="s1">0</div><div class="sl">Residentes activos</div>
+    </div>
+    <div class="sc" onclick="goTabName('medicamentos')" style="cursor:pointer">
+      <div class="si">💊</div><div class="sn" id="s2">0</div><div class="sl">Medicamentos hoy</div>
+    </div>
+    <div class="sc" onclick="goTabName('incidentes')" style="cursor:pointer">
+      <div class="si">🚨</div><div class="sn" id="s3">0</div><div class="sl">Incidentes del mes</div>
+    </div>
+    <div class="sc" onclick="goTabName('visitas')" style="cursor:pointer">
+      <div class="si">👨‍👩‍👧</div><div class="sn" id="s4">0</div><div class="sl">Visitas hoy</div>
+    </div>
+    <div class="sc" onclick="goTabName('ponchador')" style="cursor:pointer">
+      <div class="si">⏱️</div><div class="sn" id="s5">0</div><div class="sl">Empleados activos</div>
+    </div>
+    <div class="sc" onclick="goTabName('cuarentena')" style="cursor:pointer">
+      <div class="si">🔴</div><div class="sn" id="s6">0</div><div class="sl">En cuarentena</div>
+    </div>
+    <div class="sc" onclick="goTabName('pagos')" style="cursor:pointer">
+      <div class="si">💳</div><div class="sn" id="s7">0</div><div class="sl">Pagos pendientes</div>
+    </div>
+    <div class="sc" onclick="goTabName('tareas')" style="cursor:pointer">
+      <div class="si">✅</div><div class="sn" id="s8">0</div><div class="sl">Tareas pendientes</div>
+    </div>
+  </div>
+
+  <!-- Fila: Alertas + Estado del hogar -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+
+    <!-- Centro de alertas -->
+    <div class="card" style="margin:0">
+      <div class="alert-hdr">
+        🔔 Centro de Alertas
+        <span class="alert-hdr-badge" id="alertCount">0</span>
+      </div>
+      <div class="alert-body" id="dAlerts" style="max-height:320px;overflow-y:auto">
+        <div class="alert-empty">✅ Calculando alertas...</div>
+      </div>
+    </div>
+
+    <!-- Estado del hogar -->
+    <div class="card" style="margin:0">
+      <div class="ch am">🏥 Estado del Hogar</div>
+      <div class="cb" id="dashEstado" style="padding:10px"></div>
+    </div>
+
+  </div>
+
+  <!-- Fila: Empleados activos + Próximos cumpleaños -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+    <div class="card" style="margin:0">
+      <div class="ch vs">👤 Personal en turno ahora</div>
+      <div class="cb" id="dashPersonal" style="padding:10px;max-height:200px;overflow-y:auto"></div>
+    </div>
+    <div class="card" style="margin:0">
+      <div class="ch" style="background:#E67E22">🎂 Próximos cumpleaños</div>
+      <div class="cb" id="dashCumple" style="padding:10px;max-height:200px;overflow-y:auto"></div>
+    </div>
+  </div>
+
+  <!-- Gráficas -->
+  <div class="gg">
+    <div class="card" style="margin:0"><div class="ch vs">📈 Signos Vitales — últimos 7 días</div><div class="cb"><div class="cbx"><canvas id="cSD"></canvas></div></div></div>
+    <div class="card" style="margin:0"><div class="ch na">🍽️ Ingesta Promedio</div><div class="cb"><div class="cbx"><canvas id="cAD"></canvas></div></div></div>
+  </div>
+
+  <!-- Agenda del día dinámica -->
+  <div class="card" style="margin-top:14px">
+    <div class="ch am">📅 Agenda del Día — <span id="dashFecha"></span></div>
+    <div class="cb" id="dashAgenda"></div>
+  </div>
+
+</div>
 <!-- RESIDENTES -->
 <div class="sec" id="tab-residentes">
   <div class="card"><div class="ch am">👴 Residentes</div><div class="cb">
