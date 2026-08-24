@@ -1071,7 +1071,13 @@ tr:hover td{background:var(--ac);}
             <option value="Urgente">Urgentes</option>
           </select>
         </div>
-        <button class="btn bam" onclick="openCompra()">➕ Agregar Artículo</button>
+        <div class="fi" style="width:180px">
+          <label>💰 Presupuesto mensual ($)</label>
+          <div style="display:flex;gap:6px;align-items:center">
+            <input id="compraPpto" type="number" step="0.01" min="0" placeholder="0.00" oninput="actualizarPpto()" style="width:100%">
+          </div>
+        </div>
+      <button class="btn bam" onclick="openCompra()">➕ Agregar Artículo</button>
         <button class="btn" style="background:#2D6A4F;color:white" onclick="marcarTodosComprados()">✅ Marcar seleccionados</button>
         <button class="btn bmo" onclick="pdfListaCompras()">📄 Exportar PDF</button>
         <button class="btn bra" onclick="limpiarComprados()">🗑️ Limpiar comprados</button>
@@ -1079,6 +1085,7 @@ tr:hover td{background:var(--ac);}
 
       <!-- Resumen por departamento -->
       <div id="compraResumen" style="margin-bottom:14px"></div>
+      <div id="compraPptoDiv" style="display:none;margin-bottom:10px"></div>
 
       <!-- Lista de artículos -->
       <div id="compraLista" style="border:1px solid var(--bo);border-radius:10px;overflow:hidden;background:var(--bl)"></div>
@@ -2083,13 +2090,14 @@ tr:hover td{background:var(--ac);}
             <option value="voluntario">🤝 Voluntario</option>
             <option value="horas_verdes">🌿 Horas Verdes (Servicio Comunitario)</option>
             <option value="practicante">🎓 Estudiante en Práctica</option>
+            <option value="contabilidad">📊 Contabilidad / Facturación</option>
           </select></div>
         <div class="fi"><label>Turno habitual</label><select id="uT"><option>☀️ Día</option><option>🌤 Tarde</option><option>🌙 Noche</option><option>Rotativo</option></select></div>
         <div class="fi"><label>Teléfono</label><input id="uTel" type="tel"></div>
         <div class="fi"><label>Salario por hora ($)</label><input id="uSalario" type="number" step="0.01" min="0" placeholder="Ej: 12.50"></div>
         <div class="fi"><label>Horas regulares por semana</label><input id="uHorasReg" type="number" min="1" max="80" placeholder="Ej: 40" value="40"></div>
       </div>
-      <div class="ab"><button class="btn bol" onclick="closeM('mUsr')">Cancelar</button><button class="btn bmo" onclick="saveUsr()">💾 Crear Usuario</button></div>
+      <div class="ab"><button class="btn bol" onclick="resetModalUsr();closeM('mUsr')">Cancelar</button><button class="btn bam" id="btnGuardarUsr" onclick="saveUsr()">💾 Crear Usuario</button></div>
     </div>
   </div>
 </div>
@@ -2423,6 +2431,29 @@ tr:hover td{background:var(--ac);}
       <div class="ab">
         <button class="btn bol" onclick="closeM('mTarea')">Cancelar</button>
         <button class="btn" style="background:#7B2D8B;color:white" onclick="saveTarea()">✅ Crear Tarea</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Editar Estado de Pago -->
+<div class="mo" id="mPagoEstado">
+  <div class="md" style="max-width:380px">
+    <div class="mh am">✏️ Cambiar Estado del Pago <button class="mx" onclick="closeM('mPagoEstado')">✕</button></div>
+    <div class="mb">
+      <div id="pgEditNom" style="font-size:14px;font-weight:700;color:var(--am);margin-bottom:14px;text-align:center"></div>
+      <div class="fi">
+        <label>Nuevo estado</label>
+        <select id="pgEstadoSel" style="font-size:16px;padding:12px">
+          <option>Pendiente</option>
+          <option>Pagado</option>
+          <option>Vencido</option>
+          <option>Plan de pago</option>
+        </select>
+      </div>
+      <div class="ab">
+        <button class="btn bol" onclick="closeM('mPagoEstado')">Cancelar</button>
+        <button class="btn bvs" onclick="guardarEstadoPago()">💾 Guardar</button>
       </div>
     </div>
   </div>
@@ -2906,7 +2937,8 @@ var PERM = {
   trabajo_social:['dashboard','residentes','expediente','incidentes','visitas','alertas','mensajes','guia'],
   voluntario:   ['dashboard','actividades','visitas','alimentacion','aseo','alertas','mensajes','guia'],
   horas_verdes: ['dashboard','actividades','visitas','alimentacion','aseo','alertas','mensajes','guia'],
-  practicante:  ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','alertas','visitas_med','plan_act','aseo','mensajes','guia']
+  practicante:  ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','alertas','visitas_med','plan_act','aseo','mensajes','guia'],
+  contabilidad: ['dashboard','nomina','pagos','alertas','reportes','mensajes','guia','compras']
 };
 var TABS = ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','cuarentena','mensajes','compras','guia','aseo','empleados','auditoria','reportes','pagos','fallecidos','usuarios'];
 
@@ -3583,7 +3615,7 @@ function rTur() {
 function resetModalUsr() {
   var hdr = document.querySelector('#mUsr .mh');
   if (hdr) hdr.childNodes[0].textContent = '👤 Nuevo Usuario ';
-  var btn = document.querySelector('#mUsr .btn.bvs');
+  var btn = document.getElementById('btnGuardarUsr');
   if (btn) { btn.textContent = '💾 Crear Usuario'; btn.onclick = saveUsr; }
   ['uN','uU','uP','uTel'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
   if(document.getElementById('uSalario')) document.getElementById('uSalario').value='';
@@ -3605,7 +3637,7 @@ function editUsr(uid) {
   // Cambiar título y botón
   var hdr = document.querySelector('#mUsr .mh');
   if (hdr) hdr.childNodes[0].textContent = '✏️ Editar Usuario ';
-  var btn = document.querySelector('#mUsr .btn.bvs');
+  var btn = document.getElementById('btnGuardarUsr');
   if (btn) { btn.textContent = '💾 Actualizar Usuario'; btn.onclick = function(){ actualizarUsr(uid); }; }
   openM('mUsr');
 }
@@ -3658,7 +3690,7 @@ function delUsr(id) {
 }
 function rUsr() {
   var div=document.getElementById('listUsr'); if (!div) return;
-  var cols={admin:'#1A3A5C',medico:'#7B2D8B',enfermera:'#0D7A5F',aux:'#E67E22',recepcion:'#607D8B',cocina:'#C0392B',limpieza:'#27AE60',terapia:'#8E44AD',trabajo_social:'#2980B9',voluntario:'#16A085',horas_verdes:'#1E8449',practicante:'#D35400'};
+  var cols={admin:'#1A3A5C',medico:'#7B2D8B',enfermera:'#0D7A5F',aux:'#E67E22',recepcion:'#607D8B',cocina:'#C0392B',limpieza:'#27AE60',terapia:'#8E44AD',trabajo_social:'#2980B9',voluntario:'#16A085',horas_verdes:'#1E8449',practicante:'#D35400',contabilidad:'#117A65'};
   window._uIds = [];
   var h='';
   DB.usuarios.forEach(function(u){
@@ -6750,17 +6782,27 @@ function marcarPagado(id) {
   toast('✅ Pago registrado como pagado','vs');
 }
 
+var _pgEditId = null;
 function editarEstadoPago(id) {
   var p = (DB.pagos||[]).find(function(x){ return x.id===id; });
   if (!p) return;
-  var estados = ['Pendiente','Pagado','Vencido','Plan de pago'];
-  var actual = estados.indexOf(p.estado);
-  var nuevo = prompt('Nuevo estado (Pendiente/Pagado/Vencido/Plan de pago):',  p.estado);
-  if (!nuevo || nuevo===p.estado) return;
-  if (estados.indexOf(nuevo) < 0) { toast('⚠️ Estado no válido'); return; }
+  _pgEditId = id;
+  var sel = document.getElementById('pgEstadoSel');
+  if (sel) sel.value = p.estado;
+  var nom = document.getElementById('pgEditNom');
+  if (nom) nom.textContent = p.nombre + ' — ' + p.tipo + ' $' + p.monto.toFixed(2);
+  openM('mPagoEstado');
+}
+function guardarEstadoPago() {
+  var p = (DB.pagos||[]).find(function(x){ return x.id===_pgEditId; });
+  if (!p) return;
+  var nuevo = document.getElementById('pgEstadoSel').value;
   p.estado = nuevo;
+  if (nuevo === 'Pagado') { p.fechaPago = fh(); p.cobradoPor = SES.nombre; }
   sDB(); rPagos();
-  toast('✅ Estado actualizado','vs');
+  closeM('mPagoEstado');
+  logAudit('Pago','Estado cambiado a '+nuevo+': '+p.tipo, p.nombre);
+  toast('✅ Estado actualizado a: '+nuevo,'vs');
 }
 
 function eliminarPago(id) {
@@ -6804,6 +6846,27 @@ function pdfPagos() {
   doc.text('TOTAL: $'+total.toFixed(2),196,y,'right');
   doc.save('Pagos_'+(fMes||'todos')+'.pdf');
   toast('📄 PDF generado','vs');
+}
+
+function actualizarPpto() {
+  var ppto = parseFloat(document.getElementById('compraPpto') ? document.getElementById('compraPpto').value : 0) || 0;
+  var div = document.getElementById('compraPptoDiv');
+  if (!div) return;
+  if (!ppto) { div.style.display='none'; return; }
+  var gastado = (DB.compras||[]).filter(function(x){ return x.precio; }).reduce(function(a,x){ return a+(x.precio||0); }, 0);
+  var pendiente = (DB.compras||[]).filter(function(x){ return x.estado==='Pendiente'&&x.precio; }).reduce(function(a,x){ return a+(x.precio||0); }, 0);
+  var pct = Math.min(100, Math.round(gastado/ppto*100));
+  var color = pct>=100?'var(--ra)':pct>=75?'var(--na)':'var(--vs)';
+  div.style.display = '';
+  div.innerHTML =
+    '<div style="background:var(--bl);border:1.5px solid var(--bo);border-radius:8px;padding:10px 14px">' +
+    '<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px">' +
+    '<span>💰 Presupuesto: <strong>$'+ppto.toFixed(2)+'</strong></span>' +
+    '<span style="color:'+color+'"><strong>$'+gastado.toFixed(2)+'</strong> utilizado ('+pct+'%)</span></div>' +
+    '<div style="height:8px;background:var(--gc);border-radius:4px">' +
+    '<div style="height:8px;border-radius:4px;background:'+color+';width:'+pct+'%"></div></div>' +
+    '<div style="font-size:11px;color:var(--gm);margin-top:4px">Pendiente por comprar: <strong>$'+pendiente.toFixed(2)+'</strong> · Disponible: <strong>$'+(ppto-gastado).toFixed(2)+'</strong></div>' +
+    '</div>';
 }
 
 // ===== ASEO PERSONAL =====
@@ -7412,8 +7475,8 @@ function pdfReporteGeneral() {
 // ===== CIERRE DE SESIÓN Y TIMEOUT =====
 var _timeoutTimer = null;
 var _timeoutWarn = null;
-var _TIMEOUT_MS = 15 * 60 * 1000;  // 15 minutos
-var _WARN_MS = 13 * 60 * 1000;     // advertencia a los 13 min
+var _TIMEOUT_MS = 30 * 60 * 1000;  // 30 minutos
+var _WARN_MS = 27 * 60 * 1000;     // advertencia a los 27 min
 
 function resetTimeout() {
   clearTimeout(_timeoutTimer);
