@@ -174,6 +174,9 @@ tr:hover td{background:var(--ac);}
 .item-compra .item-nota{font-size:11px;color:var(--gm);}
 .item-compra .item-precio{font-size:12px;color:var(--vs);font-weight:700;white-space:nowrap;}
 .urgente-tag{background:var(--rc);color:var(--ra);font-size:10px;font-weight:700;border-radius:6px;padding:2px 6px;margin-left:4px;}
+.abono-item{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-bottom:1px solid var(--gc);font-size:13px;}
+.abono-item:last-child{border-bottom:none;}
+.abono-total{display:flex;justify-content:space-between;padding:8px 10px;font-weight:700;font-size:14px;background:var(--gc);border-radius:0 0 8px 8px;}
 .pago-card{background:var(--bl);border:1.5px solid var(--bo);border-radius:10px;padding:12px 14px;margin-bottom:8px;}
 .pago-card.pagado{border-color:var(--vs);background:#F0FFF4;}
 .pago-card.vencido{border-color:var(--ra);background:#FFF5F5;}
@@ -2454,6 +2457,37 @@ tr:hover td{background:var(--ac);}
       <div class="ab">
         <button class="btn bol" onclick="closeM('mPagoEstado')">Cancelar</button>
         <button class="btn bvs" onclick="guardarEstadoPago()">💾 Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Registrar Abono -->
+<div class="mo" id="mAbono">
+  <div class="md" style="max-width:400px">
+    <div class="mh" style="background:#117A65">💵 Registrar Abono <button class="mx" onclick="closeM('mAbono')">✕</button></div>
+    <div class="mb">
+      <div id="abonoInfoPago" style="background:var(--ac);border-radius:8px;padding:10px;margin-bottom:12px;font-size:13px;color:var(--am);font-weight:700;text-align:center"></div>
+      <div class="fg">
+        <div class="fi"><label>Monto del abono ($) *</label>
+          <input id="abonoMonto" type="number" step="0.01" min="0.01" placeholder="0.00" style="font-size:20px;text-align:center">
+        </div>
+        <div class="fi"><label>Método de pago</label>
+          <select id="abonoMetodo">
+            <option>Efectivo</option>
+            <option>Cheque</option>
+            <option>Transferencia</option>
+            <option>Tarjeta</option>
+            <option>ACH</option>
+          </select>
+        </div>
+        <div class="fi"><label>Referencia / Nota</label>
+          <input id="abonoNota" type="text" placeholder="Núm. cheque, recibo...">
+        </div>
+      </div>
+      <div class="ab">
+        <button class="btn bol" onclick="closeM('mAbono')">Cancelar</button>
+        <button class="btn" style="background:#117A65;color:white" onclick="saveAbono()">💾 Registrar Abono</button>
       </div>
     </div>
   </div>
@@ -6736,10 +6770,13 @@ function rPagos() {
 
   // KPIs
   var totalCobrado  = DB.pagos.filter(function(p){ return p.estado==='Pagado'&&(!fMes||p.periodo===fMes); }).reduce(function(a,p){return a+p.monto;},0);
+  var totalAbonos   = DB.pagos.filter(function(p){ return p.estado==='Plan de pago'&&(!fMes||p.periodo===fMes); }).reduce(function(a,p){
+    return a + (p.abonos||[]).reduce(function(x,b){ return x+b.monto; },0);
+  },0);
   var totalPendiente= DB.pagos.filter(function(p){ return p.estado==='Pendiente'&&(!fMes||p.periodo===fMes); }).reduce(function(a,p){return a+p.monto;},0);
   var totalVencido  = DB.pagos.filter(function(p){ return p.estado==='Vencido'&&(!fMes||p.periodo===fMes); }).reduce(function(a,p){return a+p.monto;},0);
   if (kpi_div) kpi_div.innerHTML =
-    '<div class="reporte-kpi"><div class="reporte-kpi-val" style="color:var(--vs)">$'+totalCobrado.toFixed(2)+'</div><div class="reporte-kpi-lbl">💰 Cobrado</div></div>'+
+    '<div class="reporte-kpi"><div class="reporte-kpi-val" style="color:var(--vs)">$'+totalCobrado.toFixed(2)+'</div><div class="reporte-kpi-lbl">💰 Cobrado</div></div>'+'<div class="reporte-kpi"><div class="reporte-kpi-val" style="color:#117A65">$'+totalAbonos.toFixed(2)+'</div><div class="reporte-kpi-lbl">💵 En abonos</div></div>'+
     '<div class="reporte-kpi"><div class="reporte-kpi-val" style="color:var(--na)">$'+totalPendiente.toFixed(2)+'</div><div class="reporte-kpi-lbl">⏳ Pendiente</div></div>'+
     '<div class="reporte-kpi"><div class="reporte-kpi-val" style="color:var(--ra)">$'+totalVencido.toFixed(2)+'</div><div class="reporte-kpi-lbl">🔴 Vencido</div></div>'+
     '<div class="reporte-kpi"><div class="reporte-kpi-val">'+lista.length+'</div><div class="reporte-kpi-lbl">Total registros</div></div>';
@@ -6762,8 +6799,26 @@ function rPagos() {
     h += '</div>';
     h += '<div class="pago-meta">'+p.metodo+(p.vence?' · Vence: '+p.vence:'')+(p.nota?' · '+p.nota:'')+'</div>';
     h += '<div class="pago-meta">Por: '+p.creadoPor+' · '+p.ts+'</div>';
+    // Mostrar abonos si es plan de pago
+    if (p.estado === 'Plan de pago') {
+      var abonos = p.abonos || [];
+      var totalAbonado = abonos.reduce(function(a,b){ return a+b.monto; }, 0);
+      var pendAbonar = p.monto - totalAbonado;
+      h += '<div style="background:var(--ac);border-radius:8px;margin-top:8px;overflow:hidden">';
+      h += '<div style="padding:6px 10px;font-size:12px;font-weight:700;color:var(--am)">📊 Plan de abonos</div>';
+      if (abonos.length) {
+        abonos.forEach(function(ab){
+          h += '<div class="abono-item"><span>'+ab.fecha+' — '+ab.por+'</span><span style="color:var(--vs);font-weight:700">+$'+ab.monto.toFixed(2)+'</span></div>';
+        });
+      } else {
+        h += '<div style="padding:6px 10px;font-size:12px;color:var(--gm)">Sin abonos registrados aún.</div>';
+      }
+      h += '<div class="abono-total"><span>Abonado: $'+totalAbonado.toFixed(2)+'</span><span style="color:'+(pendAbonar<=0?'var(--vs)':'var(--ra)')+'">Pendiente: $'+Math.max(0,pendAbonar).toFixed(2)+'</span></div>';
+      h += '</div>';
+    }
     h += '<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">';
     if (p.estado!=='Pagado') h += '<button class="btn bsm bvs" onclick="marcarPagado(window._pgIds['+i+'])">✅ Marcar Pagado</button>';
+    if (p.estado==='Plan de pago') h += '<button class="btn bsm" style="background:#117A65;color:white" onclick="openAbono(window._pgIds['+i+'])">💵 Abonar</button>';
     h += '<button class="btn bsm bmo" onclick="editarEstadoPago(window._pgIds['+i+'])">✏️ Estado</button>';
     h += '<button class="btn bsm bra" onclick="eliminarPago(window._pgIds['+i+'])">🗑️</button>';
     h += '</div></div>';
@@ -6813,6 +6868,51 @@ function eliminarPago(id) {
   DB.pagos = DB.pagos.filter(function(x){ return x.id!==id; });
   sDB(); rPagos();
   toast('🗑️ Pago eliminado');
+}
+
+var _abonoPayId = null;
+function openAbono(id) {
+  var p = (DB.pagos||[]).find(function(x){ return x.id===id; });
+  if (!p) return;
+  _abonoPayId = id;
+  var abonados = (p.abonos||[]).reduce(function(a,b){ return a+b.monto; }, 0);
+  var pendiente = p.monto - abonados;
+  document.getElementById('abonoInfoPago').innerHTML =
+    p.nombre+'<br>'+p.tipo+' — Total: <strong>$'+p.monto.toFixed(2)+'</strong><br>'+
+    'Abonado: $'+abonados.toFixed(2)+' · <span style="color:var(--ra)">Pendiente: $'+Math.max(0,pendiente).toFixed(2)+'</span>';
+  document.getElementById('abonoMonto').value = '';
+  document.getElementById('abonoNota').value  = '';
+  openM('mAbono');
+}
+
+function saveAbono() {
+  var p = (DB.pagos||[]).find(function(x){ return x.id===_abonoPayId; });
+  if (!p) return;
+  var monto = parseFloat(document.getElementById('abonoMonto').value);
+  if (!monto || monto <= 0) { toast('⚠️ Ingresa el monto del abono'); return; }
+  if (!p.abonos) p.abonos = [];
+  p.abonos.push({
+    monto:   monto,
+    metodo:  document.getElementById('abonoMetodo').value,
+    nota:    document.getElementById('abonoNota').value.trim(),
+    por:     SES.nombre,
+    fecha:   new Date().toLocaleDateString('es-PR'),
+    ts:      fh()
+  });
+  // Si el total abonado cubre el monto, marcar como pagado automáticamente
+  var totalAbonado = p.abonos.reduce(function(a,b){ return a+b.monto; }, 0);
+  if (totalAbonado >= p.monto) {
+    p.estado = 'Pagado';
+    p.fechaPago = fh();
+    p.cobradoPor = SES.nombre;
+    toast('🎉 Plan de pago completado — marcado como Pagado','vs');
+  } else {
+    toast('✅ Abono de $'+monto.toFixed(2)+' registrado. Pendiente: $'+(p.monto-totalAbonado).toFixed(2),'vs');
+  }
+  sDB();
+  closeM('mAbono');
+  rPagos();
+  logAudit('Pago','Abono $'+monto.toFixed(2)+' a plan de pago: '+p.tipo, p.nombre+' · por: '+SES.nombre);
 }
 
 function pdfPagos() {
