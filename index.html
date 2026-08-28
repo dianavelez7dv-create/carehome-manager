@@ -47,6 +47,7 @@
   <div class="nt tab-admin" onclick="goTab('ponchador',this)">⏱️ Ponchador</div>
   <div class="nt tab-admin" onclick="goTab('nomina',this)">💰 Nómina</div>
   <div class="nt" onclick="goTab('cuarentena',this)">🔴 Cuarentena</div>
+  <div class="nt" onclick="goTab('menu',this)">📋 Menú</div>
   <div class="nt" onclick="goTab('mensajes',this)">💬 Mensajes</div>
   <div class="nt" onclick="goTab('compras',this)">🛒 Compras</div>
   <div class="nt" onclick="goTab('aseo',this)">🧼 Aseo Personal</div>
@@ -201,6 +202,13 @@
           <div class="fi"><label>Relación</label><input id="eRel" type="text"></div>
           <div class="fi"><label>Teléfono principal</label><input id="eTP" type="tel"></div>
           <div class="fi"><label>Teléfono alternativo</label><input id="eTA" type="tel"></div>
+          <div class="fi ff">
+            <label>Dirección del familiar</label>
+            <div style="display:flex;gap:6px;align-items:center">
+              <input id="eDirFam" type="text" placeholder="Calle, Urb., Ciudad, PR" style="flex:1">
+              <a id="eDirFamLink" href="#" target="_blank" onclick="actualizarMapFam()" style="background:#4285F4;color:white;border-radius:8px;padding:9px 12px;font-size:16px;text-decoration:none">🗺️</a>
+            </div>
+          </div>
           <div class="fi ff"><label>Dirección contacto</label><input id="eDC" type="text"></div>
           <div class="fi"><label>Médico externo</label><input id="eMed" type="text"></div>
           <div class="fi"><label>Seguro médico</label><input id="eSeg" type="text"></div>
@@ -723,6 +731,7 @@
               <div style="display:flex;flex-direction:column;gap:6px">
                 <button class="btn bam" onclick="enviarMensaje()" style="padding:10px 14px">📤</button>
                 <button class="btn" style="background:#E67E22;color:white;padding:10px 14px;font-size:11px" onclick="enviarBroadcast()">📢</button>
+                <button class="btn" style="background:#C0392B;color:white;padding:10px 14px;font-size:11px" onclick="openMasivo()">📨</button>
               </div>
             </div>
             <div style="font-size:11px;color:var(--gm);margin-top:4px">📤 Enviar · 📢 Anuncio a todos</div>
@@ -1436,6 +1445,57 @@
     </div>
   </div>
 </div>
+
+<!-- MENÚ SEMANAL -->
+<div class="sec" id="tab-menu">
+  <div style="display:grid;grid-template-columns:1fr 300px;gap:14px;align-items:start">
+
+    <!-- Tabla del menú semanal -->
+    <div class="card" style="margin:0">
+      <div class="ch" style="background:#2D6A4F">📋 Planificación del Menú Semanal</div>
+      <div class="cb">
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+          <div class="fi" style="width:160px">
+            <label>Semana del</label>
+            <input id="menuSemana" type="date" onchange="rMenu()">
+          </div>
+          <button class="btn" style="background:#2D6A4F;color:white" onclick="openMenuItem()">➕ Agregar platillo</button>
+          <button class="btn bmo" onclick="pdfMenu()">📄 Imprimir menú</button>
+        </div>
+
+        <div style="overflow-x:auto">
+          <table id="tMenu" style="width:100%;min-width:600px;font-size:13px;border-collapse:collapse">
+            <thead>
+              <tr style="background:var(--ac)">
+                <th style="padding:8px;border:1px solid var(--bo);width:100px">Comida</th>
+                <th style="padding:8px;border:1px solid var(--bo)">Lunes</th>
+                <th style="padding:8px;border:1px solid var(--bo)">Martes</th>
+                <th style="padding:8px;border:1px solid var(--bo)">Miércoles</th>
+                <th style="padding:8px;border:1px solid var(--bo)">Jueves</th>
+                <th style="padding:8px;border:1px solid var(--bo)">Viernes</th>
+                <th style="padding:8px;border:1px solid var(--bo)">Sábado</th>
+                <th style="padding:8px;border:1px solid var(--bo)">Domingo</th>
+              </tr>
+            </thead>
+            <tbody id="menuBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de platillos disponibles -->
+    <div class="card" style="margin:0">
+      <div class="ch" style="background:#C0392B">🍳 Platillos registrados</div>
+      <div class="cb">
+        <div style="margin-bottom:10px;font-size:12px;color:var(--gm)">
+          Úsalos al registrar alimentación sin tener que escribir de nuevo.
+        </div>
+        <div id="menuPlatillosLista"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
 </div><!-- /main -->
 
 <!-- ===== MODALES ===== -->
@@ -2136,6 +2196,38 @@
   </div>
 </div>
 
+<!-- Modal: Mensaje Masivo / Circular -->
+<div class="mo" id="mMasivo">
+  <div class="md" style="max-width:500px">
+    <div class="mh" style="background:#C0392B">📨 Enviar Mensaje Masivo <button class="mx" onclick="closeM('mMasivo')">✕</button></div>
+    <div class="mb">
+      <div style="font-size:13px;color:var(--gm);margin-bottom:12px">Envía un mensaje a todos los empleados seleccionados y queda registrado en la auditoría.</div>
+      <div class="fg">
+        <div class="fi ff"><label>Destinatarios</label>
+          <div style="background:var(--ac);border-radius:8px;padding:8px" id="masivoDestinatarios">
+            <label style="display:flex;gap:8px;align-items:center;margin-bottom:6px"><input type="checkbox" id="masTodos" onchange="selTodosDestinat(this.checked)" style="accent-color:var(--ra)"><strong>Todos los empleados</strong></label>
+            <div id="masRolesLista" style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:4px"></div>
+          </div>
+        </div>
+        <div class="fi ff"><label>Asunto *</label>
+          <input id="masAsunto" type="text" placeholder="Ej: Cambio de turno, Reunión obligatoria...">
+        </div>
+        <div class="fi ff"><label>Mensaje *</label>
+          <textarea id="masTexto" rows="4" placeholder="Escribe el mensaje aquí..."></textarea>
+        </div>
+        <div class="fi" style="display:flex;align-items:center;gap:10px">
+          <input type="checkbox" id="masUrgente" style="width:18px;height:18px;accent-color:var(--ra)">
+          <label for="masUrgente" style="color:var(--ra);font-weight:700;cursor:pointer">🚨 Marcar como URGENTE</label>
+        </div>
+      </div>
+      <div class="ab">
+        <button class="btn bol" onclick="closeM('mMasivo')">Cancelar</button>
+        <button class="btn" style="background:#C0392B;color:white" onclick="enviarMasivo()">📨 Enviar a todos</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Modal: Nueva Tarea -->
 <div class="mo" id="mTarea">
   <div class="md" style="max-width:480px">
@@ -2402,6 +2494,46 @@
   </div>
 </div>
 
+<!-- Modal: Agregar platillo al menú -->
+<div class="mo" id="mMenuItem">
+  <div class="md" style="max-width:440px">
+    <div class="mh" style="background:#2D6A4F">🍽️ Agregar al Menú <button class="mx" onclick="closeM('mMenuItem')">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="fi"><label>Día *</label>
+          <select id="menuDia">
+            <option>Lunes</option><option>Martes</option><option>Miércoles</option>
+            <option>Jueves</option><option>Viernes</option><option>Sábado</option><option>Domingo</option>
+          </select>
+        </div>
+        <div class="fi"><label>Tiempo de comida *</label>
+          <select id="menuTiempo">
+            <option>☀️ Desayuno</option>
+            <option>🌤 Merienda Mañana</option>
+            <option>☀️ Almuerzo</option>
+            <option>🌤 Merienda Tarde</option>
+            <option>🌙 Cena</option>
+          </select>
+        </div>
+        <div class="fi ff"><label>Platillo / Descripción *</label>
+          <input id="menuPlatillo" type="text" placeholder="Ej: Arroz con pollo, habichuelas, ensalada...">
+          <div id="menuSugerencias" style="border:1px solid var(--bo);border-radius:6px;margin-top:4px;display:none;max-height:150px;overflow-y:auto;background:var(--bl)"></div>
+        </div>
+        <div class="fi"><label>Calorías estimadas</label>
+          <input id="menuCal" type="number" placeholder="Ej: 450">
+        </div>
+        <div class="fi ff"><label>Notas / Variantes dietéticas</label>
+          <input id="menuNota" type="text" placeholder="Ej: Sin sal, sin azúcar, diabético...">
+        </div>
+      </div>
+      <div class="ab">
+        <button class="btn bol" onclick="closeM('mMenuItem')">Cancelar</button>
+        <button class="btn" style="background:#2D6A4F;color:white" onclick="saveMenuItem()">💾 Guardar en menú</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Modal: Aseo Personal -->
 <div class="mo" id="mAseo">
   <div class="md" style="max-width:520px">
@@ -2663,7 +2795,7 @@ var DB = {
   actividades:[], incidentes:[], visitas:[], turnos:[], expedientes:{},
   fallecidos:[], cuarentenas:[], ponches:[], aseos:[], auditoria:[],
   empDocs:{}, empMemos:{}, compras:[], mensajes:[], tareas:[],
-  visitasMed:[], planAct:[], terapias:[], planSemanal:[], pagos:[],
+  visitasMed:[], planAct:[], terapias:[], planSemanal:[], pagos:[], menuSemanal:[], platillos:[],
   usuarios:[
     {id:'U1',nombre:'Administrador',username:'admin',password:'admin123',rol:'admin',turno:'Rotativo'},
     {id:'U2',nombre:'Dr. García',username:'medico',password:'med123',rol:'medico',turno:'Día'},
@@ -2685,7 +2817,7 @@ function cDB() {
      'incidentes','visitas','turnos','expedientes',
      'fallecidos','cuarentenas','ponches','aseos','auditoria',
      'empDocs','empMemos','compras','mensajes','tareas',
-     'visitasMed','planAct','terapias','planSemanal'
+     'visitasMed','planAct','terapias','planSemanal','menuSemanal','platillos'
     ].forEach(function(k){ if(d[k]) DB[k]=d[k]; });
     if (d.usuarios && d.usuarios.length > 0) {
       DB.usuarios = d.usuarios;
@@ -2701,12 +2833,12 @@ function sDB() { localStorage.setItem('chdb4', JSON.stringify(DB)); }
 cDB();
 
 var PERM = {
-  admin:    ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','cuarentena','mensajes','compras','guia','empleados','auditoria','reportes','pagos','fallecidos','usuarios','aseo'],
+  admin:    ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','cuarentena','menu','mensajes','compras','guia','empleados','auditoria','reportes','pagos','fallecidos','usuarios','aseo'],
   medico:   ['dashboard','residentes','expediente','medicamentos','signos','incidentes','graficas','alertas','visitas_med','plan_act','cuarentena','mensajes','guia','aseo'],
-  enfermera:['dashboard','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','cuarentena','mensajes','compras','guia','aseo'],
+  enfermera:['dashboard','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','cuarentena','menu','mensajes','compras','guia','aseo'],
   aux:      ['dashboard','alimentacion','actividades','visitas','turno','alertas','plan_act','cuarentena','mensajes','compras','guia','aseo'],
   recepcion:['dashboard','residentes','visitas','alertas','mensajes','compras','guia','aseo'],
-  cocina:['dashboard','alimentacion','actividades','alertas','compras','aseo','mensajes','guia'],
+  cocina:['dashboard','alimentacion','actividades','alertas','compras','aseo','menu','mensajes','guia'],
   limpieza:['dashboard','actividades','alertas','compras','aseo','mensajes','guia'],
   terapia:['dashboard','residentes','expediente','actividades','alertas','visitas_med','plan_act','mensajes','guia'],
   trabajo_social:['dashboard','residentes','expediente','incidentes','visitas','alertas','mensajes','guia'],
@@ -2715,7 +2847,7 @@ var PERM = {
   practicante:  ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','alertas','visitas_med','plan_act','aseo','mensajes','guia'],
   contabilidad: ['dashboard','nomina','pagos','alertas','reportes','mensajes','guia','compras']
 };
-var TABS = ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','cuarentena','mensajes','compras','guia','aseo','empleados','auditoria','reportes','pagos','fallecidos','usuarios'];
+var TABS = ['dashboard','residentes','expediente','medicamentos','signos','alimentacion','actividades','incidentes','visitas','turno','graficas','alertas','visitas_med','plan_act','ponchador','nomina','cuarentena','menu','mensajes','compras','guia','aseo','empleados','auditoria','reportes','pagos','fallecidos','usuarios'];
 
 function applyPerm() {
   var ok = PERM[SES.rol] || [];
@@ -2805,6 +2937,7 @@ function goTab(id, el) {
   if (id==='ponchador') { poblarSelectEmps(); rEmpStatus(); rReporte(); }
   if (id==='nomina') { poblarSelectEmps(); calcNomina(); }
   if (id==='compras') initCompras();
+  if (id==='menu') initMenu();
   if (id==='mensajes') initMensajes();
   if (id==='cuarentena') rCuarentena();
   if (id==='guia') {}  // solo mostrar HTML
@@ -3284,12 +3417,15 @@ function openSV() {
   openM('mSV');
   setTimeout(function(){ pSel('svR'); pSelEmps('svE'); var l=document.getElementById('lupa_svR'); if(l)l.value=''; },50);
 }
-function openAlim() { openM('mAlim'); setTimeout(function(){ pSel('alR'); var l=document.getElementById('lupa_alR'); if(l)l.value=''; },50); }
+function openAlim() { openM('mAlim'); setTimeout(function(){ pSel('alR'); var l=document.getElementById('lupa_alR'); if(l)l.value=''; poblarMenuDeHoy(); },50); }
 function openInc()  { openM('mInc'); setTimeout(function(){ pSel('inR'); var l=document.getElementById('lupa_inR'); if(l)l.value=''; },50); }
 function openVis()  { openM('mVis'); var n=new Date(); document.getElementById('viE').value=n.toTimeString().slice(0,5); setTimeout(function(){ pSel('viR'); var l=document.getElementById('lupa_viR'); if(l)l.value=''; },50); }
 function saveMed() {
   var rid=document.getElementById('mR').value, nom=document.getElementById('mN').value.trim();
   if (!rid||!nom) { toast('⚠️ Residente y medicamento obligatorios'); return; }
+  var _pinMed = document.getElementById('mE') ? document.getElementById('mE').value.trim() : '';
+  var _empMed = _pinMed ? DB.usuarios.find(function(u){ return u.password&&u.password.slice(-4)===_pinMed; }) : null;
+  if (!_empMed) { toast('⚠️ PIN incorrecto — solo empleados autorizados pueden registrar medicamentos'); return; }
   var m={id:'M'+Date.now(),ts:fh(),fecha:new Date().toISOString().slice(0,10),residenteId:rid,enfermera:(function(){
     var pin=document.getElementById('mE')?document.getElementById('mE').value.trim():'';
     if(!pin) return '';
@@ -3325,7 +3461,10 @@ function saveSV() {
   if (pesoVal && pesoUnit === 'lb') pesoVal = parseFloat((pesoVal * 0.453592).toFixed(1));
 
   var svEEl = document.getElementById('svE');
-  var enfermera = svEEl ? svEEl.value : '';
+  var svPin = svEEl ? svEEl.value.trim() : '';
+  var svEmp = svPin ? DB.usuarios.find(function(u){ return u.password&&u.password.slice(-4)===svPin; }) : null;
+  if (!svEmp) { toast('⚠️ PIN incorrecto — ingresa tu PIN para registrar signos'); return; }
+  var enfermera = svEmp.nombre;
   var s = {
     id: 'SV'+Date.now(), ts: fh(), raw: new Date().toISOString(),
     residenteId: rid,
@@ -5514,6 +5653,53 @@ function enviarMensaje() {
   document.getElementById('msgTexto').value = '';
   sDB();
   rMensajes();
+}
+
+function openMasivo() {
+  var rolesDiv = document.getElementById('masRolesLista');
+  if (rolesDiv) {
+    var roles = {admin:'👑 Admin',medico:'🩺 Médico',enfermera:'💉 Enfermera',aux:'🙋 Auxiliar',
+      recepcion:'📋 Recepción',cocina:'🍳 Cocina',limpieza:'🧹 Limpieza',terapia:'🧠 Terapeuta',
+      trabajo_social:'👥 Trab. Social',voluntario:'🤝 Voluntario',contabilidad:'📊 Contabilidad'};
+    rolesDiv.innerHTML = Object.keys(roles).map(function(r){
+      return '<label style="display:flex;gap:6px;align-items:center;font-size:12px">'+
+        '<input type="checkbox" class="masRolChk" value="'+r+'" style="accent-color:var(--am)">'+roles[r]+'</label>';
+    }).join('');
+  }
+  document.getElementById('masAsunto').value = '';
+  document.getElementById('masTexto').value = '';
+  document.getElementById('masUrgente').checked = false;
+  document.getElementById('masTodos').checked = false;
+  openM('mMasivo');
+}
+
+function selTodosDestinat(checked) {
+  document.querySelectorAll('.masRolChk').forEach(function(c){ c.checked = checked; });
+}
+
+function enviarMasivo() {
+  var asunto = document.getElementById('masAsunto').value.trim();
+  var texto  = document.getElementById('masTexto').value.trim();
+  if (!asunto||!texto) { toast('⚠️ Asunto y mensaje son obligatorios'); return; }
+  var todos = document.getElementById('masTodos').checked;
+  var rolesSelec = [];
+  document.querySelectorAll('.masRolChk:checked').forEach(function(c){ rolesSelec.push(c.value); });
+  if (!todos && !rolesSelec.length) { toast('⚠️ Selecciona al menos un destinatario'); return; }
+  var urgente = document.getElementById('masUrgente').checked;
+  if (!DB.mensajes) DB.mensajes = [];
+  var destinatarios = todos ? DB.usuarios : DB.usuarios.filter(function(u){ return rolesSelec.indexOf(u.rol)>=0; });
+  var count = 0;
+  destinatarios.forEach(function(u){
+    var cid = 'dm_'+[SES.id,u.id].sort().join('_');
+    DB.mensajes.push({ id:'M'+Date.now()+u.id, canal:cid, autorId:SES.id, autor:SES.nombre,
+      texto:(urgente?'🚨 URGENTE: ':'')+asunto+': '+texto, hora:fh(), leido:false, tipo:urgente?'urgente':'masivo' });
+    count++;
+  });
+  DB.mensajes.push({ id:'M'+Date.now()+'gen', canal:'general', autorId:SES.id, autor:SES.nombre,
+    texto:(urgente?'🚨 URGENTE: ':'')+asunto+': '+texto, hora:fh(), leido:false, tipo:'broadcast' });
+  sDB(); closeM('mMasivo');
+  logAudit('Mensaje','Mensaje masivo enviado: '+asunto, SES.nombre+' → '+count+' destinatarios');
+  toast('📨 Mensaje enviado a '+count+' empleados','vs');
 }
 
 function enviarBroadcast() {
@@ -7716,6 +7902,12 @@ function actualizarTelLink() {
   } else {
     link.style.display = 'none';
   }
+}
+
+function actualizarMapFam() {
+  var dir = document.getElementById('eDirFam') ? document.getElementById('eDirFam').value.trim() : '';
+  var link = document.getElementById('eDirFamLink');
+  if (link && dir) link.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(dir + ' Puerto Rico');
 }
 
 function actualizarMapLink() {
