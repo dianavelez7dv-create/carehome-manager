@@ -2516,7 +2516,7 @@
           </select>
         </div>
         <div class="fi ff"><label>Platillo / Descripción *</label>
-          <input id="menuPlatillo" type="text" placeholder="Ej: Arroz con pollo, habichuelas, ensalada...">
+          <input id="menuPlatillo" type="text" placeholder="Ej: Arroz con pollo, habichuelas, ensalada..." oninput="filtrarSugerencias()">
           <div id="menuSugerencias" style="border:1px solid var(--bo);border-radius:6px;margin-top:4px;display:none;max-height:150px;overflow-y:auto;background:var(--bl)"></div>
         </div>
         <div class="fi"><label>Calorías estimadas</label>
@@ -5555,6 +5555,147 @@ var CANAL_NOMBRES = {
   medicos:'🩺 Médicos', admin:'👑 Administración', urgente:'🚨 Urgente'
 };
 
+// ===== MENÚ SEMANAL =====
+var TIEMPOS_COMIDA = ['Desayuno','Merienda Mañana','Almuerzo','Merienda Tarde','Cena'];
+var DIAS_SEMANA = ['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'];
+
+function initMenu() {
+  if (!DB.menuSemanal) DB.menuSemanal = [];
+  if (!DB.platillos)   DB.platillos   = [];
+  var hoy=new Date(), lunes=new Date(hoy);
+  lunes.setDate(hoy.getDate()-((hoy.getDay()+6)%7));
+  var sem=document.getElementById('menuSemana');
+  if (sem&&!sem.value) sem.value=lunes.toISOString().slice(0,10);
+  rMenu(); rPlatillos();
+}
+
+function openMenuItem() {
+  ['menuPlatillo','menuCal','menuNota'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
+  var d=document.getElementById('menuSugerencias'); if(d) d.style.display='none';
+  openM('mMenuItem');
+}
+
+function filtrarSugerencias() {
+  var q=document.getElementById('menuPlatillo').value.toLowerCase();
+  var div=document.getElementById('menuSugerencias');
+  if(!div) return;
+  if(!q){div.style.display='none';return;}
+  var sugs=(DB.platillos||[]).filter(function(p){return p.nombre.toLowerCase().includes(q);});
+  if(!sugs.length){div.style.display='none';return;}
+  window._platSugs=sugs;
+  div.innerHTML=sugs.map(function(p,i){return '<div style="padding:8px 12px;cursor:pointer;border-bottom:1px solid var(--gc)" onclick="selSugerencia(window._platSugs['+i+'].nombre,window._platSugs['+i+'].calorias)">'+p.nombre+(p.calorias?' ('+p.calorias+' kcal)':'')+'</div>';}).join('');
+  div.style.display='block';
+}
+
+function selSugerencia(nombre, cal) {
+  var e=document.getElementById('menuPlatillo'); if(e) e.value=nombre;
+  var c=document.getElementById('menuCal'); if(c&&cal) c.value=cal;
+  var d=document.getElementById('menuSugerencias'); if(d) d.style.display='none';
+}
+
+function saveMenuItem() {
+  var platillo=document.getElementById('menuPlatillo').value.trim();
+  if(!platillo){toast('Escribe el platillo');return;}
+  var semana=document.getElementById('menuSemana')?document.getElementById('menuSemana').value:'';
+  var cal=parseInt(document.getElementById('menuCal').value)||0;
+  var nota=document.getElementById('menuNota').value.trim();
+  if(!DB.menuSemanal) DB.menuSemanal=[];
+  if(!DB.platillos)   DB.platillos=[];
+  DB.menuSemanal.push({id:'MN'+Date.now(),semana:semana,dia:document.getElementById('menuDia').value,tiempo:document.getElementById('menuTiempo').value,platillo:platillo,cal:cal,nota:nota,ts:fh()});
+  if(!DB.platillos.find(function(p){return p.nombre===platillo;})) DB.platillos.push({nombre:platillo,calorias:cal,nota:nota});
+  sDB(); closeM('mMenuItem'); rMenu(); rPlatillos();
+  toast('Platillo agregado','vs');
+}
+
+function rMenu() {
+  var semana=document.getElementById('menuSemana')?document.getElementById('menuSemana').value:'';
+  var tbody=document.getElementById('menuBody');
+  if(!tbody) return;
+  if(!DB.menuSemanal) DB.menuSemanal=[];
+  var items=DB.menuSemanal.filter(function(m){return !semana||m.semana===semana;});
+  window._mnIds=[];
+  var h='';
+  TIEMPOS_COMIDA.forEach(function(t){
+    h+='<tr><td style="padding:8px;border:1px solid var(--bo);font-weight:700;background:var(--ac);white-space:nowrap;font-size:12px">'+t+'</td>';
+    DIAS_SEMANA.forEach(function(d){
+      var item=items.find(function(m){return m.dia===d&&m.tiempo===t;});
+      h+='<td style="padding:6px 8px;border:1px solid var(--bo);vertical-align:top;font-size:12px">';
+      if(item){
+        var i=window._mnIds.length; window._mnIds.push(item.id);
+        h+='<div style="font-weight:600">'+item.platillo+'</div>';
+        if(item.cal) h+='<div style="font-size:10px;color:var(--gm)">'+item.cal+' kcal</div>';
+        if(item.nota) h+='<div style="font-size:10px;color:var(--na)">'+item.nota+'</div>';
+        h+='<div onclick="eliminarMenuItem(window._mnIds['+i+'])" style="font-size:10px;color:var(--ra);cursor:pointer">X</div>';
+      } else { h+='<span style="color:var(--gc)">—</span>'; }
+      h+='</td>';
+    });
+    h+='</tr>';
+  });
+  tbody.innerHTML=h;
+}
+
+function rPlatillos() {
+  var div=document.getElementById('menuPlatillosLista');
+  if(!div) return;
+  if(!(DB.platillos||[]).length){div.innerHTML='<div class="es"><div class="ei">🍳</div><p>Sin platillos aún.</p></div>';return;}
+  div.innerHTML=(DB.platillos||[]).map(function(p){return '<div style="padding:8px 10px;border-bottom:1px solid var(--gc);font-size:13px"><strong>'+p.nombre+'</strong>'+(p.calorias?' · '+p.calorias+' kcal':'')+(p.nota?'<br><small style="color:var(--na)">'+p.nota+'</small>':'')+'</div>';}).join('');
+}
+
+function eliminarMenuItem(id) {
+  DB.menuSemanal=(DB.menuSemanal||[]).filter(function(m){return m.id!==id;});
+  sDB(); rMenu(); toast('Eliminado del menu');
+}
+
+function pdfMenu() {
+  var JP=window.jspdf?window.jspdf.jsPDF:null;
+  if(!JP){toast('Cargando PDF...'); setTimeout(pdfMenu,1500); return;}
+  var semana=document.getElementById('menuSemana')?document.getElementById('menuSemana').value:'';
+  var doc=new JP('landscape'), y=28;
+  doc.setFillColor(45,106,79); doc.rect(0,0,297,20,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(13); doc.setFont(undefined,'bold');
+  doc.text('Menu Semanal - CareHome Manager',14,13);
+  doc.setFontSize(8); doc.setFont(undefined,'normal');
+  doc.text(semana?'Semana: '+semana:'',280,13,'right');
+  doc.setTextColor(40,40,40);
+  var items=(DB.menuSemanal||[]).filter(function(m){return !semana||m.semana===semana;});
+  var colW=35, rowH=18, x0=52;
+  doc.setFontSize(8); doc.setFont(undefined,'bold');
+  DIAS_SEMANA.forEach(function(d,i){
+    doc.setFillColor(45,106,79); doc.setTextColor(255,255,255);
+    doc.rect(x0+i*colW,y,colW,8,'F');
+    doc.text(d,x0+i*colW+colW/2,y+5,{align:'center'});
+  });
+  y+=8;
+  TIEMPOS_COMIDA.forEach(function(t,ti){
+    var ry=y+ti*rowH;
+    doc.setFont(undefined,'bold'); doc.setFontSize(7); doc.setTextColor(40,40,40);
+    doc.text(t.substring(0,12),2,ry+rowH/2);
+    DIAS_SEMANA.forEach(function(d,di){
+      var item=items.find(function(m){return m.dia===d&&m.tiempo===t;});
+      doc.setDrawColor(180,180,180); doc.rect(x0+di*colW,ry,colW,rowH,'S');
+      if(item){doc.setFont(undefined,'normal');doc.setFontSize(7);doc.text(item.platillo.substring(0,18),x0+di*colW+1,ry+5);}
+    });
+  });
+  doc.save('Menu_Semanal.pdf');
+  toast('PDF generado','vs');
+}
+
+function cargarDesdeMenu() {
+  var sel=document.getElementById('alMenuSel');
+  if(!sel||!sel.value) return;
+  var alC=document.getElementById('alC');
+  if(alC) alC.value=sel.value;
+}
+
+function poblarMenuDeHoy() {
+  var sel=document.getElementById('alMenuSel');
+  if(!sel||!(DB.menuSemanal||[]).length) return;
+  var diaNom=DIAS_SEMANA[(new Date().getDay()+6)%7];
+  var opciones=(DB.menuSemanal||[]).filter(function(m){return m.dia===diaNom;});
+  sel.innerHTML='<option value="">Del menu de hoy ('+diaNom+')...</option>'+opciones.map(function(o){return '<option value="'+o.platillo+'">'+o.tiempo+': '+o.platillo+'</option>';}).join('');
+}
+
+// ===== MENSAJERÍA =====
 function initMensajes() {
   if (!DB.mensajes) DB.mensajes = [];
   if (!DB.tareas)   DB.tareas   = [];
