@@ -1796,7 +1796,13 @@
         <input type="text" id="lupa_alR" placeholder="🔍 Escribir para buscar..." oninput="lupaFiltrar('lupa_alR','alR')" style="border:1.5px solid var(--bo);border-radius:8px;padding:9px 12px;font-size:15px;width:100%;margin-bottom:4px">
         <div style="display:flex;gap:6px;align-items:center;margin-bottom:4px"><button class="btn bxs" style="background:#444;color:white;white-space:nowrap" onclick="abrirQR('alR')">📷 QR</button></div><select id="alR" size="4" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px"><option value="">— Seleccionar —</option></select>
       </div>
-        <div class="fi"><label>Comida</label><select id="alC"><option>Desayuno</option><option>Merienda AM</option><option>Almuerzo</option><option>Merienda PM</option><option>Cena</option></select></div>
+        <div class="fi ff">
+          <label>Comida *</label>
+          <select id="alMenuSel" onchange="cargarDesdeMenu()" style="width:100%;border:1.5px solid var(--am);border-radius:8px;padding:9px;font-size:14px;margin-bottom:6px;color:var(--am)">
+            <option value="">📋 Seleccionar del menú del día...</option>
+          </select>
+          <select id="alC"><option>Desayuno</option><option>Merienda AM</option><option>Almuerzo</option><option>Merienda PM</option><option>Cena</option></select>
+        </div>
         <div class="fi"><label>Menú servido</label><input id="alMn" type="text"></div>
         <div class="fi"><label>% Consumido</label><select id="alCo"><option value="100">100% — Completo</option><option value="75">75% — Casi completo</option><option value="50">50% — Mitad</option><option value="25">25% — Poco</option><option value="0">0% — No comió</option></select></div>
         <div class="fi"><label>Tipo de dieta</label><select id="alDt"><option>Normal</option><option>Blanda</option><option>Blanda triturada</option><option>Hipocalórica</option><option>Diabética</option><option>Hiposódica</option><option>Sin lactosa</option><option>NPO (ayuno)</option></select></div>
@@ -5556,8 +5562,8 @@ var CANAL_NOMBRES = {
 };
 
 // ===== MENÚ SEMANAL =====
-var TIEMPOS_COMIDA = ['Desayuno','Merienda Mañana','Almuerzo','Merienda Tarde','Cena'];
-var DIAS_SEMANA = ['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'];
+var TIEMPOS_COMIDA = ['☀️ Desayuno','🌤 Merienda Mañana','☀️ Almuerzo','🌤 Merienda Tarde','🌙 Cena'];
+var DIAS_SEMANA = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
 
 function initMenu() {
   if (!DB.menuSemanal) DB.menuSemanal = [];
@@ -5683,8 +5689,24 @@ function pdfMenu() {
 function cargarDesdeMenu() {
   var sel=document.getElementById('alMenuSel');
   if(!sel||!sel.value) return;
-  var alC=document.getElementById('alC');
-  if(alC) alC.value=sel.value;
+  var platillo = sel.value;
+  // Llenar el campo alMn (menú/descripción del platillo)
+  var alMn=document.getElementById('alMn');
+  if(alMn) alMn.value=platillo;
+  // Autoseleccionar la comida según el tiempo del platillo en el menú
+  var item=(DB.menuSemanal||[]).find(function(m){return m.platillo===platillo;});
+  if(item) {
+    var alC=document.getElementById('alC');
+    if(alC) {
+      var tiempo = item.tiempo;
+      // Mapear emojis a opciones del select
+      var mapa = {'Desayuno':'Desayuno','Merienda Mañana':'Merienda AM','Almuerzo':'Almuerzo','Merienda Tarde':'Merienda PM','Cena':'Cena'};
+      var tiempoLimpio = tiempo.replace(/[^\w\sÁÉÍÓÚáéíóúñÑ]/g,'').trim();
+      var opcion = mapa[tiempoLimpio] || 'Almuerzo';
+      Array.from(alC.options).forEach(function(o){ if(o.value===opcion) alC.value=opcion; });
+    }
+  }
+  toast('Plato cargado: '+platillo,'vs');
 }
 
 function poblarMenuDeHoy() {
@@ -8174,7 +8196,7 @@ function mostrarPanelMed(rid) {
   p.style.display = 'block';
 }
 
-['fallecidos','cuarentenas','ponches','aseos','auditoria','compras','mensajes','tareas','visitasMed','planAct','terapias','planSemanal','pagos'].forEach(function(k){
+['fallecidos','cuarentenas','ponches','aseos','auditoria','compras','mensajes','tareas','visitasMed','planAct','terapias','planSemanal','pagos','menuSemanal','platillos'].forEach(function(k){
   if (!DB[k]) DB[k] = [];
 });
 if (!DB.empDocs)  DB.empDocs  = {};
