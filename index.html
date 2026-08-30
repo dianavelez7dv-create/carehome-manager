@@ -3158,19 +3158,26 @@ function hookSDB() {
 }
 
 function initDashPonchador() {
-  var sel = document.getElementById('dashPinEmp');
+  var sel = document.getElementById('dashPEmp');
   if (!sel) return;
   var val = sel.value;
-  sel.innerHTML = DB.usuarios.map(function(u){
-    return '<option value="'+u.id+'">'+u.nombre+'</option>';
-  }).join('');
+  sel.innerHTML = '<option value="">— Seleccionar —</option>' +
+    DB.usuarios.map(function(u){
+      return '<option value="'+u.id+'">'+u.nombre+' · '+rolL(u.rol)+'</option>';
+    }).join('');
   if (val) sel.value = val;
+  // Actualizar reloj
+  var hEl = document.getElementById('dashHoraPonch');
+  if (hEl) {
+    var now = new Date();
+    hEl.textContent = now.toLocaleTimeString('es-PR',{hour:'2-digit',minute:'2-digit'});
+  }
 }
 
 function dashPonchar(tipo) {
-  var sel = document.getElementById('dashPinEmp');
-  var pin = document.getElementById('dashPinInput');
-  var res = document.getElementById('dashPinRes');
+  var sel = document.getElementById('dashPEmp');
+  var pin = document.getElementById('dashPPin');
+  var res = document.getElementById('dashPPinRes');
   if (!sel||!pin) return;
   var uid = sel.value;
   var usr = DB.usuarios.find(function(u){ return u.id===uid; });
