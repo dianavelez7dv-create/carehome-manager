@@ -26,6 +26,8 @@
     <div class="hu"><b id="hNom">Administrador</b><br><span id="hRol">👑 Admin</span></div>
     <div style="font-size:10px;opacity:.8;text-align:right"><div id="hFec" style="font-weight:600"></div><div id="hHor"></div></div>
     <button class="boutl" onclick="openM('mLogin')">👤 Usuario</button>
+    <span id="syncStatus" style="font-size:10px;color:rgba(255,255,255,.7);opacity:0.5;transition:opacity 1s;margin-right:4px"></span>
+    <button class="boutl" id="syncBtn"  onclick="syncManual()" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3)" title="Sincronizar con otros dispositivos">🔄</button>
   </div>
 </div>
 
@@ -123,8 +125,29 @@
   <!-- Fila: Empleados activos + Próximos cumpleaños -->
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
     <div class="card" style="margin:0">
-      <div class="ch vs">👤 Personal en turno ahora</div>
-      <div class="cb" id="dashPersonal" style="padding:10px;max-height:200px;overflow-y:auto"></div>
+      <div class="ch vs" style="display:flex;justify-content:space-between;align-items:center">
+        <span>⏱️ Ponchador rápido</span>
+        <span style="font-size:11px;font-weight:400;opacity:.8" id="dashHoraPonch"></span>
+      </div>
+      <div class="cb" style="padding:10px">
+        <!-- Mini ponchador -->
+        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+          <select id="dashPEmp" style="flex:1;border:1.5px solid var(--bo);border-radius:8px;padding:8px;font-size:14px"></select>
+          <div class="pin-emp-wrap" style="flex:1;min-width:120px;margin:0">
+            <div class="pin-emp-row">
+              <input id="dashPPin" class="pin-emp-input" type="password" maxlength="4" placeholder="PIN" oninput="verificarPINEmp('dashPPin','dashPPinRes',null)" style="width:70px">
+              <div id="dashPPinRes" class="pin-emp-result pin-emp-idle" style="font-size:11px">PIN</div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="btn bvs" style="flex:1" onclick="dashPonchar('entrada')">▶ ENTRADA</button>
+          <button class="btn bra" style="flex:1" onclick="dashPonchar('salida')">■ SALIDA</button>
+        </div>
+        <!-- Personal en turno -->
+        <div style="font-size:11px;font-weight:700;color:var(--gm);margin:10px 0 6px;text-transform:uppercase">En turno ahora</div>
+        <div id="dashPersonal" style="max-height:160px;overflow-y:auto"></div>
+      </div>
     </div>
     <div class="card" style="margin:0">
       <div class="ch" style="background:#E67E22">🎂 Próximos cumpleaños</div>
@@ -394,7 +417,11 @@
 <!-- USUARIOS -->
 <div class="sec" id="tab-usuarios">
   <div class="card"><div class="ch mo">👥 Usuarios del Sistema</div><div class="cb">
-    <div style="margin-bottom:14px"><button class="btn bmo" onclick="openM('mUsr')">➕ Nuevo Usuario</button></div>
+    <div style="display:flex;gap:8px;margin-bottom:14px;align-items:center;flex-wrap:wrap">
+      <button class="btn bmo" onclick="openM('mUsr')">➕ Nuevo Usuario</button>
+      <input id="lupaUsr" type="text" placeholder="🔍 Buscar empleado..." oninput="filtrarUsr()"
+        style="flex:1;min-width:160px;border:1.5px solid var(--bo);border-radius:8px;padding:9px 12px;font-size:14px">
+    </div>
     <div id="listUsr"></div>
   </div></div>
 </div>
@@ -1142,6 +1169,7 @@
       <div style="font-weight:800;color:var(--na);margin-bottom:8px">💡 Consejos importantes</div>
       <ul style="font-size:13px;color:var(--go);padding-left:18px;line-height:1.9;margin:0">
         <li>Los datos se guardan automáticamente en este dispositivo. <strong>No se pierden al cerrar el navegador.</strong></li>
+        <li>🔄 <strong>Sincronización automática</strong> — si dos personas tienen la app abierta en el mismo lugar (misma red o misma computadora), los datos se actualizan automáticamente. Aparece un aviso "Datos actualizados desde otro dispositivo".</li>
         <li>Para instalar la app: menú ⋮ del navegador → <strong>Instalar aplicación</strong>.</li>
         <li>La app funciona <strong>sin internet</strong> una vez instalada.</li>
         <li>El QR de cada paciente se genera con su ID único — imprímelo y pégalo en su cuarto.</li>
@@ -1302,6 +1330,7 @@
     <div class="card" style="position:sticky;top:70px">
       <div class="ch am">👔 Empleados</div>
       <div class="cb" style="padding:10px">
+        <input type="text" id="lupEmp" placeholder="🔍 Buscar empleado..." oninput="filtrarEmpSelector()" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;padding:8px 10px;font-size:14px;margin-bottom:8px">
         <div id="empSelectorLista"></div>
       </div>
     </div>
@@ -2880,6 +2909,9 @@ function doLogin() {
   mostrarSesionInfo();
   var si = document.getElementById('sesionInfo');
   if (si) si.style.display = '';
+  hookSDB();
+  initSync();
+  initDashPonchador();
 
 resetTimeout();
 ['click','keydown','touchstart','mousemove'].forEach(function(ev){
@@ -3056,7 +3088,109 @@ function qFoto() {
   document.getElementById('rFotoQuit').style.display = 'none';
 }
 
+// ===== SYNC Y UTILIDADES NUEVAS =====
+function initSync() {
+  if ('BroadcastChannel' in window) {
+    window._syncCh = new BroadcastChannel('carehome_sync');
+    window._syncCh.onmessage = function(e) {
+      if (e.data && e.data.tipo==='sync') {
+        cDB();
+        var tab = document.querySelector('.sec.on');
+        if (tab) {
+          var id = tab.id.replace('tab-','');
+          if (id==='dashboard') dash();
+          else if (id==='ponchador') { if(typeof rEmpStatus==='function') rEmpStatus(); }
+          else if (id==='mensajes') { if(typeof rMensajes==='function') rMensajes(); }
+          else if (id==='residentes') { if(typeof rRes==='function') rRes(); }
+        }
+        toast('Datos actualizados','vs');
+      }
+    };
+  }
+  window.addEventListener('storage', function(e) {
+    if (e.key==='chdb4') { cDB(); dash(); }
+  });
+}
+
+function notificarCambio() {
+  if (window._syncCh) window._syncCh.postMessage({tipo:'sync',ts:Date.now()});
+}
+
+function hookSDB() {
+  var orig = sDB;
+  sDB = function(){ orig(); notificarCambio(); };
+}
+
+function initDashPonchador() {
+  var sel = document.getElementById('dashPinEmp');
+  if (!sel) return;
+  var val = sel.value;
+  sel.innerHTML = DB.usuarios.map(function(u){
+    return '<option value="'+u.id+'">'+u.nombre+'</option>';
+  }).join('');
+  if (val) sel.value = val;
+}
+
+function dashPonchar(tipo) {
+  var sel = document.getElementById('dashPinEmp');
+  var pin = document.getElementById('dashPinInput');
+  var res = document.getElementById('dashPinRes');
+  if (!sel||!pin) return;
+  var uid = sel.value;
+  var usr = DB.usuarios.find(function(u){ return u.id===uid; });
+  if (!usr) { toast('Selecciona un empleado'); return; }
+  var pinVal = pin.value;
+  if (!pinVal||pinVal.length<4) { toast('Ingresa tu PIN'); return; }
+  if (!usr.password||usr.password.slice(-4)!==pinVal) {
+    if (res) { res.textContent='PIN incorrecto'; res.className='pin-emp-result pin-emp-err'; }
+    return;
+  }
+  var hoy = new Date().toISOString().slice(0,10);
+  var hora = new Date().toLocaleTimeString('es-PR',{hour:'2-digit',minute:'2-digit',hour12:true});
+  if (!DB.ponches) DB.ponches=[];
+  DB.ponches.push({id:'P'+Date.now(),userId:uid,nombre:usr.nombre,rol:usr.rol,tipo:tipo,fecha:hoy,hora:hora,ts:fh()});
+  sDB();
+  pin.value='';
+  if (res) { res.textContent='✅ '+usr.nombre+' — '+(tipo==='entrada'?'▶ Entrada':'■ Salida')+' '+hora; res.className='pin-emp-result pin-emp-ok'; }
+  logAudit('Ponche',tipo.toUpperCase()+' en dashboard',usr.nombre+' a las '+hora);
+  dash();
+  toast((tipo==='entrada'?'▶':'■')+' '+usr.nombre+' '+hora,'vs');
+}
+
+function filtrarUsr() {
+  var q = document.getElementById('lupaUsr') ? document.getElementById('lupaUsr').value.toLowerCase().trim() : '';
+  if (!q) { rUsr(); return; }
+  var div = document.getElementById('listUsr');
+  if (!div) return;
+  var cols = {admin:'#1A3A5C',medico:'#7B2D8B',enfermera:'#0D7A5F',aux:'#E67E22',recepcion:'#607D8B',
+    cocina:'#C0392B',limpieza:'#27AE60',terapia:'#8E44AD',trabajo_social:'#2980B9',
+    voluntario:'#16A085',horas_verdes:'#1E8449',practicante:'#D35400',contabilidad:'#117A65'};
+  window._uIds=[];
+  var h='';
+  DB.usuarios.filter(function(u){
+    return u.nombre.toLowerCase().includes(q)||u.username.toLowerCase().includes(q)||(rolL(u.rol)||'').toLowerCase().includes(q);
+  }).forEach(function(u){
+    var i=window._uIds.length; window._uIds.push(u.id);
+    var ini=u.nombre.split(' ').map(function(x){return x[0];}).join('').substring(0,2).toUpperCase();
+    var salario=u.salario?' · $'+parseFloat(u.salario).toFixed(2)+'/h':'';
+    h+='<div class="uc">';
+    h+='<div class="ua" style="background:'+(cols[u.rol]||'#607D8B')+'">'+ini+'</div>';
+    h+='<div class="ui"><div class="un">'+u.nombre+'</div>';
+    h+='<div class="ur">'+rolL(u.rol)+' · @'+u.username+salario+'</div></div>';
+    if (SES.rol==='admin') {
+      h+='<div style="display:flex;gap:6px">';
+      h+='<button class="btn bxs" style="background:var(--na);color:white" onclick="editUsr(window._uIds['+i+'])">✏️</button>';
+      h+='<button class="btn bxs bmo" onclick="abrirPerms(window._uIds['+i+'])">🔐</button>';
+      if(u.id!=='U1') h+='<button class="btn bxs bra" onclick="delUsr(window._uIds['+i+'])">🗑️</button>';
+      h+='</div>';
+    }
+    h+='</div>';
+  });
+  div.innerHTML=h||'<div class="es"><div class="ei">🔍</div><p>Sin resultados.</p></div>';
+}
+
 function dash() {
+  initDashPonchador();
   var hoyStr = new Date().toISOString().slice(0,10);
   var ahora = new Date();
   var mes = ahora.getMonth();
@@ -6405,7 +6539,9 @@ var REQUISITOS_PR = [
 function initEmpleados() {
   if (!DB.empDocs)  DB.empDocs  = {};
   if (!DB.empMemos) DB.empMemos = {};
-  rEmpSelector();
+  var lup = document.getElementById('lupEmp');
+  if (lup) lup.value = '';
+  filtrarEmpSelector();
 }
 
 function rEmpSelector() {
@@ -8211,6 +8347,10 @@ dash(); dCharts(); rRes(); rMed(); rSV(); rAlim(); rAct(); rInc(); rVis(); rTur(
 calcAlerts();
 setInterval(calcAlerts, 300000);
 initPonchador();
+initSync();
+initDashPonch();
+// Actualizar reloj del ponchador cada minuto
+setInterval(initDashPonch, 60000);
 
 openM('mLogin');
 </script>
