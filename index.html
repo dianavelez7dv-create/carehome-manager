@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="CareHome">
 <meta name="theme-color" content="#1A3A5C">
-<title>CareHome Manager v7</title>
+<title>CareHome Manager v8</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -3089,6 +3089,42 @@ function qFoto() {
 }
 
 // ===== SYNC Y UTILIDADES NUEVAS =====
+function syncManual() {
+  var btn = document.getElementById('syncBtn');
+  if (btn) { btn.textContent = '⏳'; btn.disabled = true; }
+  var s = localStorage.getItem('chdb4');
+  if (s) {
+    try {
+      var d = JSON.parse(s);
+      ['residentes','medicamentos','signos','alimentacion','actividades','incidentes',
+       'visitas','turnos','expedientes','fallecidos','cuarentenas','ponches','aseos',
+       'auditoria','empDocs','empMemos','compras','mensajes','tareas','pagos',
+       'menuSemanal','platillos'].forEach(function(k){ if(d[k]!==undefined) DB[k]=d[k]; });
+      if(d.usuarios&&d.usuarios.length>0) DB.usuarios=d.usuarios;
+      actualizarVistasSync();
+      toast('✅ Datos sincronizados','vs');
+    } catch(e) { toast('Error al sincronizar'); }
+  }
+  setTimeout(function(){
+    if(btn){btn.textContent='🔄';btn.disabled=false;}
+  }, 1000);
+}
+
+function actualizarVistasSync() {
+  dash();
+  calcAlerts();
+  var sec = document.querySelector('.sec.on');
+  if (!sec) return;
+  var id = sec.id.replace('tab-','');
+  var map = {
+    residentes:rRes, medicamentos:rMed, signos:rSV, alimentacion:rAlim,
+    incidentes:rInc, ponchador:initPonchador, mensajes:rMensajes,
+    tareas:rTareas, pagos:rPagos, cuarentena:rCuarentena, compras:rCompras,
+    auditoria:rAuditoria, reportes:rReportes, aseo:initAseo
+  };
+  if (map[id] && typeof map[id]==='function') map[id]();
+}
+
 function initSync() {
   if ('BroadcastChannel' in window) {
     window._syncCh = new BroadcastChannel('carehome_sync');
@@ -8348,9 +8384,9 @@ calcAlerts();
 setInterval(calcAlerts, 300000);
 initPonchador();
 initSync();
-initDashPonch();
+initDashPonchador();
 // Actualizar reloj del ponchador cada minuto
-setInterval(initDashPonch, 60000);
+setInterval(initDashPonchador, 60000);
 
 openM('mLogin');
 </script>
