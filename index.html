@@ -11,7 +11,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="CareHome">
 <meta name="theme-color" content="#1A3A5C">
-<title>CareHome Manager v9</title>
+<title>CareHome Manager v10</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -3141,88 +3141,97 @@ function actualizarVistasSync() {
 var SUPA_URL = 'https://hmotxsmsyjdepliabbro.supabase.co';
 var SUPA_KEY = 'sb_publishable_N1Aiklv7yhEn_AxXU8pf_A_EBrn792D';
 var supaClient = null;
+var _supaReady = false;
+var _supaGuardandoPendiente = false;
 var _supaChannel = null;
 
 function initSupabase() {
   try {
+    if (!window.supabase) { console.warn('SDK Supabase no cargado'); return; }
     supaClient = window.supabase.createClient(SUPA_URL, SUPA_KEY);
     console.log('✅ Supabase conectado');
-    cargarDesdeSupa();
-    suscribirCambiosSupa();
+    // Cargar datos en background — no bloquea la app
+    setTimeout(cargarDesdeSupa, 500);
+    setTimeout(suscribirCambiosSupa, 1000);
   } catch(e) {
-    console.warn('Supabase no disponible, usando localStorage:', e);
+    console.warn('Supabase error al iniciar:', e);
   }
 }
 
-// Cargar todos los datos desde Supabase al iniciar
 function cargarDesdeSupa() {
   if (!supaClient) return;
-  supaClient.from('carehome_data').select('*').eq('key','main').single()
+  supaClient.from('carehome_data')
+    .select('key, valor')
+    .eq('key', 'db_main')
+    .maybeSingle()
     .then(function(res) {
-      if (res.data && res.data.payload) {
-        try {
-          var d = JSON.parse(res.data.payload);
-          var tablas = ['residentes','medicamentos','signos','alimentacion','actividades',
-            'incidentes','visitas','turnos','expedientes','fallecidos','cuarentenas',
-            'ponches','aseos','auditoria','empDocs','empMemos','compras','mensajes',
-            'tareas','pagos','menuSemanal','platillos','visitasMed','planAct'];
-          tablas.forEach(function(k){ if(d[k]!==undefined) DB[k]=d[k]; });
-          if(d.usuarios&&d.usuarios.length>0) DB.usuarios=d.usuarios;
-          // Guardar en localStorage como caché local
-          localStorage.setItem('chdb4', res.data.payload);
-          actualizarVistasSync();
-          showSyncToast('☁️ Datos cargados desde Supabase');
-          console.log('✅ Datos cargados desde Supabase');
-        } catch(e) { console.warn('Error parseando datos Supabase:', e); }
-      } else {
-        // No hay datos en Supabase aún — subir los locales
-        console.log('Sin datos en Supabase, subiendo datos locales...');
+      if (res.error) { console.warn('Supa load error:', res.error.message); return; }
+      if (!res.data) {
+        console.log('Sin datos en Supabase — subiendo datos locales');
         guardarEnSupa();
+        return;
       }
-    })
-    .catch(function(e){ console.warn('Error cargando Supabase:', e); });
+      try {
+        var d = JSON.parse(res.data.valor);
+        var tablas = ['residentes','medicamentos','signos','alimentacion','actividades',
+          'incidentes','visitas','turnos','expedientes','fallecidos','cuarentenas',
+          'ponches','aseos','auditoria','empDocs','empMemos','compras','mensajes',
+          'tareas','pagos','menuSemanal','platillos','visitasMed','planAct'];
+        tablas.forEach(function(k){ if(d[k]!==undefined) DB[k]=d[k]; });
+        if(d.usuarios&&d.usuarios.length>0) DB.usuarios=d.usuarios;
+        localStorage.setItem('chdb4', res.data.valor);
+        _supaReady = true;
+        actualizarVistasSync();
+        showSyncToast('☁️ Sincronizado con Supabase');
+        console.log('✅ Datos cargados');
+      } catch(e) { console.warn('Error parseando:', e); }
+    });
 }
 
-// Guardar en Supabase (upsert)
+var _supaTimer = null;
 function guardarEnSupa() {
   if (!supaClient) return;
-  var payload = JSON.stringify(DB);
-  supaClient.from('carehome_data').upsert({
-    key: 'main',
-    payload: payload,
-    updated_at: new Date().toISOString()
-  }).then(function(res){
-    if (res.error) console.warn('Error guardando en Supabase:', res.error);
-    else actualizarSyncIndicator();
-  });
+  // Debounce — esperar 2s de silencio antes de guardar para no saturar
+  clearTimeout(_supaTimer);
+  _supaTimer = setTimeout(function() {
+    var payload = JSON.stringify(DB);
+    supaClient.from('carehome_data')
+      .upsert({ key:'db_main', valor:payload, ts: new Date().toISOString() },
+               { onConflict:'key' })
+      .then(function(res) {
+        if (res.error) console.warn('Supa save error:', res.error.message);
+        else { _supaReady=true; actualizarSyncIndicator(); console.log('✅ Guardado en Supabase'); }
+      });
+  }, 2000);
 }
 
-// Suscribirse a cambios en tiempo real
 function suscribirCambiosSupa() {
   if (!supaClient) return;
-  _supaChannel = supaClient.channel('carehome_realtime')
-    .on('postgres_changes', {
-      event: '*', schema: 'public', table: 'carehome_data'
-    }, function(payload) {
-      if (payload.new && payload.new.payload) {
-        try {
-          var d = JSON.parse(payload.new.payload);
-          var tablas = ['residentes','medicamentos','signos','alimentacion','actividades',
-            'incidentes','visitas','turnos','expedientes','fallecidos','cuarentenas',
-            'ponches','aseos','empDocs','empMemos','compras','mensajes','tareas',
-            'pagos','menuSemanal','platillos'];
-          tablas.forEach(function(k){ if(d[k]!==undefined) DB[k]=d[k]; });
-          if(d.usuarios&&d.usuarios.length>0) DB.usuarios=d.usuarios;
-          localStorage.setItem('chdb4', payload.new.payload);
-          actualizarVistasSync();
-          showSyncToast('🔄 Actualización recibida en tiempo real');
-        } catch(e) {}
-      }
-    })
-    .subscribe(function(status){
-      console.log('Supabase realtime:', status);
-      if(status==='SUBSCRIBED') showSyncToast('☁️ Sync en tiempo real activo');
-    });
+  try {
+    _supaChannel = supaClient
+      .channel('db-changes')
+      .on('postgres_changes', { event:'UPDATE', schema:'public', table:'carehome_data' },
+        function(payload) {
+          if (!payload.new || !payload.new.valor) return;
+          try {
+            var d = JSON.parse(payload.new.valor);
+            var tablas = ['residentes','medicamentos','signos','alimentacion','actividades',
+              'incidentes','visitas','turnos','expedientes','fallecidos','cuarentenas',
+              'ponches','aseos','empDocs','empMemos','compras','mensajes','tareas',
+              'pagos','menuSemanal','platillos'];
+            tablas.forEach(function(k){ if(d[k]!==undefined) DB[k]=d[k]; });
+            if(d.usuarios&&d.usuarios.length>0) DB.usuarios=d.usuarios;
+            localStorage.setItem('chdb4', payload.new.valor);
+            actualizarVistasSync();
+            showSyncToast('🔄 Actualización en tiempo real');
+          } catch(e) {}
+        }
+      )
+      .subscribe(function(status) {
+        console.log('Realtime:', status);
+        if(status==='SUBSCRIBED') showSyncToast('☁️ Sync activo');
+      });
+  } catch(e) { console.warn('Realtime error:', e); }
 }
 
 function initSync() {
@@ -8491,8 +8500,9 @@ calcAlerts();
 setInterval(calcAlerts, 300000);
 initPonchador();
 initSync();
-initSupabase();
 initDashPonchador();
+// Iniciar Supabase después de que la app ya esté visible
+setTimeout(initSupabase, 500);
 // Actualizar reloj del ponchador cada minuto
 setInterval(initDashPonchador, 60000);
 
