@@ -2866,10 +2866,13 @@ function cDB() {
   } catch(e) { console.error('cDB error:', e); }
 }
 function sDB() {
-  var payload = JSON.stringify(DB);
-  localStorage.setItem('chdb4', payload);
-  guardarEnSupa();
-  actualizarSyncIndicator();
+  try {
+    var payload = JSON.stringify(DB);
+    localStorage.setItem('chdb4', payload);
+  } catch(e) { console.warn('localStorage error:', e); }
+  // Guardar en Supabase en background (no bloquea)
+  try { guardarEnSupa(); } catch(e) { console.warn('supa error:', e); }
+  try { actualizarSyncIndicator(); } catch(e) {}
 }
 cDB();
 
