@@ -2911,6 +2911,8 @@ function doLogin() {
     return;
   }
   SES = usr;
+  // Persistir sesión para que sobreviva el refresh
+  try { localStorage.setItem('chses', JSON.stringify({id:usr.id, nombre:usr.nombre, rol:usr.rol, username:usr.username})); } catch(e) {}
   logAudit('Login','Inicio de sesión',usr.rol);
   document.getElementById('hNom').textContent = usr.nombre;
   document.getElementById('hRol').textContent = rolL(usr.rol);
