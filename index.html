@@ -3166,8 +3166,8 @@ function initSupabase() {
 function cargarDesdeSupa() {
   if (!supaClient) return;
   supaClient.from('carehome_data')
-    .select('key, valor')
-    .eq('key', 'db_main')
+    .select('key, payload, updated_at')
+    .eq('key', 'main')
     .maybeSingle()
     .then(function(res) {
       if (res.error) { console.warn('Supa load error:', res.error.message); return; }
@@ -3177,14 +3177,14 @@ function cargarDesdeSupa() {
         return;
       }
       try {
-        var d = JSON.parse(res.data.valor);
+        var d = JSON.parse(res.data.payload);
         var tablas = ['residentes','medicamentos','signos','alimentacion','actividades',
           'incidentes','visitas','turnos','expedientes','fallecidos','cuarentenas',
           'ponches','aseos','auditoria','empDocs','empMemos','compras','mensajes',
           'tareas','pagos','menuSemanal','platillos','visitasMed','planAct'];
         tablas.forEach(function(k){ if(d[k]!==undefined) DB[k]=d[k]; });
         if(d.usuarios&&d.usuarios.length>0) DB.usuarios=d.usuarios;
-        localStorage.setItem('chdb4', res.data.valor);
+        localStorage.setItem('chdb4', res.data.payload);
         _supaReady = true;
         actualizarVistasSync();
         showSyncToast('☁️ Sincronizado con Supabase');
@@ -3196,17 +3196,17 @@ function cargarDesdeSupa() {
 var _supaTimer = null;
 function guardarEnSupa() {
   if (!supaClient) return;
-  // Debounce — esperar 2s de silencio antes de guardar para no saturar
   clearTimeout(_supaTimer);
   _supaTimer = setTimeout(function() {
     var payload = JSON.stringify(DB);
     supaClient.from('carehome_data')
-      .upsert({ key:'db_main', valor:payload, ts: new Date().toISOString() },
+      .upsert({ key:'main', payload:payload, updated_at: new Date().toISOString() },
                { onConflict:'key' })
       .then(function(res) {
         if (res.error) console.warn('Supa save error:', res.error.message);
         else { _supaReady=true; actualizarSyncIndicator(); console.log('✅ Guardado en Supabase'); }
-      });
+      })
+      .catch(function(e){ console.warn('guardarEnSupa catch:', e); });
   }, 2000);
 }
 
