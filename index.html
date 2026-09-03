@@ -3212,31 +3212,34 @@ function guardarEnSupa() {
 
 function suscribirCambiosSupa() {
   if (!supaClient) return;
-  try {
-    _supaChannel = supaClient
-      .channel('db-changes')
-      .on('postgres_changes', { event:'UPDATE', schema:'public', table:'carehome_data' },
-        function(payload) {
-          if (!payload.new || !payload.new.valor) return;
-          try {
-            var d = JSON.parse(payload.new.valor);
-            var tablas = ['residentes','medicamentos','signos','alimentacion','actividades',
-              'incidentes','visitas','turnos','expedientes','fallecidos','cuarentenas',
-              'ponches','aseos','empDocs','empMemos','compras','mensajes','tareas',
-              'pagos','menuSemanal','platillos'];
-            tablas.forEach(function(k){ if(d[k]!==undefined) DB[k]=d[k]; });
-            if(d.usuarios&&d.usuarios.length>0) DB.usuarios=d.usuarios;
-            localStorage.setItem('chdb4', payload.new.valor);
-            actualizarVistasSync();
-            showSyncToast('🔄 Actualización en tiempo real');
-          } catch(e) {}
-        }
-      )
-      .subscribe(function(status) {
-        console.log('Realtime:', status);
-        if(status==='SUBSCRIBED') showSyncToast('☁️ Sync activo');
-      });
-  } catch(e) { console.warn('Realtime error:', e); }
+  // Polling cada 15 segundos — sincroniza todos los dispositivos
+  var _lastTs = '';
+  setInterval(function(){
+    if (!supaClient) return;
+    supaClient.from('carehome_data')
+      .select('payload,updated_at')
+      .eq('key','main')
+      .then(function(res){
+        if (!res || res.error || !res.data || !res.data.length) return;
+        var row = res.data[0];
+        if (!row.payload || row.updated_at === _lastTs) return;
+        _lastTs = row.updated_at;
+        try {
+          var d = JSON.parse(row.payload);
+          ['residentes','medicamentos','signos','alimentacion','actividades',
+           'incidentes','visitas','turnos','expedientes','fallecidos','cuarentenas',
+           'ponches','aseos','empDocs','empMemos','compras','mensajes','tareas',
+           'pagos','menuSemanal','platillos','visitasMed','planAct'
+          ].forEach(function(k){ if(d[k]!==undefined) DB[k]=d[k]; });
+          if(d.usuarios&&d.usuarios.length>0&&!SES.id) DB.usuarios=d.usuarios;
+          localStorage.setItem('chdb4', row.payload);
+          actualizarVistasSync();
+          showSyncToast('🔄 Sincronizado');
+        } catch(e) { console.warn('Polling parse error:', e); }
+      })
+      .catch(function(e){ console.warn('Polling error:', e); });
+  }, 15000);
+  console.log('✅ Sync automático cada 15s iniciado');
 }
 
 function initSync() {
@@ -8499,19 +8502,43 @@ if (!DB.visitasMed) DB.visitasMed=[];
 if (!DB.planAct) DB.planAct=[];
 if (!DB.terapias) DB.terapias=[];
 if (!DB.planSemanal) DB.planSemanal=[];
-applyPerm();
-dash(); dCharts(); rRes(); rMed(); rSV(); rAlim(); rAct(); rInc(); rVis(); rTur(); rUsr();
+// ── Iniciar timers y ponchador ──
 calcAlerts();
 setInterval(calcAlerts, 300000);
 initPonchador();
 initSync();
 initDashPonchador();
-// Iniciar Supabase después de que la app ya esté visible
-setTimeout(initSupabase, 500);
-// Actualizar reloj del ponchador cada minuto
 setInterval(initDashPonchador, 60000);
+setTimeout(initSupabase, 800);
 
-openM('mLogin');
+// ── Restaurar sesión si existe (sobrevive refresh) ──
+var _sesSaved = null;
+try { _sesSaved = JSON.parse(localStorage.getItem('chses') || 'null'); } catch(e) {}
+var _usrSaved = _sesSaved ? DB.usuarios.find(function(u){ return u.id === _sesSaved.id; }) : null;
+
+if (_usrSaved) {
+  // Sesión válida — entrar directo sin login
+  SES = _usrSaved;
+  applyPerm();
+  mostrarSesionInfo();
+  resetTimeout();
+  ['click','keydown','touchstart'].forEach(function(ev){
+    document.addEventListener(ev, resetTimeout, {passive:true});
+  });
+  var navEl  = document.getElementById('navBar');
+  var mainEl = document.querySelector('.main');
+  if (navEl)  navEl.style.display  = 'flex';
+  if (mainEl) mainEl.style.display = 'block';
+  dash(); dCharts(); rRes(); rMed(); rSV(); rAlim();
+  rAct(); rInc(); rVis(); rTur(); rUsr();
+  calcAlerts();
+} else {
+  // No hay sesión — mostrar login
+  applyPerm();
+  dash(); dCharts(); rRes(); rMed(); rSV(); rAlim();
+  rAct(); rInc(); rVis(); rTur(); rUsr();
+  openM('mLogin');
+}
 </script>
 <script>
 // Registrar Service Worker solo en GitHub Pages
