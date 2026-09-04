@@ -8054,33 +8054,71 @@ function limpiarAuditoria() {
 function pdfAuditoria() {
   var JP = window.jspdf ? window.jspdf.jsPDF : null;
   if (!JP) { toast('⚠️ Cargando PDF...'); setTimeout(pdfAuditoria,1500); return; }
-  var doc = new JP(), y = 28;
-  doc.setFillColor(26,58,92); doc.rect(0,0,210,20,'F');
+  var doc = new JP('landscape'), y = 28;
+  doc.setFillColor(26,58,92); doc.rect(0,0,297,20,'F');
   doc.setTextColor(255,255,255); doc.setFontSize(13); doc.setFont(undefined,'bold');
-  doc.text('CareHome Manager — Auditoría',14,13);
+  doc.text('CareHome Manager — Registro de Auditoría',14,13);
   doc.setFontSize(8); doc.setFont(undefined,'normal');
-  doc.text('Generado: '+fh(),196,13,'right');
+  doc.text('Generado: '+fh(),283,13,'right');
   doc.setTextColor(40,40,40);
 
-  var lista = (DB.auditoria||[]).slice().reverse();
-  doc.setFontSize(8); doc.setFont(undefined,'bold'); doc.setFillColor(26,58,92);
-  doc.setTextColor(255,255,255); doc.rect(14,y,182,6,'F');
-  ['TIPO','USUARIO','DETALLE','FECHA'].forEach(function(h,i){
-    doc.text(h,[16,40,80,170][i],y+4);
-  });
-  y+=8; doc.setTextColor(40,40,40); doc.setFont(undefined,'normal');
+  var fTipo = document.getElementById('fAudTipo') ? document.getElementById('fAudTipo').value : '';
+  var lista = (DB.auditoria||[]).filter(function(a){
+    return !fTipo || a.tipo===fTipo;
+  }).slice().reverse();
 
-  lista.forEach(function(a,i){
-    if(y>275){doc.addPage();y=20;}
-    if(i%2===0){doc.setFillColor(245,248,252);doc.rect(14,y-3,182,6,'F');}
-    doc.text((a.tipo||'').substring(0,12),16,y);
-    doc.text((a.usuario||'').substring(0,16),40,y);
-    doc.text((a.detalle||'').substring(0,40),80,y);
-    doc.text((a.ts||'').substring(0,18),170,y);
-    y+=6;
+  // Encabezado tabla
+  doc.setFontSize(8); doc.setFont(undefined,'bold');
+  doc.setFillColor(26,58,92); doc.setTextColor(255,255,255);
+  doc.rect(14,y,269,7,'F');
+  doc.text('TIPO',     16, y+5);
+  doc.text('USUARIO',  50, y+5);
+  doc.text('ACCIÓN',   90, y+5);
+  doc.text('DETALLE', 145, y+5);
+  doc.text('FECHA',   255, y+5);
+  y += 9;
+  doc.setTextColor(40,40,40); doc.setFont(undefined,'normal');
+
+  lista.forEach(function(a, i) {
+    // Calcular líneas necesarias para el detalle
+    var detalle = (a.detalle || '').replace(/[^ -~À-ÿ]/g, ''); // quitar emojis
+    var detalleLines = doc.splitTextToSize(detalle, 100);
+    var accion = (a.accion || a.tipo || '').replace(/[^ -~À-ÿ]/g, '');
+    var accionLines = doc.splitTextToSize(accion, 50);
+    var rowH = Math.max(detalleLines.length, accionLines.length) * 5 + 3;
+
+    if (y + rowH > 195) {
+      doc.addPage('a4','landscape'); y = 20;
+      // Repetir encabezado
+      doc.setFont(undefined,'bold'); doc.setFillColor(26,58,92); doc.setTextColor(255,255,255);
+      doc.rect(14,y,269,7,'F');
+      doc.text('TIPO',16,y+5); doc.text('USUARIO',50,y+5);
+      doc.text('ACCIÓN',90,y+5); doc.text('DETALLE',145,y+5); doc.text('FECHA',255,y+5);
+      y+=9; doc.setTextColor(40,40,40); doc.setFont(undefined,'normal');
+    }
+
+    // Fondo alternado
+    if (i%2===0) { doc.setFillColor(245,248,252); doc.rect(14,y-1,269,rowH,'F'); }
+
+    doc.setFontSize(7);
+    doc.text((a.tipo||'').substring(0,14),          16, y+4);
+    doc.text((a.usuario||'').substring(0,18),        50, y+4);
+    doc.text(accionLines,                            90, y+4);
+    doc.text(detalleLines,                          145, y+4);
+    doc.text((a.ts||'').substring(0,18),            255, y+4);
+
+    // Línea separadora
+    doc.setDrawColor(220,220,220);
+    doc.line(14, y+rowH, 283, y+rowH);
+    y += rowH;
   });
+
+  // Total al final
+  doc.setFont(undefined,'bold'); doc.setFontSize(8);
+  doc.text('Total registros: '+lista.length, 14, y+8);
+
   doc.save('Auditoria_CareHome.pdf');
-  toast('📄 PDF generado','vs');
+  toast('📄 PDF de auditoría generado','vs');
 }
 
 function rReportes() {
