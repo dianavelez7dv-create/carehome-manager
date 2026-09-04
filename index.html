@@ -6696,6 +6696,55 @@ var REQUISITOS_PR = [
   {id:'eval',       nom:'Evaluación de Desempeño Anual',                       vence:true,  meses:12, obligatorio:true,  ley:'Ley 300'},
 ];
 
+function filtrarEmpSelector() {
+  var q   = document.getElementById('lupEmp') ? document.getElementById('lupEmp').value.toLowerCase() : '';
+  var div = document.getElementById('empSelectorLista');
+  if (!div) return;
+  var cols = {admin:'#1A3A5C',medico:'#7B2D8B',enfermera:'#0D7A5F',aux:'#E67E22',
+    recepcion:'#607D8B',cocina:'#C0392B',limpieza:'#27AE60',terapia:'#8E44AD',
+    trabajo_social:'#2980B9',voluntario:'#16A085',contabilidad:'#117A65',
+    horas_verdes:'#1E8449',practicante:'#D35400'};
+  var lista = DB.usuarios.filter(function(u){
+    return !q || u.nombre.toLowerCase().includes(q) || rolL(u.rol).toLowerCase().includes(q);
+  });
+  if (!lista.length) {
+    div.innerHTML = '<div style="color:var(--gm);font-size:13px;padding:12px;text-align:center">Sin resultados.</div>';
+    return;
+  }
+  window._uEmpIds = [];
+  var h = '';
+  lista.forEach(function(u) {
+    var i = window._uEmpIds.length;
+    window._uEmpIds.push(u.id);
+    var ini = u.nombre.split(' ').map(function(x){return x[0]||'';}).join('').substring(0,2).toUpperCase();
+    var col = cols[u.rol] || '#607D8B';
+    var docs  = (DB.empDocs  && DB.empDocs[u.id])  ? DB.empDocs[u.id]  : [];
+    var memos = (DB.empMemos && DB.empMemos[u.id]) ? DB.empMemos[u.id] : [];
+    var venc = 0, falt = 0;
+    if (typeof REQUISITOS_PR !== 'undefined') {
+      REQUISITOS_PR.forEach(function(r){
+        var doc = docs.find(function(d){return d.reqId===r.id;});
+        if (!doc) { if (r.obligatorio) falt++; }
+        else if (r.vence && doc.vence && new Date(doc.vence) < new Date()) venc++;
+      });
+    }
+    var badge = venc > 0
+      ? '<span style="background:var(--ra);color:white;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:4px">'+venc+' vencidos</span>'
+      : falt > 0
+        ? '<span style="background:#856404;color:#FFF3CD;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:4px">'+falt+' pendientes</span>'
+        : '<span style="color:var(--vs);font-size:11px;margin-left:4px">✅</span>';
+    var activo = u.id === _empSelId ? 'background:var(--ac);border-color:var(--am);' : '';
+    h += '<div class="emp-selector-card" style="'+activo+'" onclick="selEmpleado(window._uEmpIds['+i+'])">';
+    h += '<div style="width:38px;height:38px;border-radius:50%;background:'+col+';color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0">'+ini+'</div>';
+    h += '<div style="flex:1;min-width:0">';
+    h += '<div style="font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+u.nombre+'</div>';
+    h += '<div style="font-size:11px;color:var(--gm)">'+rolL(u.rol)+(memos.length ? ' · '+memos.length+' memo(s)' : '')+'</div>';
+    h += badge;
+    h += '</div></div>';
+  });
+  div.innerHTML = h;
+}
+
 function initEmpleados() {
   if (!DB.empDocs)  DB.empDocs  = {};
   if (!DB.empMemos) DB.empMemos = {};
