@@ -3737,7 +3737,7 @@ function saveMed() {
   if(document.getElementById('mERes')) { document.getElementById('mERes').textContent='Ingresa tu PIN'; document.getElementById('mERes').className='pin-emp-result pin-emp-idle'; }
   rMed();
   ['mE','mN','mD','mO'].forEach(function(i){ document.getElementById(i).value=''; });
-  logAudit('Medicamento','Medicamento registrado: '+document.getElementById('mM').value);
+  logAudit('Medicamento','Medicamento: '+document.getElementById('mM').value+(document.getElementById('mR')?'':'')+' | Paciente: '+(DB.residentes.find(function(r){return r.id===document.getElementById('mR').value;})||{nombre:''}).nombre, _empMed.nombre);
   toast('✅ Medicamento registrado','vs');
 }
 function rMed() {
@@ -7956,13 +7956,17 @@ function pdfAseo() {
 
 function logAudit(tipo, detalle, extra) {
   if (!DB.auditoria) DB.auditoria = [];
+  // extra = nombre del empleado que ejecutó con PIN (puede ser diferente al usuario en sesión)
+  var sesNom = SES ? SES.nombre : 'Sistema';
+  var sesRol = SES ? SES.rol : '';
   DB.auditoria.push({
     id: 'A'+Date.now(),
     tipo: tipo,
     detalle: detalle,
     extra: extra||'',
-    usuario: SES ? SES.nombre : 'Sistema',
-    usuarioRol: SES ? SES.rol : '',
+    usuario: sesNom,
+    usuarioRol: sesRol,
+    ejecutadoPor: extra || sesNom, // quien realmente hizo la acción (PIN)
     ts: fh(),
     raw: new Date().toISOString()
   });
@@ -8025,7 +8029,9 @@ function rAuditoria() {
     h += '<div class="audit-ico" style="background:'+col+'20;color:'+col+'">'+tipoIco(a.tipo)+'</div>';
     h += '<div class="audit-det">';
     h += '<div style="font-weight:700;font-size:13px">'+tipoIco(a.tipo)+' '+a.tipo+'</div>';
-    h += '<div style="color:var(--go);font-size:13px">'+a.detalle+(a.extra?' <em style=\"color:var(--gm)\">('+a.extra+')</em>':'')+'</div>';
+    h += '<div style="color:var(--go);font-size:13px">'+a.detalle+'</div>'+
+      (a.extra && a.extra!==a.usuario ? '<div style="font-size:11px;color:var(--vs);margin-top:2px">✅ Ejecutado por: <strong>'+a.extra+'</strong> (PIN) · Sesión: '+a.usuario+'</div>' :
+       a.extra ? '<div style="font-size:11px;color:var(--gm);margin-top:2px">Por: '+a.extra+'</div>' : '');
     h += '<div style="font-size:11px;color:var(--am);margin-top:2px">👤 '+a.usuario+(a.usuarioRol?' · '+rolL(a.usuarioRol):'')+'</div>';
     h += '</div>';
     h += '<div class="audit-ts">'+a.ts+'</div>';
@@ -8102,7 +8108,11 @@ function pdfAuditoria() {
 
     doc.setFontSize(7);
     doc.text((a.tipo||'').substring(0,14),          16, y+4);
-    doc.text((a.usuario||'').substring(0,18),        50, y+4);
+    var usuarioPdf = (a.usuario||'');
+    if (a.extra && a.extra !== a.usuario && ['Aseo','Medicamento','Ponche','Signos Vitales'].indexOf(a.tipo)>=0) {
+      usuarioPdf = a.usuario + '>' + a.extra;
+    }
+    doc.text(usuarioPdf.substring(0,22), 50, y+4);
     doc.text(accionLines,                            90, y+4);
     doc.text(detalleLines,                          145, y+4);
     doc.text((a.ts||'').substring(0,18),            255, y+4);
