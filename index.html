@@ -21,6 +21,14 @@
 </head>
 <body>
 
+<!-- Error global visible — aparece si el JS falla al cargar -->
+<div id="errGlobal" style="display:none;position:fixed;inset:0;background:#1A3A5C;color:white;z-index:9999;padding:30px;font-family:sans-serif">
+  <h2>⚠️ Error al cargar CareHome Manager</h2>
+  <p id="errGlobalMsg" style="font-size:14px;background:rgba(255,255,255,.1);padding:12px;border-radius:8px;word-break:break-all"></p>
+  <button onclick="localStorage.clear();location.reload()" style="background:#E74C3C;color:white;border:none;padding:12px 24px;border-radius:8px;font-size:16px;margin-top:16px;cursor:pointer">🗑️ Borrar caché y recargar</button>
+  <button onclick="location.reload()" style="background:#2980B9;color:white;border:none;padding:12px 24px;border-radius:8px;font-size:16px;margin-top:16px;margin-left:8px;cursor:pointer">🔄 Recargar</button>
+</div>
+
 <div class="header">
   <div class="hlogo">🏥 <div><div>CareHome Manager</div><div style="font-size:10px;opacity:.7;font-weight:400">Sistema de Gestión Integral</div></div></div>
   <div class="hr">
@@ -1597,7 +1605,7 @@
 <!-- ===== MODALES ===== -->
 
 <!-- Login -->
-<div class="mo" id="mLogin">
+<div id="mLogin" style="display:flex;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;align-items:center;justify-content:center;padding:16px">
   <div class="md" style="max-width:420px">
     <div class="mh am" style="justify-content:center">🔐 Iniciar Sesión</div>
     <div class="mb">
@@ -2893,6 +2901,20 @@
 <div id="toast">✅ Guardado</div>
 
 <script>
+window.onerror = function(msg, src, line, col, err) {
+  var div = document.getElementById('errGlobal');
+  var msgEl = document.getElementById('errGlobalMsg');
+  if (div) div.style.display = 'block';
+  if (msgEl) msgEl.textContent = (err ? err.toString() : msg) + ' (línea ' + line + ')';
+  return false;
+};
+window.addEventListener('unhandledrejection', function(e) {
+  var div = document.getElementById('errGlobal');
+  var msgEl = document.getElementById('errGlobalMsg');
+  if (div) div.style.display = 'block';
+  if (msgEl) msgEl.textContent = 'Promise error: ' + (e.reason ? e.reason.toString() : 'desconocido');
+});
+
 var DB = {
   residentes:[], medicamentos:[], signos:[], alimentacion:[],
   actividades:[], incidentes:[], visitas:[], turnos:[], expedientes:{},
@@ -2920,7 +2942,7 @@ function cDB() {
      'incidentes','visitas','turnos','expedientes',
      'fallecidos','cuarentenas','ponches','aseos','auditoria',
      'empDocs','empMemos','compras','mensajes','tareas',
-     'visitasMed','planAct','terapias','planSemanal','menuSemanal','platillos'
+     'visitasMed','planAct','terapias','planSemanal','menuSemanal','platillos','pagos'
     ].forEach(function(k){ if(d[k]) DB[k]=d[k]; });
     if (d.usuarios && d.usuarios.length > 0) {
       DB.usuarios = d.usuarios;
@@ -2990,13 +3012,11 @@ function doLogin() {
   hookSDB();
   initSync();
   initDashPonchador();
-
-resetTimeout();
-['click','keydown','touchstart','mousemove'].forEach(function(ev){
-  document.addEventListener(ev, resetTimeout, {passive:true});
-});
-  closeM('mLogin');
-
+  resetTimeout();
+  ['click','keydown','touchstart','mousemove'].forEach(function(ev){
+    document.addEventListener(ev, resetTimeout, {passive:true});
+  });
+  document.getElementById('mLogin').style.display = 'none';
   var navBar = document.getElementById('navBar');
   var mainEl = document.querySelector('.main');
   if (navBar) navBar.style.display = 'flex';
@@ -3077,10 +3097,20 @@ function inTab(g, id, el) {
   if (id==='evol') rEvol();
 }
 
-function openM(id) { document.getElementById(id).classList.add('on'); }
+function openM(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  if (id === 'mLogin') { el.style.display = 'flex'; }
+  else { el.classList.add('on'); }
+}
+function cerrarModal(id) { closeM(id); }
 function closeM(id) {
-
-  if (id==='mLogin' && (!SES || !SES.id)) return; document.getElementById(id).classList.remove('on'); }
+  if (id==='mLogin' && (!SES || !SES.id)) return;
+  var el = document.getElementById(id);
+  if (!el) return;
+  if (id === 'mLogin') { el.style.display = 'none'; }
+  else { el.classList.remove('on'); }
+}
 document.querySelectorAll('.mo').forEach(function(o){
   o.addEventListener('click', function(e){ if(e.target===o) o.classList.remove('on'); });
 });
@@ -9140,43 +9170,53 @@ if (!DB.visitasMed) DB.visitasMed=[];
 if (!DB.planAct) DB.planAct=[];
 if (!DB.terapias) DB.terapias=[];
 if (!DB.planSemanal) DB.planSemanal=[];
-// ── Iniciar timers y ponchador ──
-calcAlerts();
-setInterval(calcAlerts, 300000);
-initPonchador();
-initSync();
-initDashPonchador();
-setInterval(initDashPonchador, 60000);
-setTimeout(initSupabase, 800);
+// ── ARRANQUE PRINCIPAL ──
+(function arrancarApp() {
+  // Timers seguros
+  try { calcAlerts(); } catch(e) { console.warn('calcAlerts:', e); }
+  try { setInterval(calcAlerts, 300000); } catch(e) {}
+  try { initPonchador(); } catch(e) { console.warn('initPonchador:', e); }
+  try { initSync(); } catch(e) { console.warn('initSync:', e); }
+  try { initDashPonchador(); } catch(e) { console.warn('initDashPonchador:', e); }
+  try { setInterval(initDashPonchador, 60000); } catch(e) {}
+  try { setTimeout(initSupabase, 800); } catch(e) {}
 
-// ── Restaurar sesión si existe (sobrevive refresh) ──
-var _sesSaved = null;
-try { _sesSaved = JSON.parse(localStorage.getItem('chses') || 'null'); } catch(e) {}
-var _usrSaved = _sesSaved ? DB.usuarios.find(function(u){ return u.id === _sesSaved.id; }) : null;
+  // Restaurar sesión o mostrar login
+  try {
+    var saved = null;
+    try { saved = JSON.parse(localStorage.getItem('chses') || 'null'); } catch(e) {}
+    var usr = saved ? DB.usuarios.find(function(u){ return u.id === saved.id; }) : null;
 
-if (_usrSaved) {
-  // Sesión válida — entrar directo sin login
-  SES = _usrSaved;
-  applyPerm();
-  mostrarSesionInfo();
-  resetTimeout();
-  ['click','keydown','touchstart'].forEach(function(ev){
-    document.addEventListener(ev, resetTimeout, {passive:true});
-  });
-  var navEl  = document.getElementById('navBar');
-  var mainEl = document.querySelector('.main');
-  if (navEl)  navEl.style.display  = 'flex';
-  if (mainEl) mainEl.style.display = 'block';
-  dash(); dCharts(); rRes(); rMed(); rSV(); rAlim();
-  rAct(); rInc(); rVis(); rTur(); rUsr();
-  calcAlerts();
-} else {
-  // No hay sesión — mostrar login
-  applyPerm();
-  dash(); dCharts(); rRes(); rMed(); rSV(); rAlim();
-  rAct(); rInc(); rVis(); rTur(); rUsr();
-  openM('mLogin');
-}
+    if (usr) {
+      SES = usr;
+      try { applyPerm(); } catch(e) {}
+      try { mostrarSesionInfo(); } catch(e) {}
+      try { resetTimeout(); } catch(e) {}
+      try {
+        ['click','keydown','touchstart'].forEach(function(ev){
+          document.addEventListener(ev, resetTimeout, {passive:true});
+        });
+      } catch(e) {}
+      document.getElementById('mLogin').style.display = 'none';
+      var navEl = document.getElementById('navBar');
+      var mainEl = document.querySelector('.main');
+      if (navEl) navEl.style.display = 'flex';
+      if (mainEl) mainEl.style.display = 'block';
+      try { dash(); } catch(e) { console.warn('dash:', e); }
+      try { dCharts(); } catch(e) {}
+      try { rRes(); rMed(); rSV(); rAlim(); } catch(e) {}
+      try { rAct(); rInc(); rVis(); rTur(); rUsr(); } catch(e) {}
+    } else {
+      // Sin sesión — login ya visible en HTML
+      try { applyPerm(); } catch(e) {}
+    }
+  } catch(e) {
+    console.error('Error en arranque:', e);
+    // Asegurar que el login sea visible si todo falla
+    var ml = document.getElementById('mLogin');
+    if (ml) ml.style.display = 'flex';
+  }
+})();
 </script>
 <script>
 // Registrar Service Worker solo en GitHub Pages
