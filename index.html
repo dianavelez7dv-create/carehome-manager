@@ -3272,7 +3272,7 @@ function cargarDesdeSupa() {
         localStorage.setItem('chdb4', res.data.payload);
         _supaReady = true;
         actualizarVistasSync();
-        noti('☁️ Sincronizado con Supabase');
+        toast('☁️ Sincronizado con Supabase');
         console.log('✅ Datos cargados');
       } catch(e) { console.warn('Error parseando:', e); }
     });
@@ -3319,7 +3319,7 @@ function suscribirCambiosSupa() {
           if(d.usuarios&&d.usuarios.length>0&&!SES.id) DB.usuarios=d.usuarios;
           localStorage.setItem('chdb4', row.payload);
           actualizarVistasSync();
-          noti('🔄 Sincronizado');
+          toast('🔄 Sincronizado');
         } catch(e) { console.warn('Polling parse error:', e); }
       })
       .catch(function(e){ console.warn('Polling error:', e); });
@@ -3878,7 +3878,7 @@ function subirDocRes(input) {
 
   files.forEach(function(file) {
     if (file.size > MAX) {
-      noti('⚠️ "' + file.name + '" supera 20MB — omitido');
+      toast('⚠️ "' + file.name + '" supera 20MB — omitido');
       errores++; if (subidos+errores===total) { renderDocsRes('todos'); input.value=''; } return;
     }
     var docId   = 'doc_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
@@ -3893,7 +3893,7 @@ function subirDocRes(input) {
       .then(function(resp) {
         if (resp.error) {
           console.error('Storage upload error:', resp.error);
-          noti('❌ Error subiendo "' + file.name + '": ' + resp.error.message);
+          toast('❌ Error subiendo "' + file.name + '": ' + resp.error.message);
           errores++;
         } else {
           res.documentos.push(meta);
@@ -3901,14 +3901,14 @@ function subirDocRes(input) {
           subidos++;
         }
         if (subidos + errores === total) {
-          if (subidos > 0) { sDB(); noti('✅ ' + subidos + ' archivo(s) subido(s) a Supabase'); }
+          if (subidos > 0) { sDB(); toast('✅ ' + subidos + ' archivo(s) subido(s) a Supabase'); }
           renderDocsRes('todos');
           input.value = '';
         }
       })
       .catch(function(e) {
         console.error(e); errores++;
-        noti('❌ Error: ' + e.message);
+        toast('❌ Error: ' + e.message);
         if (subidos + errores === total) { renderDocsRes('todos'); input.value = ''; }
       });
   });
@@ -3969,7 +3969,7 @@ function guardarMetaDocRes() {
   doc.descripcion = document.getElementById('mdDocResDesc').value.trim() || doc.nombre;
   sDB();
   renderDocsRes('todos');
-  noti('✅ Documento actualizado');
+  toast('✅ Documento actualizado');
 }
 
 // Eliminar documento de Storage y de los metadatos
@@ -3993,7 +3993,7 @@ function eliminarDocRes() {
   cerrarModal('mdDocRes');
   renderDocsRes('todos');
   sDB();
-  noti('🗑️ Documento eliminado');
+  toast('🗑️ Documento eliminado');
 }
 
 function openSV() {
@@ -5407,7 +5407,7 @@ function registrarUsoLicencia(uid) {
   if (!u) return;
   var tipo = document.getElementById('mdLicTipo').value;
   var dias = parseFloat(document.getElementById('mdLicDias').value) || 0;
-  if (dias <= 0) { noti('⚠️ Ingresa días válidos'); return; }
+  if (dias <= 0) { toast('⚠️ Ingresa días válidos'); return; }
   if (tipo === 'vac') {
     u.vacUsados = Math.round(((parseFloat(u.vacUsados)||0) + dias) * 10) / 10;
   } else {
@@ -5415,7 +5415,7 @@ function registrarUsoLicencia(uid) {
   }
   logAudit('Licencia registrada', (tipo==='vac'?'Vacaciones':'Enfermedad') + ': ' + dias + ' días → ' + u.nombre);
   sDB();
-  noti('✅ ' + dias + ' día(s) de ' + (tipo==='vac'?'vacaciones':'enfermedad') + ' registrados');
+  toast('✅ ' + dias + ' día(s) de ' + (tipo==='vac'?'vacaciones':'enfermedad') + ' registrados');
   // Refrescar modal
   document.getElementById('mdLicencia').style.display='none';
   setTimeout(function(){ abrirModalLicencia(uid); }, 100);
