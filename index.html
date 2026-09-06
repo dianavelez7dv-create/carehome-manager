@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -3284,7 +3285,7 @@ function cargarDesdeSupa() {
         localStorage.setItem('chdb4', res.data.payload);
         _supaReady = true;
         actualizarVistasSync();
-        showSyncToast('☁️ Sincronizado con Supabase');
+        noti('☁️ Sincronizado con Supabase');
         console.log('✅ Datos cargados');
       } catch(e) { console.warn('Error parseando:', e); }
     });
@@ -3331,7 +3332,7 @@ function suscribirCambiosSupa() {
           if(d.usuarios&&d.usuarios.length>0&&!SES.id) DB.usuarios=d.usuarios;
           localStorage.setItem('chdb4', row.payload);
           actualizarVistasSync();
-          showSyncToast('🔄 Sincronizado');
+          noti('🔄 Sincronizado');
         } catch(e) { console.warn('Polling parse error:', e); }
       })
       .catch(function(e){ console.warn('Polling error:', e); });
