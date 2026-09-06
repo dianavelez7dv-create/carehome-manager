@@ -174,7 +174,7 @@
   <div class="card"><div class="ch am">👴 Residentes</div><div class="cb">
     <div class="sb">
       <input type="text" id="busRes" placeholder="🔍 Buscar nombre o habitación..." oninput="rRes(this.value)">
-      <button class="btn bam" onclick="openM('mRes')">➕ Nuevo Residente</button>
+      <button class="btn bam" onclick="actualizarHabInfo(null);openM('mRes')">➕ Nuevo Residente</button>
     </div>
     <div class="tw"><table>
       <thead><tr><th>Foto</th><th>Hab.</th><th>Residente</th><th>Edad</th><th>Diagnóstico</th><th>Estado</th><th>Acciones</th></tr></thead>
@@ -199,6 +199,7 @@
         <div class="itb" onclick="inTab('exp','evol',this)">📝 Evolución</div>
         <div class="itb" onclick="inTab('exp','planes',this)">📋 Planes y Beneficios</div>
         <div class="itb" onclick="inTab('exp','medlista',this)">💊 Medicamentos</div>
+        <div class="itb" onclick="inTab('exp','docs',this);renderDocsRes('todos')">📁 Documentos</div>
       </div>
       <div class="is on exp" id="exp-datos"><div id="expDG" class="fg"></div></div>
       <div class="is exp" id="exp-hist">
@@ -267,6 +268,51 @@
       </div>
     </div>
     <div id="expVac"><div class="es"><div class="ei">📋</div><p>Selecciona un residente.</p></div></div>
+
+    <!-- TAB DOCUMENTOS -->
+    <div class="is exp" id="exp-docs">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="font-size:13px;font-weight:700;color:var(--pa)">📁 Laboratorios e Informes</div>
+        <label class="btn bvs" style="cursor:pointer;margin:0">
+          ➕ Subir archivo
+          <input type="file" id="docResFile" accept=".pdf,.jpg,.jpeg,.png,.webp" multiple style="display:none" onchange="subirDocRes(this)">
+        </label>
+      </div>
+      <div style="font-size:11px;color:var(--gm);margin-bottom:10px">📎 Formatos: PDF, JPG, PNG · Máx. 5MB por archivo · Los archivos se guardan en este dispositivo</div>
+      <div id="docResTipoFiltro" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+        <button class="btn bmo" style="font-size:11px;padding:4px 10px" onclick="filtrarDocsRes('todos')">Todos</button>
+        <button class="btn" style="font-size:11px;padding:4px 10px;background:var(--rc);color:var(--ra);border:1px solid var(--ra)" onclick="filtrarDocsRes('Laboratorio')">🧪 Lab</button>
+        <button class="btn" style="font-size:11px;padding:4px 10px;background:#e8f0fe;color:#1A3A5C;border:1px solid #1A3A5C" onclick="filtrarDocsRes('Informe médico')">📋 Informe</button>
+        <button class="btn" style="font-size:11px;padding:4px 10px;background:#f0faf0;color:var(--vs);border:1px solid var(--vs)" onclick="filtrarDocsRes('Receta')">💊 Receta</button>
+        <button class="btn" style="font-size:11px;padding:4px 10px;background:#fffbe6;color:var(--am);border:1px solid var(--am)" onclick="filtrarDocsRes('Otro')">📄 Otro</button>
+      </div>
+      <div id="listaDocsRes" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+
+    <!-- MODAL vista previa documento -->
+    <div id="mdDocRes" class="modal" style="display:none">
+      <div class="mc" style="max-width:700px;width:95%">
+        <div class="mh">
+          <span id="mdDocResNombre">Documento</span>
+          <button class="mcl" onclick="cerrarModal('mdDocRes')">✕</button>
+        </div>
+        <div class="mb" style="padding:0">
+          <div id="mdDocResPreview" style="width:100%;min-height:300px;max-height:70vh;overflow:auto;background:#f5f5f5;display:flex;align-items:center;justify-content:center"></div>
+          <div style="padding:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <select id="mdDocResTipo" style="font-size:12px;padding:4px 8px;border-radius:6px;border:1px solid #ccc">
+              <option>Laboratorio</option>
+              <option>Informe médico</option>
+              <option>Receta</option>
+              <option>Otro</option>
+            </select>
+            <input type="text" id="mdDocResDesc" placeholder="Descripción (ej: Hemograma 12/03/2025)" style="flex:1;font-size:12px;padding:4px 8px;border-radius:6px;border:1px solid #ccc;min-width:150px">
+            <button class="btn bvs" style="font-size:12px" onclick="guardarMetaDocRes()">💾 Guardar</button>
+            <button class="btn" style="font-size:12px;background:var(--rc);color:var(--ra)" onclick="eliminarDocRes()">🗑️ Eliminar</button>
+            <a id="mdDocResDescarga" class="btn" style="font-size:12px;background:#1A3A5C;color:#fff;text-decoration:none" download>⬇️ Descargar</a>
+          </div>
+        </div>
+      </div>
+    </div>
   </div></div>
 </div>
 
@@ -1272,13 +1318,33 @@
 
         <div class="card" style="margin:0">
           <div class="ch" style="background:#1A3A5C;font-size:13px">⏱️ Asistencia</div>
-          <div class="cb" id="repAsistencia"></div>
-        </div>
-
+          <div class="cb"       <div class="card" style="margin:0">
+        <div class="ch" style="background:#2980B9">🩺 Cuarentenas</div>
+        <div class="cb" id="repCuarentenas" style="padding:10px"></div>
+      </div>
+      <div class="card" style="margin:0">
+        <div class="ch" style="background:#607D8B">⏱️ Asistencia</div>
+        <div class="cb" id="repAsistencia" style="padding:10px"></div>
+      </div>
+      <div class="card" style="margin:0">
+        <div class="ch" style="background:#16A085">💳 Pagos y Mensualidades</div>
+        <div class="cb" id="repPagos" style="padding:10px"></div>
+      </div>
+      <div class="card" style="margin:0">
+        <div class="ch" style="background:#E67E22">🍽️ Alimentación</div>
+        <div class="cb" id="repAlim" style="padding:10px"></div>
+      </div>
+      <div class="card" style="margin:0">
+        <div class="ch" style="background:#8E44AD">🧼 Aseo Personal</div>
+        <div class="cb" id="repAseo" style="padding:10px"></div>
+      </div>
+      <div class="card" style="margin:0">
+        <div class="ch" style="background:#27AE60">👨‍👩‍👧 Visitas Familiares</div>
+        <div class="cb" id="repVisitas" style="padding:10px"></div>
       </div>
     </div>
   </div>
-</div>
+</div>v>
 
 <!-- ASEO PERSONAL -->
 <div class="sec" id="tab-aseo">
@@ -1576,7 +1642,7 @@
         <div class="fi"><label>Cédula / ID</label><input id="rC" type="text"></div>
         <div class="fi"><label>Fecha de nacimiento</label><input id="rF" type="date"></div>
         <div class="fi"><label>Sexo</label><select id="rS"><option>Masculino</option><option>Femenino</option><option>Otro</option></select></div>
-        <div class="fi"><label>Habitación *</label><input id="rH" type="text" placeholder="Ej: 101-A"></div>
+        <div class="fi"><label>Habitación * <span id='rHabOcupadas' style='font-size:10px;color:var(--gm);font-weight:400'></span></label><input id="rH" type="text" placeholder="Ej: 101-A"></div>
         <div class="fi"><label>Tipo de cama</label><select id="rCm"><option>Individual</option><option>Doble</option></select></div>
         <div class="fi"><label>Fecha de ingreso</label><input id="rI" type="date"></div>
         <div class="fi"><label>Plan / Pago</label><select id="rPl"><option>Privado</option><option>Seguro médico</option><option>Subsidiado</option><option>Fundación</option></select></div>
@@ -1936,7 +2002,8 @@
           </select></div>
         <div class="fi"><label>Turno habitual</label><select id="uT"><option>☀️ Día</option><option>🌤 Tarde</option><option>🌙 Noche</option><option>Rotativo</option></select></div>
         <div class="fi"><label>Teléfono</label><input id="uTel" type="tel"></div>
-        <div class="fi"><label>Salario por hora ($)</label><input id="uSalario" type="number" step="0.01" min="0" placeholder="Ej: 12.50"></div>
+        <div class="fi"><label>Fecha inicio de empleo</label><input id="uFechaInicio" type="date" style="width:100%">
+        <label>Salario por hora ($)</label><input id="uSalario" type="number" step="0.01" min="0" placeholder="Ej: 12.50"></div>
         <div class="fi"><label>Horas regulares por semana</label><input id="uHorasReg" type="number" min="1" max="80" placeholder="Ej: 40" value="40"></div>
       </div>
       <div class="ab"><button class="btn bol" onclick="resetModalUsr();closeM('mUsr')">Cancelar</button><button class="btn bam" id="btnGuardarUsr" onclick="saveUsr()">💾 Crear Usuario</button></div>
@@ -3486,10 +3553,31 @@ function dCharts() {
   });
 }
 
+function actualizarHabInfo(idExcluir) {
+  // Muestra habitaciones ocupadas junto al label
+  var span = document.getElementById('rHabOcupadas');
+  if (!span) return;
+  var ocupadas = DB.residentes
+    .filter(function(x){ return (!idExcluir || x.id !== idExcluir) && (x.estado==='Activo'||x.estado==='En observación'); })
+    .map(function(x){ return x.habitacion; })
+    .filter(Boolean)
+    .sort(function(a,b){ return (isNaN(a)||isNaN(b)) ? a.localeCompare(b) : Number(a)-Number(b); });
+  if (ocupadas.length) {
+    span.textContent = '(Ocupadas: ' + ocupadas.join(', ') + ')';
+  } else {
+    span.textContent = '';
+  }
+}
+
 function saveRes() {
   var n = document.getElementById('rN').value.trim();
   var h = document.getElementById('rH').value.trim();
   if (!n || !h) { toast('⚠️ Nombre y habitación son obligatorios'); return; }
+  // Verificar que la habitación no esté ocupada por otro residente activo
+  var habOcupada = DB.residentes.find(function(x){
+    return x.habitacion === h && (x.estado === 'Activo' || x.estado === 'En observación');
+  });
+  if (habOcupada) { toast('⚠️ La habitación ' + h + ' ya está asignada a ' + habOcupada.nombre, 'ra'); return; }
   var inp = document.getElementById('rFotoInput');
   var r = {
     id: 'R'+Date.now(),
@@ -3713,6 +3801,183 @@ function openMedConRes() {
     }
   }, 50);
 }
+// ══════════════════════════════════════════
+// DOCUMENTOS DE RESIDENTES — Supabase Storage
+// ══════════════════════════════════════════
+var _docResActivo = null;  // objeto doc completo abierto en modal
+var DOCS_BUCKET   = 'documentos-residentes';
+
+// Obtener URL pública de un path en Storage
+function docSupaURL(path) {
+  return SUPA_URL + '/storage/v1/object/public/' + DOCS_BUCKET + '/' + path;
+}
+
+// Renderiza la lista de documentos del residente (metadatos en DB.residentes[].documentos)
+function renderDocsRes(filtro) {
+  var res = DB.residentes.find(function(r){ return r.id === expResId; });
+  if (!res) return;
+  if (!res.documentos) res.documentos = [];
+  var lista = (filtro && filtro !== 'todos')
+    ? res.documentos.filter(function(d){ return d.tipo === filtro; })
+    : res.documentos;
+  var cont = document.getElementById('listaDocsRes');
+  if (!cont) return;
+  if (!lista.length) {
+    cont.innerHTML = '<div class="es"><div class="ei">📁</div><p>Sin documentos aún.<br>Usa <b>➕ Subir archivo</b>.</p></div>';
+    return;
+  }
+  var iconoTipo = {'Laboratorio':'🧪','Informe médico':'📋','Receta':'💊','Otro':'📄'};
+  cont.innerHTML = lista.slice().reverse().map(function(doc) {
+    var icono = iconoTipo[doc.tipo] || '📄';
+    var esImg = /\.(jpg|jpeg|png|webp)$/i.test(doc.nombre);
+    return '<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;border:1px solid #e0e0e0;background:#fff;cursor:pointer" data-id="'+doc.id+'" onclick="abrirDocRes(this)">' +
+      '<div style="font-size:26px">' + (esImg ? '🖼️' : '📄') + '</div>' +
+      '<div style="flex:1;overflow:hidden">' +
+        '<div style="font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + (doc.descripcion || doc.nombre) + '</div>' +
+        '<div style="font-size:11px;color:var(--gm)">' + icono + ' ' + (doc.tipo||'—') + ' · ' + (doc.fecha||'') + ' · ' + (doc.tamanio||'') + '</div>' +
+      '</div>' +
+      '<div style="font-size:18px;color:var(--gm)">›</div>' +
+    '</div>';
+  }).join('');
+}
+
+function filtrarDocsRes(tipo) { renderDocsRes(tipo); }
+
+// Subir archivo(s) a Supabase Storage
+function subirDocRes(input) {
+  var res = DB.residentes.find(function(r){ return r.id === expResId; });
+  if (!res) { alert('Selecciona un residente primero.'); return; }
+  if (!supaClient) { alert('Sin conexión a Supabase. Verifica tu conexión.'); return; }
+  if (!res.documentos) res.documentos = [];
+  var files = Array.from(input.files);
+  if (!files.length) return;
+  var MAX = 20 * 1024 * 1024; // 20MB por archivo
+  var subidos = 0, errores = 0, total = files.length;
+
+  // Mostrar progreso
+  var cont = document.getElementById('listaDocsRes');
+  cont.innerHTML = '<div style="text-align:center;padding:30px;color:var(--pa)"><div style="font-size:32px">⬆️</div><p>Subiendo ' + total + ' archivo(s)...</p></div>';
+
+  files.forEach(function(file) {
+    if (file.size > MAX) {
+      noti('⚠️ "' + file.name + '" supera 20MB — omitido');
+      errores++; if (subidos+errores===total) { renderDocsRes('todos'); input.value=''; } return;
+    }
+    var docId   = 'doc_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+    var ext     = file.name.split('.').pop().toLowerCase();
+    var path    = res.id + '/' + docId + '.' + ext;
+    var meta    = {
+      id: docId, nombre: file.name, path: path, tipo: 'Laboratorio',
+      descripcion: '', fecha: new Date().toLocaleDateString('es-PR'),
+      tamanio: file.size > 1024*1024 ? (file.size/1024/1024).toFixed(1)+'MB' : Math.round(file.size/1024)+'KB'
+    };
+    supaClient.storage.from(DOCS_BUCKET).upload(path, file, {upsert: false})
+      .then(function(resp) {
+        if (resp.error) {
+          console.error('Storage upload error:', resp.error);
+          noti('❌ Error subiendo "' + file.name + '": ' + resp.error.message);
+          errores++;
+        } else {
+          res.documentos.push(meta);
+          logAudit('Documento subido (Storage): ' + file.name + ' → ' + (res.nombre||res.id));
+          subidos++;
+        }
+        if (subidos + errores === total) {
+          if (subidos > 0) { sDB(); noti('✅ ' + subidos + ' archivo(s) subido(s) a Supabase'); }
+          renderDocsRes('todos');
+          input.value = '';
+        }
+      })
+      .catch(function(e) {
+        console.error(e); errores++;
+        noti('❌ Error: ' + e.message);
+        if (subidos + errores === total) { renderDocsRes('todos'); input.value = ''; }
+      });
+  });
+}
+
+// Abrir documento — carga URL pública desde Storage
+function abrirDocRes(elOrId) {
+  var docId = (typeof elOrId === 'string') ? elOrId : elOrId.dataset.id;
+  var res = DB.residentes.find(function(r){ return r.id === expResId; });
+  if (!res || !res.documentos) return;
+  var doc = res.documentos.find(function(d){ return d.id === docId; });
+  if (!doc) return;
+  _docResActivo = doc;
+
+  document.getElementById('mdDocResNombre').textContent = doc.nombre;
+  document.getElementById('mdDocResTipo').value  = doc.tipo || 'Laboratorio';
+  document.getElementById('mdDocResDesc').value  = doc.descripcion || '';
+
+  var prev = document.getElementById('mdDocResPreview');
+  prev.innerHTML = '<div style="text-align:center;padding:30px;color:var(--pa)">⏳ Cargando...</div>';
+  openM('mdDocRes');
+
+  // Generar URL con signed URL (60 min) para seguridad, o usar public si bucket es público
+  supaClient.storage.from(DOCS_BUCKET).createSignedUrl(doc.path, 3600)
+    .then(function(resp) {
+      if (resp.error || !resp.data) {
+        // Fallback a URL pública
+        mostrarPrevDocRes(docSupaURL(doc.path), doc);
+      } else {
+        mostrarPrevDocRes(resp.data.signedUrl, doc);
+      }
+    })
+    .catch(function() { mostrarPrevDocRes(docSupaURL(doc.path), doc); });
+}
+
+function mostrarPrevDocRes(url, doc) {
+  var prev    = document.getElementById('mdDocResPreview');
+  var esImg   = /\.(jpg|jpeg|png|webp)$/i.test(doc.nombre);
+  var esPDF   = /\.pdf$/i.test(doc.nombre);
+  if (esImg) {
+    prev.innerHTML = '<img src="'+url+'" style="max-width:100%;max-height:60vh;object-fit:contain;border-radius:4px">';
+  } else if (esPDF) {
+    prev.innerHTML = '<iframe src="'+url+'" style="width:100%;height:60vh;border:none;border-radius:4px"></iframe>';
+  } else {
+    prev.innerHTML = '<div style="text-align:center;padding:40px;color:var(--gm)"><div style="font-size:48px">📄</div><p>'+doc.nombre+'</p><p style="font-size:12px">Vista previa no disponible</p></div>';
+  }
+  var descarga = document.getElementById('mdDocResDescarga');
+  descarga.href = url; descarga.download = doc.nombre;
+}
+
+// Guardar cambios de tipo/descripción (solo metadatos en DB local)
+function guardarMetaDocRes() {
+  var res = DB.residentes.find(function(r){ return r.id === expResId; });
+  if (!res || !res.documentos || !_docResActivo) return;
+  var doc = res.documentos.find(function(d){ return d.id === _docResActivo.id; });
+  if (!doc) return;
+  doc.tipo        = document.getElementById('mdDocResTipo').value;
+  doc.descripcion = document.getElementById('mdDocResDesc').value.trim() || doc.nombre;
+  sDB();
+  renderDocsRes('todos');
+  noti('✅ Documento actualizado');
+}
+
+// Eliminar documento de Storage y de los metadatos
+function eliminarDocRes() {
+  if (!_docResActivo) return;
+  if (!confirm('¿Eliminar "' + (_docResActivo.descripcion||_docResActivo.nombre) + '"? No se puede recuperar.')) return;
+  var res = DB.residentes.find(function(r){ return r.id === expResId; });
+  if (!res || !res.documentos) return;
+  var doc = _docResActivo;
+
+  // Eliminar de Storage
+  supaClient.storage.from(DOCS_BUCKET).remove([doc.path])
+    .then(function(resp) {
+      if (resp.error) console.warn('Storage delete:', resp.error.message);
+    });
+
+  // Eliminar metadatos localmente
+  res.documentos = res.documentos.filter(function(d){ return d.id !== doc.id; });
+  logAudit('Documento eliminado: ' + doc.nombre + ' → ' + (res.nombre||res.id));
+  _docResActivo = null;
+  cerrarModal('mdDocRes');
+  renderDocsRes('todos');
+  sDB();
+  noti('🗑️ Documento eliminado');
+}
+
 function openSV() {
   openM('mSV');
   setTimeout(function(){ pSel('svR'); pSelEmps('svE'); var l=document.getElementById('lupa_svR'); if(l)l.value=''; },50);
@@ -3990,7 +4255,7 @@ function saveUsr() {
   var n=document.getElementById('uN').value.trim(), u=document.getElementById('uU').value.trim().toLowerCase(), p=document.getElementById('uP').value;
   if (!n||!u||!p) { toast('⚠️ Nombre, usuario y contraseña son obligatorios'); return; }
   if (DB.usuarios.find(function(x){ return x.username===u; })) { toast('⚠️ Ese usuario ya existe'); return; }
-  DB.usuarios.push({id:'U'+Date.now(),nombre:n,username:u,password:p,rol:document.getElementById('uR').value,turno:document.getElementById('uT').value,salario:parseFloat(document.getElementById('uSalario').value)||0,horasReg:parseInt(document.getElementById('uHorasReg').value)||40});
+  DB.usuarios.push({id:'U'+Date.now(),nombre:n,username:u,password:p,rol:document.getElementById('uR').value,turno:document.getElementById('uT').value,salario:parseFloat(document.getElementById('uSalario').value)||0,horasReg:parseInt(document.getElementById('uHorasReg').value)||40,fechaInicioEmp:document.getElementById('uFechaInicio')?document.getElementById('uFechaInicio').value:'',vacUsados:0,enfUsados:0});
   sDB(); closeM('mUsr'); rUsr();
   ['uN','uU','uP','uTel','uSalario'].forEach(function(i){ document.getElementById(i).value=''; }); document.getElementById('uHorasReg').value='40';
   logAudit('Usuario','Usuario creado: '+n);
@@ -4775,22 +5040,38 @@ function rReporte() {
   var tbody = document.getElementById('tReporte'); if (!tbody) return;
   var hoy = new Date();
   var desde = new Date();
-
-  if (per==='semana') { desde.setDate(hoy.getDate()-6); }
-  else if (per==='mes') { desde.setDate(1); }
-
+  if (per==='semana') desde.setDate(hoy.getDate()-6);
+  else if (per==='mes') desde.setDate(1);
   var desdeStr = desde.toISOString().slice(0,10);
   var hastaStr = hoy.toISOString().slice(0,10);
 
-  var fechas = [...new Set((DB.ponches||[])
-    .filter(function(p){ return p.fecha>=desdeStr && p.fecha<=hastaStr && (!uid||p.userId===uid); })
-    .map(function(p){ return p.fecha; })
-  )].sort().reverse();
+  // Calcular minutos trabajados por empleado por día
+  // Algoritmo: ordenar ponches por hora, ir alternando entrada/salida
+  function calcMinutos(ponches) {
+    var sorted = ponches.slice().sort(function(a,b){ return a.hora>b.hora?1:-1; });
+    var min = 0;
+    var ultimaEntrada = null;
+    sorted.forEach(function(p){
+      if (p.tipo==='entrada') {
+        ultimaEntrada = toMin(p.hora);
+      } else if (p.tipo==='salida' && ultimaEntrada !== null) {
+        var sal = toMin(p.hora);
+        if (sal > ultimaEntrada) min += sal - ultimaEntrada;
+        ultimaEntrada = null;
+      }
+    });
+    return min;
+  }
+
+  var fechasSet = {};
+  (DB.ponches||[]).filter(function(p){
+    return p.fecha>=desdeStr && p.fecha<=hastaStr && (!uid||p.userId===uid);
+  }).forEach(function(p){ fechasSet[p.fecha]=1; });
+  var fechas = Object.keys(fechasSet).sort().reverse();
 
   if (!fechas.length) {
-    tbody.innerHTML = '<tr><td colspan="7"><div class="es"><div class="ei">📋</div><p>Sin registros en este período.</p></div></td></tr>';
-    document.getElementById('resumenReporte').innerHTML='';
-    return;
+    tbody.innerHTML='<tr><td colspan="7"><div class="es"><div class="ei">📋</div><p>Sin registros en este período.</p></div></td></tr>';
+    var rs=document.getElementById('resumenReporte'); if(rs) rs.innerHTML=''; return;
   }
 
   var h = '';
@@ -4801,51 +5082,70 @@ function rReporte() {
     fechas.forEach(function(fecha){
       var regs = (DB.ponches||[]).filter(function(p){ return p.userId===u.id && p.fecha===fecha; });
       if (!regs.length) return;
-      var entradas = regs.filter(function(p){ return p.tipo==='entrada'; });
-      var salidas  = regs.filter(function(p){ return p.tipo==='salida';  });
-      var horaEnt  = entradas.length ? entradas[0].hora : '—';
-      var horaSal  = salidas.length  ? salidas[salidas.length-1].hora : '—';
-      var totalMin = 0;
-      for (var i=0; i<Math.min(entradas.length,salidas.length); i++) {
-        var eM=toMin(entradas[i].hora), sM=toMin(salidas[i].hora);
-        if (sM>eM) totalMin+=sM-eM;
+
+      var sorted = regs.slice().sort(function(a,b){ return a.hora>b.hora?1:-1; });
+      var horaEnt = sorted.find(function(p){ return p.tipo==='entrada'; });
+      var horaSal = sorted.slice().reverse().find(function(p){ return p.tipo==='salida'; });
+      var totalMin = calcMinutos(regs);
+
+      var enTurno = horaEnt && !horaSal;
+      var horasTrab;
+      if (totalMin > 0) {
+        horasTrab = Math.floor(totalMin/60)+'h '+String(totalMin%60).padStart(2,'0')+'min';
+      } else if (enTurno) {
+        // Calcular tiempo desde la entrada hasta ahora
+        var ahora = new Date();
+        var ahoraMin = ahora.getHours()*60+ahora.getMinutes();
+        var entMin = toMin(horaEnt.hora);
+        if (fecha===hastaStr && ahoraMin>entMin) {
+          var corrido = ahoraMin-entMin;
+          horasTrab = Math.floor(corrido/60)+'h '+String(corrido%60).padStart(2,'0')+'min (en turno)';
+        } else {
+          horasTrab = 'En turno';
+        }
+      } else {
+        horasTrab = '—';
       }
-      var horasTrab = totalMin>0 ? Math.floor(totalMin/60)+'h '+(totalMin%60)+'min' : (horaEnt!=='—'?'En turno':'—');
-      var completo = horaEnt!=='—' && horaSal!=='—';
-      var bc = completo?'bvd':horaEnt!=='—'?'bnd':'brd';
-      var estado = completo?'Completo':horaEnt!=='—'?'En turno':'Solo entrada';
 
-      if (!totalHorasPorEmp[u.id]) totalHorasPorEmp[u.id]={nombre:u.nombre,min:0,dias:0};
-      totalHorasPorEmp[u.id].min+=totalMin;
-      totalHorasPorEmp[u.id].dias++;
+      if (!totalHorasPorEmp[u.id]) totalHorasPorEmp[u.id]={nombre:u.nombre,rol:u.rol,min:0,dias:0};
+      totalHorasPorEmp[u.id].min += totalMin;
+      if (totalMin>0) totalHorasPorEmp[u.id].dias++;
 
-      var fd = fecha.split('-'); var fechaMost=fd[2]+'/'+fd[1]+'/'+fd[0];
+      var fd=fecha.split('-');
+      var fechaMost=fd[2]+'/'+fd[1]+'/'+fd[0];
+      var estado = totalMin>0?'Completo':enTurno?'En turno':'Incompleto';
+      var bc = totalMin>0?'bvd':enTurno?'bnd':'brd';
 
       h+='<tr>';
       h+='<td class="reporte-fila-nom">'+u.nombre+'</td>';
       h+='<td style="font-size:12px">'+rolL(u.rol)+(u.turno?' · '+u.turno:'')+'</td>';
       h+='<td>'+fechaMost+'</td>';
-      h+='<td><strong>'+horaEnt+'</strong></td>';
-      h+='<td><strong>'+horaSal+'</strong></td>';
-      h+='<td class="reporte-horas">'+horasTrab+'</td>';
+      h+='<td><strong>'+(horaEnt?horaEnt.hora:'—')+'</strong></td>';
+      h+='<td><strong>'+(horaSal?horaSal.hora:'—')+'</strong></td>';
+      h+='<td class="reporte-horas" style="color:var(--vs);font-weight:700">'+horasTrab+'</td>';
       h+='<td><span class="badge '+bc+'">'+estado+'</span></td>';
       h+='</tr>';
     });
   });
 
-  tbody.innerHTML = h;
+  tbody.innerHTML = h || '<tr><td colspan="7"><div class="es"><p>Sin registros.</p></div></td></tr>';
 
-  var rh='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:10px">';
+  // Resumen total por empleado
+  var rs = document.getElementById('resumenReporte');
+  if (!rs) return;
+  var rh='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-top:10px">';
   Object.values(totalHorasPorEmp).forEach(function(e){
-    var hT=Math.floor(e.min/60), mT=e.min%60;
-    rh+='<div style="background:var(--ac);border-radius:8px;padding:10px 14px;border:1px solid var(--bo)">';
-    rh+='<div style="font-weight:700;font-size:13px">'+e.nombre+'</div>';
-    rh+='<div style="font-size:22px;font-weight:800;color:var(--am)">'+hT+'h '+mT+'m</div>';
-    rh+='<div style="font-size:11px;color:var(--gm)">'+e.dias+' día(s) trabajado(s)</div>';
+    var hT=Math.floor(e.min/60), mT=String(e.min%60).padStart(2,'0');
+    var col = e.min>=40*60?'var(--vs)':e.min>=20*60?'var(--na)':'var(--am)';
+    rh+='<div style="background:var(--bl);border:1.5px solid var(--bo);border-radius:10px;padding:12px 14px">';
+    rh+='<div style="font-weight:700;font-size:13px;margin-bottom:4px">'+e.nombre+'</div>';
+    rh+='<div style="font-size:28px;font-weight:800;color:'+col+'">'+hT+'<span style="font-size:14px">h</span> '+mT+'<span style="font-size:14px">m</span></div>';
+    rh+='<div style="font-size:11px;color:var(--gm);margin-top:2px">'+e.dias+' día(s) con horas completas</div>';
+    rh+='<div style="font-size:11px;color:var(--gm)">'+rolL(e.rol)+'</div>';
     rh+='</div>';
   });
   rh+='</div>';
-  document.getElementById('resumenReporte').innerHTML=rh;
+  rs.innerHTML = rh;
 }
 
 function pdfReporte() {
@@ -4968,6 +5268,141 @@ function calcDeduccionesPR(brutoAnual, brutoperiodo) {
   };
 }
 
+// ══════════════════════════════════════════════
+// LEY 180 PR — Vacaciones y Enfermedad
+// ══════════════════════════════════════════════
+// Ley 180-1998: acumulación según horas trabajadas por período
+// Vacaciones: ½ día por cada 2 semanas (mínimo legal) → escala por años
+// Enfermedad: ½ día por cada 2 semanas (estándar)
+
+function diasLey180(u, hasta) {
+  // hasta: fecha YYYY-MM-DD de corte (fin del período de nómina)
+  var inicio = u.fechaInicioEmp || '';
+  if (!inicio) return { vacAcum: 0, enfAcum: 0, vacUsados: 0, enfUsados: 0, vacDisp: 0, enfDisp: 0, anios: 0 };
+
+  var dInicio = new Date(inicio);
+  var dHasta  = hasta ? new Date(hasta) : new Date();
+  if (isNaN(dInicio)) return { vacAcum: 0, enfAcum: 0, vacUsados: 0, enfUsados: 0, vacDisp: 0, enfDisp: 0, anios: 0 };
+
+  // Años de servicio
+  var msAnio  = 365.25 * 24 * 3600 * 1000;
+  var anios   = Math.max(0, (dHasta - dInicio) / msAnio);
+
+  // Semanas trabajadas desde inicio hasta corte
+  var semanas = Math.max(0, (dHasta - dInicio) / (7 * 24 * 3600 * 1000));
+
+  // ── Vacaciones Ley 180 (por período de 2 semanas) ──
+  // 0-5 años:    ½ día cada 2 semanas = 15 días/año
+  // 5-15 años:   ¾ día cada 2 semanas = 20 días/año
+  // 15+ años:    1  día cada 2 semanas = 26 días/año
+  var vacPorPeriodo;
+  if (anios < 5)       vacPorPeriodo = 0.5;
+  else if (anios < 15) vacPorPeriodo = 0.75;
+  else                 vacPorPeriodo = 1.0;
+
+  // Períodos de 2 semanas completos
+  var periodos2sem = Math.floor(semanas / 2);
+
+  var vacAcum = periodos2sem * vacPorPeriodo;
+
+  // ── Enfermedad Ley 180 ──
+  // ½ día por cada 2 semanas trabajadas = 12 días/año
+  var enfPorPeriodo = 0.5;
+  var enfAcum = periodos2sem * enfPorPeriodo;
+
+  // Redondear a 1 decimal
+  vacAcum = Math.round(vacAcum * 10) / 10;
+  enfAcum = Math.round(enfAcum * 10) / 10;
+
+  var vacUsados = parseFloat(u.vacUsados) || 0;
+  var enfUsados = parseFloat(u.enfUsados) || 0;
+
+  return {
+    vacAcum:  vacAcum,
+    enfAcum:  enfAcum,
+    vacUsados: vacUsados,
+    enfUsados: enfUsados,
+    vacDisp:  Math.max(0, Math.round((vacAcum - vacUsados) * 10) / 10),
+    enfDisp:  Math.max(0, Math.round((enfAcum - enfUsados) * 10) / 10),
+    anios:    Math.floor(anios),
+    escalaVac: anios < 5 ? '½ día/2sem (0-5 años)' : anios < 15 ? '¾ día/2sem (5-15 años)' : '1 día/2sem (15+ años)'
+  };
+}
+
+function abrirModalLicencia(uid) {
+  var u = DB.usuarios.find(function(x){ return x.id===uid; });
+  if (!u) return;
+  var ley = diasLey180(u, new Date().toISOString().slice(0,10));
+  // Crear o reusar modal simple
+  var mid = 'mdLicencia';
+  var md  = document.getElementById(mid);
+  if (!md) {
+    md = document.createElement('div');
+    md.id = mid; md.className = 'modal';
+    md.style.display = 'none';
+    var tpl = document.createElement('template');
+    tpl.innerHTML = '<div class="mc" style="max-width:440px"><div class="mh"><span id="mdLicNombre">Licencias</span><button class="mcl" id="mdLicClose">&#x2715;</button></div><div class="mb" id="mdLicBody"></div></div>';
+    md.appendChild(tpl.content.cloneNode(true));
+    document.getElementById('mdLicClose').onclick = function(){ md.style.display='none'; };
+    document.body.appendChild(md);
+  }
+  document.getElementById('mdLicNombre').textContent = '🏖️ Licencias — ' + u.nombre;
+  document.getElementById('mdLicBody').innerHTML =
+    '<div style="background:#f0faf0;border-radius:8px;padding:12px;margin-bottom:12px">' +
+      '<div style="font-size:11px;color:var(--gm);margin-bottom:6px;font-weight:700">LEY 180 PR — Acumulación desde ' + (u.fechaInicioEmp||'—') + '</div>' +
+      '<div style="font-size:12px;color:var(--gm);margin-bottom:10px">Escala: ' + ley.escalaVac + ' · ' + ley.anios + ' año(s) de servicio</div>' +
+      '<table style="width:100%;font-size:13px;border-collapse:collapse">' +
+        '<tr style="background:var(--vs);color:white"><th style="padding:6px 8px;text-align:left">Licencia</th><th style="padding:6px 8px">Acumulado</th><th style="padding:6px 8px">Usados</th><th style="padding:6px 8px;color:#7EE8A2">Disponible</th></tr>' +
+        '<tr style="border-bottom:1px solid #e0e0e0"><td style="padding:6px 8px">🏖️ Vacaciones</td><td style="padding:6px 8px;text-align:center">'+ley.vacAcum+' días</td><td style="padding:6px 8px;text-align:center">'+ley.vacUsados+' días</td><td style="padding:6px 8px;text-align:center;font-weight:700;color:var(--vs)">'+ley.vacDisp+' días</td></tr>' +
+        '<tr><td style="padding:6px 8px">🤒 Enfermedad</td><td style="padding:6px 8px;text-align:center">'+ley.enfAcum+' días</td><td style="padding:6px 8px;text-align:center">'+ley.enfUsados+' días</td><td style="padding:6px 8px;text-align:center;font-weight:700;color:var(--vs)">'+ley.enfDisp+' días</td></tr>' +
+      '</table>' +
+    '</div>' +
+    '<div style="margin-bottom:10px">' +
+      '<label style="font-size:12px;font-weight:700;margin-bottom:4px;display:block">Registrar uso de licencia</label>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">' +
+        '<select id="mdLicTipo" style="font-size:13px;padding:5px 8px;border-radius:6px;border:1px solid #ccc">' +
+          '<option value="vac">🏖️ Vacaciones</option>' +
+          '<option value="enf">🤒 Enfermedad</option>' +
+        '</select>' +
+        '<input type="number" id="mdLicDias" min="0.5" step="0.5" value="1" style="width:80px;font-size:13px;padding:5px 8px;border-radius:6px;border:1px solid #ccc">' +
+        '<span style="font-size:12px;color:var(--gm)">días</span>' +
+        '<button class="btn bvs" style="font-size:12px" id="mdLicBtnReg2">Registrar</button>' +
+      '</div>' +
+    '</div>' +
+    '<div style="font-size:10px;color:var(--gm);border-top:1px solid #eee;padding-top:8px">Ley 180-1998 PR · Vacaciones: ½–1 día/2sem según antigüedad · Enfermedad: ½ día/2sem · Máx. acumulable: 30 días vac, 15 días enf (por año)</div>';
+  // Asignar handler del botón Registrar capturando uid en closure
+  setTimeout(function(){
+    var btnReg = document.getElementById('mdLicBtnReg') || document.getElementById('mdLicBtnReg2');
+    if (btnReg) btnReg.onclick = function(){ registrarUsoLicencia(uid); };
+    var btnClose = document.getElementById('mdLicClose');
+    if (btnClose) btnClose.onclick = function(){ document.getElementById(mid).style.display='none'; };
+  }, 50);
+  setTimeout(function(){
+    var btnReg = document.getElementById('mdLicBtnReg') || document.getElementById('mdLicBtnReg2');
+    if (btnReg) btnReg.onclick = function(){ registrarUsoLicencia(uid); };
+  }, 50);
+  openM(mid);
+}
+
+function registrarUsoLicencia(uid) {
+  var u = DB.usuarios.find(function(x){ return x.id===uid; });
+  if (!u) return;
+  var tipo = document.getElementById('mdLicTipo').value;
+  var dias = parseFloat(document.getElementById('mdLicDias').value) || 0;
+  if (dias <= 0) { noti('⚠️ Ingresa días válidos'); return; }
+  if (tipo === 'vac') {
+    u.vacUsados = Math.round(((parseFloat(u.vacUsados)||0) + dias) * 10) / 10;
+  } else {
+    u.enfUsados = Math.round(((parseFloat(u.enfUsados)||0) + dias) * 10) / 10;
+  }
+  logAudit('Licencia registrada', (tipo==='vac'?'Vacaciones':'Enfermedad') + ': ' + dias + ' días → ' + u.nombre);
+  sDB();
+  noti('✅ ' + dias + ' día(s) de ' + (tipo==='vac'?'vacaciones':'enfermedad') + ' registrados');
+  // Refrescar modal
+  document.getElementById('mdLicencia').style.display='none';
+  setTimeout(function(){ abrirModalLicencia(uid); }, 100);
+}
+
 function calcNomina() {
   var per   = document.getElementById('nPer')  ? document.getElementById('nPer').value   : 'semana';
   var esAdmin = SES.rol === 'admin';
@@ -5081,11 +5516,32 @@ function calcNomina() {
       resCards+='<tr><td class="ded-lbl"><strong>💵 NETO A PAGAR</strong></td><td class="ded-neto">$'+neto.toFixed(2)+'</td></tr>';
       resCards+='</table>';
     }
+    // ── Licencias Ley 180 ──
+    if (!esVolunt && u.fechaInicioEmp) {
+      var ley = diasLey180(u, hasta);
+      resCards+='<div style="background:#f0faf0;border-radius:8px;padding:10px;margin-top:8px;border:1px solid #c8e6c9">';
+      resCards+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';
+      resCards+='<div style="font-size:11px;font-weight:700;color:var(--vs)">🏖️ Licencias Ley 180 PR</div>';
+      resCards+='<button class="btn nom-lic-btn" style="font-size:10px;padding:2px 8px;background:var(--vs);color:white" data-uid="'+u.id+'">Gestionar</button>';
+      resCards+='</div>';
+      resCards+='<div style="display:flex;gap:12px;flex-wrap:wrap">';
+      resCards+='<div style="text-align:center"><div style="font-size:18px;font-weight:800;color:var(--vs)">'+ley.vacDisp+'</div><div style="font-size:10px;color:var(--gm)">Vac. disponibles</div></div>';
+      resCards+='<div style="text-align:center"><div style="font-size:18px;font-weight:800;color:#E67E22">'+ley.enfDisp+'</div><div style="font-size:10px;color:var(--gm)">Enf. disponibles</div></div>';
+      resCards+='<div style="text-align:center"><div style="font-size:14px;font-weight:700;color:var(--gm)">'+ley.anios+' años</div><div style="font-size:10px;color:var(--gm)">Antigüedad</div></div>';
+      resCards+='</div>';
+      resCards+='</div>';
+    } else if (!esVolunt && !u.fechaInicioEmp) {
+      resCards+='<div style="background:#fff8e1;border-radius:8px;padding:8px 10px;margin-top:8px;font-size:11px;color:var(--am)">⚠️ Agrega fecha de inicio de empleo para calcular licencias Ley 180.</div>';
+    }
     resCards+='</div>';
   });
 
   tbody.innerHTML = filas || '<tr><td colspan="9"><div class="es"><div class="ei">💰</div><p>Sin registros.</p></div></td></tr>';
   resumen.innerHTML = resCards || '<div class="es"><div class="ei">💰</div><p>Sin datos.</p></div>';
+  // Delegación de eventos para botones de licencia
+  resumen.querySelectorAll('.nom-lic-btn').forEach(function(btn){
+    btn.onclick = function(){ abrirModalLicencia(this.dataset.uid); };
+  });
 
   totDiv.innerHTML = grandBruto>0 ?
     '<div style="background:var(--am);color:white;border-radius:10px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">'+
@@ -5344,6 +5800,7 @@ function editRes(id) {
     btnGuardar.textContent = '💾 Actualizar Residente';
     btnGuardar.onclick = function(){ actualizarRes(id); };
   }
+  actualizarHabInfo(id);
   openM('mRes');
 }
 
@@ -5351,6 +5808,11 @@ function actualizarRes(id) {
   var n = document.getElementById('rN').value.trim();
   var h = document.getElementById('rH').value.trim();
   if (!n || !h) { toast('⚠️ Nombre y habitación son obligatorios'); return; }
+  // Verificar que la habitación no esté ocupada por OTRO residente activo
+  var habOcupada = DB.residentes.find(function(x){
+    return x.id !== id && x.habitacion === h && (x.estado === 'Activo' || x.estado === 'En observación');
+  });
+  if (habOcupada) { toast('⚠️ La habitación ' + h + ' ya está asignada a ' + habOcupada.nombre, 'ra'); return; }
   var idx = DB.residentes.findIndex(function(x){ return x.id === id; });
   if (idx < 0) return;
   var inp = document.getElementById('rFotoInput');
@@ -8190,20 +8652,35 @@ function rReportes() {
   var desdeStr = desde.toISOString().slice(0,10);
   var hastaStr = hoy.toISOString().slice(0,10);
 
-  function enRango(ts) {
-    if (!ts) return false;
-    var d = ts.split('/').length===3 ? ts.split('/').reverse().join('-') : ts.slice(0,10);
-    return d >= desdeStr && d <= hastaStr;
+  // Convierte cualquier formato de fecha a YYYY-MM-DD
+  function toISO(ts) {
+    if (!ts) return null;
+    // ISO: 2024-01-15T... o 2024-01-15
+    if (/^\d{4}-\d{2}-\d{2}/.test(ts)) return ts.slice(0,10);
+    // DD/MM/YYYY HH:MM o DD/MM/YYYY
+    if (/^\d{2}\/\d{2}\/\d{4}/.test(ts)) {
+      var p=ts.split('/'); return p[2].slice(0,4)+'-'+p[1]+'-'+p[0];
+    }
+    // Intentar Date
+    try { var d=new Date(ts); if(!isNaN(d)) return d.toISOString().slice(0,10); } catch(e){}
+    return null;
+  }
+
+  function enRango(rec) {
+    // Acepta un objeto o un string directamente
+    var ts = typeof rec === 'string' ? rec : (rec.raw||rec.fecha||rec.ts||'');
+    var d = toISO(ts);
+    return d && d >= desdeStr && d <= hastaStr;
   }
 
   var resActivos  = DB.residentes.filter(function(r){ return r.estado==='Activo'||r.estado==='En observación'; }).length;
-  var resFallec   = (DB.fallecidos||[]).filter(function(f){ return f.fecha>=desdeStr&&f.fecha<=hastaStr; }).length;
-  var medAdm      = (DB.medicamentos||[]).filter(function(m){ return m.estado==='Administrado'&&enRango(m.ts); }).length;
-  var incTotal    = (DB.incidentes||[]).filter(function(i){ return enRango(i.ts); }).length;
-  var incGraves   = (DB.incidentes||[]).filter(function(i){ return enRango(i.ts)&&i.gravedad&&i.gravedad.includes('Grave'); }).length;
+  var resFallec   = (DB.fallecidos||[]).filter(function(f){ return enRango(f); }).length;
+  var medAdm      = (DB.medicamentos||[]).filter(function(m){ return m.estado==='Administrado'&&enRango(m); }).length;
+  var incTotal    = (DB.incidentes||[]).filter(function(i){ return enRango(i); }).length;
+  var incGraves   = (DB.incidentes||[]).filter(function(i){ return enRango(i)&&i.gravedad&&i.gravedad.includes('Grave'); }).length;
   var cuarActivos = (DB.cuarentenas||[]).filter(function(q){ return q.estado==='Activo'; }).length;
-  var visitasMed  = (DB.visitasMed||[]).filter(function(v){ return enRango(v.ts); }).length;
-  var svRegistros = (DB.signos||[]).filter(function(s){ return enRango(s.ts); }).length;
+  var visitasMed  = (DB.visitasMed||[]).filter(function(v){ return enRango(v); }).length;
+  var svRegistros = (DB.signos||[]).filter(function(s){ return enRango(s); }).length;
 
   var kpis = [
     {val:resActivos,  lbl:'Residentes activos',   color:'#1A3A5C'},
@@ -8235,7 +8712,7 @@ function rReportes() {
 
   var mDiv = document.getElementById('repMedicamentos');
   if (mDiv) {
-    var meds = (DB.medicamentos||[]).filter(function(m){ return enRango(m.ts); });
+    var meds = (DB.medicamentos||[]).filter(function(m){ return enRango(m); });
     var byEst2 = {}; meds.forEach(function(m){ byEst2[m.estado]=(byEst2[m.estado]||0)+1; });
     var topMeds = {}; meds.forEach(function(m){ if(m.medicamento) topMeds[m.medicamento]=(topMeds[m.medicamento]||0)+1; });
     var sortedMeds = Object.keys(topMeds).sort(function(a,b){ return topMeds[b]-topMeds[a]; }).slice(0,5);
@@ -8252,7 +8729,7 @@ function rReportes() {
 
   var iDiv = document.getElementById('repIncidentes');
   if (iDiv) {
-    var incs = (DB.incidentes||[]).filter(function(i){ return enRango(i.ts); });
+    var incs = (DB.incidentes||[]).filter(function(i){ return enRango(i); });
     var byTipo = {}; incs.forEach(function(i){ if(i.tipo) byTipo[i.tipo]=(byTipo[i.tipo]||0)+1; });
     var byGrav = {}; incs.forEach(function(i){ if(i.gravedad) byGrav[i.gravedad]=(byGrav[i.gravedad]||0)+1; });
     var h3 = '<table style="width:100%;font-size:12px">';
@@ -8266,7 +8743,7 @@ function rReportes() {
 
   var sDiv = document.getElementById('repSignos');
   if (sDiv) {
-    var svs = (DB.signos||[]).filter(function(s){ return enRango(s.ts); });
+    var svs = (DB.signos||[]).filter(function(s){ return enRango(s); });
     var alertas = svs.filter(function(s){
       return (s.tas&&parseInt(s.tas)>160)||(s.tad&&parseInt(s.tad)>100)||
              (s.glucosa&&parseInt(s.glucosa)>250)||(s.spo2&&parseInt(s.spo2)<92);
@@ -8300,6 +8777,70 @@ function rReportes() {
     Object.keys(byEmp).sort().forEach(function(k){ h5+='<tr><td>'+k+'</td><td>'+byEmp[k]+'</td></tr>'; });
     h5 += '</table>';
     aDiv.innerHTML = Object.keys(byEmp).length ? h5 : '<p style="color:var(--gm);font-size:13px">Sin registros de ponche.</p>';
+  }
+
+  // ── PAGOS ──
+  var pDiv = document.getElementById('repPagos');
+  if (pDiv) {
+    var pagos = (DB.pagos||[]).filter(function(p){ return enRango(p); });
+    var totalPagado   = pagos.filter(function(p){return p.estado==='Pagado';}).reduce(function(a,p){return a+p.monto;},0);
+    var totalPendiente= pagos.filter(function(p){return p.estado==='Pendiente';}).reduce(function(a,p){return a+p.monto;},0);
+    var totalVencido  = pagos.filter(function(p){return p.estado==='Vencido';}).reduce(function(a,p){return a+p.monto;},0);
+    var byTipoP = {}; pagos.forEach(function(p){ byTipoP[p.tipo]=(byTipoP[p.tipo]||0)+p.monto; });
+    var h6 = '<table style="width:100%;font-size:12px">';
+    h6 += '<tr><td>Total registros</td><td>'+pagos.length+'</td></tr>';
+    h6 += '<tr><td style="color:var(--vs)">✅ Pagado</td><td style="color:var(--vs);font-weight:700">$'+totalPagado.toFixed(2)+'</td></tr>';
+    h6 += '<tr><td style="color:var(--na)">⏳ Pendiente</td><td style="color:var(--na);font-weight:700">$'+totalPendiente.toFixed(2)+'</td></tr>';
+    h6 += '<tr><td style="color:var(--ra)">🔴 Vencido</td><td style="color:var(--ra);font-weight:700">$'+totalVencido.toFixed(2)+'</td></tr>';
+    h6 += '<tr><td colspan="2" style="padding-top:6px;font-weight:700;color:var(--am)">Por tipo</td></tr>';
+    Object.keys(byTipoP).forEach(function(k){ h6+='<tr><td>'+k.replace(/[^\w\sÁÉÍÓÚáéíóúñÑ\s\/.]/g,'').trim()+'</td><td>$'+byTipoP[k].toFixed(2)+'</td></tr>'; });
+    h6 += '</table>';
+    pDiv.innerHTML = pagos.length ? h6 : '<p style="color:var(--gm);font-size:13px">Sin pagos en este período.</p>';
+  }
+
+  // ── ALIMENTACIÓN ──
+  var alDiv = document.getElementById('repAlim');
+  if (alDiv) {
+    var alims = (DB.alimentacion||[]).filter(function(a){ return enRango(a); });
+    var byComida = {}; alims.forEach(function(a){ byComida[a.comida||a.tiempo||'—']=(byComida[a.comida||a.tiempo||'—']||0)+1; });
+    var promIngesta = alims.length ? (alims.reduce(function(s,a){ return s+(parseInt(a.ingesta)||0); },0)/alims.length).toFixed(0) : '—';
+    var h7 = '<table style="width:100%;font-size:12px">';
+    h7 += '<tr><td>Total registros</td><td>'+alims.length+'</td></tr>';
+    h7 += '<tr><td>Promedio ingesta</td><td>'+promIngesta+'%</td></tr>';
+    h7 += '<tr><td colspan="2" style="padding-top:6px;font-weight:700;color:var(--am)">Por comida</td></tr>';
+    Object.keys(byComida).forEach(function(k){ h7+='<tr><td>'+k+'</td><td>'+byComida[k]+'</td></tr>'; });
+    h7 += '</table>';
+    alDiv.innerHTML = alims.length ? h7 : '<p style="color:var(--gm);font-size:13px">Sin registros en este período.</p>';
+  }
+
+  // ── ASEO ──
+  var asDiv = document.getElementById('repAseo');
+  if (asDiv) {
+    var aseos = (DB.aseos||[]).filter(function(a){ return enRango(a); });
+    var resConAseo = new Set(aseos.map(function(a){return a.residenteId;})).size;
+    var totalRes = DB.residentes.filter(function(r){return r.estado==='Activo';}).length;
+    var h8 = '<table style="width:100%;font-size:12px">';
+    h8 += '<tr><td>Total registros</td><td>'+aseos.length+'</td></tr>';
+    h8 += '<tr><td>Residentes con aseo</td><td style="color:var(--vs);font-weight:700">'+resConAseo+' / '+totalRes+'</td></tr>';
+    h8 += '<tr><td>Sin aseo registrado</td><td style="color:'+(totalRes-resConAseo>0?'var(--ra)':'var(--vs)')+';font-weight:700">'+(totalRes-resConAseo)+'</td></tr>';
+    h8 += '</table>';
+    asDiv.innerHTML = h8;
+  }
+
+  // ── VISITAS FAMILIARES ──
+  var vfDiv = document.getElementById('repVisitas');
+  if (vfDiv) {
+    var visitas = (DB.visitas||[]).filter(function(v){ return enRango(v); });
+    var byRes = {}; visitas.forEach(function(v){ byRes[v.residente||v.nombreRes||'—']=(byRes[v.residente||v.nombreRes||'—']||0)+1; });
+    var topRes = Object.keys(byRes).sort(function(a,b){return byRes[b]-byRes[a];}).slice(0,5);
+    var h9 = '<table style="width:100%;font-size:12px">';
+    h9 += '<tr><td>Total visitas</td><td>'+visitas.length+'</td></tr>';
+    if (topRes.length) {
+      h9 += '<tr><td colspan="2" style="padding-top:6px;font-weight:700;color:var(--am)">Más visitados</td></tr>';
+      topRes.forEach(function(k){ h9+='<tr><td>'+k+'</td><td>'+byRes[k]+'</td></tr>'; });
+    }
+    h9 += '</table>';
+    vfDiv.innerHTML = visitas.length ? h9 : '<p style="color:var(--gm);font-size:13px">Sin visitas en este período.</p>';
   }
 }
 
