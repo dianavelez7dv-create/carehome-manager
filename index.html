@@ -3039,34 +3039,43 @@ function goTabName(id) {
 function goTab(id, el) {
   document.querySelectorAll('.sec').forEach(function(s){ s.classList.remove('on'); });
   document.querySelectorAll('.nt').forEach(function(t){ t.classList.remove('on'); });
-  document.getElementById('tab-'+id).classList.add('on');
+  var tabEl = document.getElementById('tab-'+id);
+  if (tabEl) tabEl.classList.add('on');
   if (el) el.classList.add('on');
-  if (id==='dashboard') { dash(); dCharts(); }
-  if (id==='expediente') pSel('selExp');
-  if (id==='medicamentos') pSel('fMedR');
-  if (id==='signos') { pSel('fSVR'); gSV(); }
-  if (id==='alimentacion') pSel('fAlimR');
-  if (id==='incidentes') pSel('inR');
-  if (id==='visitas') pSel('viR');
-  if (id==='graficas') { pSel('gfR'); allGraf(); }
-  if (id==='ponchador') { poblarSelectEmps(); rEmpStatus(); rReporte(); }
-  if (id==='nomina') { poblarSelectEmps(); calcNomina(); }
-  if (id==='compras') initCompras();
-  if (id==='menu') initMenu();
-  if (id==='mensajes') initMensajes();
-  if (id==='cuarentena') rCuarentena();
-  if (id==='guia') {}  // solo mostrar HTML
-  if (id==='empleados') initEmpleados();
-  if (id==='aseo') initAseo();
-  if (id==='auditoria') rAuditoria();
-  if (id==='reportes') rReportes();
-  if (id==='pagos') initPagos();
-  if (id==='fallecidos') rFallecidos();
-  if (id==='usuarios') rUsr();
-  if (id==='alertas') { calcAlerts(); }
-  if (id==='turno') { pSelEmps('tEnfE'); pSelEmps('tEnfR'); }
-  if (id==='visitas_med') { pSel('fVMR'); rVM(); rOM(); }
-  if (id==='plan_act') { pSel('fTerR'); rPA(); rTer(); rPlanSemanal(); }
+  // Render diferido para que el browser pinte el tab antes de ejecutar JS
+  setTimeout(function() {
+    try {
+      if (id==='dashboard') { dash(); dCharts(); }
+      if (id==='expediente') pSel('selExp');
+      if (id==='medicamentos') pSel('fMedR');
+      if (id==='signos') { pSel('fSVR'); gSV(); }
+      if (id==='alimentacion') pSel('fAlimR');
+      if (id==='incidentes') pSel('inR');
+      if (id==='visitas') pSel('viR');
+      if (id==='graficas') { pSel('gfR'); allGraf(); }
+      if (id==='ponchador') { poblarSelectEmps(); rEmpStatus(); rReporte(); }
+      if (id==='nomina') { poblarSelectEmps(); calcNomina(); }
+      if (id==='compras') initCompras();
+      if (id==='menu') initMenu();
+      if (id==='mensajes') initMensajes();
+      if (id==='cuarentena') rCuarentena();
+      if (id==='empleados') initEmpleados();
+      if (id==='aseo') initAseo();
+      if (id==='auditoria') rAuditoria();
+      if (id==='reportes') rReportes();
+      if (id==='pagos') initPagos();
+      if (id==='fallecidos') rFallecidos();
+      if (id==='usuarios') rUsr();
+      if (id==='alertas') calcAlerts();
+      if (id==='turno') { pSelEmps('tEnfE'); pSelEmps('tEnfR'); }
+      if (id==='visitas_med') { pSel('fVMR'); rVM(); rOM(); }
+      if (id==='plan_act') { pSel('fTerR'); rPA(); rTer(); rPlanSemanal(); }
+      if (id==='residentes') rRes();
+      if (id==='actividades') rAct();
+      if (id==='turno') rTur();
+      if (id==='fallecidos') rFallecidos();
+    } catch(e) { console.warn('goTab render error:', id, e); }
+  }, 0);
 }
 function inTab(g, id, el) {
   document.querySelectorAll('.is.'+g).forEach(function(s){ s.classList.remove('on'); });
