@@ -3070,7 +3070,15 @@ function goTab(id, el) {
   if (id==='compras')     { try{initCompras();}catch(e){} }
   if (id==='auditoria')   { try{rAuditoria();}catch(e){} }
   if (id==='reportes')    { try{rReportes();}catch(e){} }
-  if (id==='aseo')        { try{initAseo();}catch(e){console.error('initAseo ERROR:',e);} }
+  if (id==='aseo')        { 
+    try{initAseo();}catch(e){console.error('initAseo ERROR:',e);}
+    setTimeout(function(){
+      var el = document.getElementById('aseoResumen');
+      console.log('aseoResumen innerHTML length:', el ? el.innerHTML.length : 'NO EXISTE');
+      var el2 = document.getElementById('tAseo');
+      console.log('tAseo innerHTML length:', el2 ? el2.innerHTML.length : 'NO EXISTE');
+    }, 100);
+  }
   if (id==='empleados')   { try{initEmpleados();}catch(e){console.error('initEmpleados ERROR:',e);} }
   if (id==='pagos')       { try{initPagos();}catch(e){console.error('initPagos ERROR:',e);} }
   if (id==='menu')        { try{initMenu();}catch(e){console.error('initMenu ERROR:',e);} }
@@ -9193,21 +9201,11 @@ document.addEventListener('DOMContentLoaded', function arrancarApp() {
       try { rRes(); rMed(); rSV(); rAlim(); } catch(e) {}
       try { rAct(); rInc(); rVis(); rTur(); rUsr(); } catch(e) {}
       try { rAuditoria(); rFallecidos(); rCuarentena(); rVM(); } catch(e) {}
-      try { initCompras(); initMensajes(); initEmpleados(); } catch(e) {}
-      try { initAseo(); initPagos(); initMenu(); calcNomina(); rReportes(); } catch(e) {}
-      try { initCompras(); initMensajes(); initEmpleados(); } catch(e) {}
-      try { initAseo(); initPagos(); initMenu(); } catch(e) {}
-      try { calcNomina(); rReportes(); calcAlerts(); } catch(e) {}
+      try { calcAlerts(); } catch(e) {}
     } else {
       // Sin sesión — login ya visible en HTML
       try { applyPerm(); } catch(e) {}
-      // Pre-inicializar módulos en background para que estén listos al entrar
-      setTimeout(function(){
-        try { rRes(); rMed(); rSV(); rAlim(); rAct(); rInc(); rVis(); rTur(); rUsr(); } catch(e) {}
-        try { rAuditoria(); rFallecidos(); rCuarentena(); } catch(e) {}
-        try { initCompras(); initMensajes(); initEmpleados(); } catch(e) {}
-        try { initAseo(); initPagos(); initMenu(); calcNomina(); } catch(e) {}
-      }, 300);
+
     }
   } catch(e) {
     console.error('Error en arranque:', e);
