@@ -3070,10 +3070,10 @@ function goTab(id, el) {
   if (id==='compras')     { try{initCompras();}catch(e){} }
   if (id==='auditoria')   { try{rAuditoria();}catch(e){} }
   if (id==='reportes')    { try{rReportes();}catch(e){} }
-  if (id==='aseo')        { try{initAseo();}catch(e){} }
-  if (id==='empleados')   { try{initEmpleados();}catch(e){} }
-  if (id==='pagos')       { try{initPagos();}catch(e){} }
-  if (id==='menu')        { try{initMenu();}catch(e){} }
+  if (id==='aseo')        { try{initAseo();}catch(e){console.error('initAseo ERROR:',e);} }
+  if (id==='empleados')   { try{initEmpleados();}catch(e){console.error('initEmpleados ERROR:',e);} }
+  if (id==='pagos')       { try{initPagos();}catch(e){console.error('initPagos ERROR:',e);} }
+  if (id==='menu')        { try{initMenu();}catch(e){console.error('initMenu ERROR:',e);} }
 }
 function inTab(g, id, el) {
   document.querySelectorAll('.is.'+g).forEach(function(s){ s.classList.remove('on'); });
