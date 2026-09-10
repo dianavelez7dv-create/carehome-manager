@@ -8868,18 +8868,30 @@ function rReportes() {
   var mDiv = document.getElementById('repMedicamentos');
   if (mDiv) {
     var meds = (DB.medicamentos||[]).filter(function(m){ return enRango(m); });
+    var medsDados = meds.filter(function(m){ return m.estado==='Administrado'||m.estado==='Dado'||m.estado==='Administrado ✅'; });
     var byEst2 = {}; meds.forEach(function(m){ byEst2[m.estado]=(byEst2[m.estado]||0)+1; });
-    var topMeds = {}; meds.forEach(function(m){ if(m.medicamento) topMeds[m.medicamento]=(topMeds[m.medicamento]||0)+1; });
+    // Usar campo 'nombre' o 'medicamento' - el guardado usa 'nombre'
+    var topMeds = {}; meds.forEach(function(m){
+      var nm = m.nombre||m.medicamento||'';
+      if(nm) topMeds[nm]=(topMeds[nm]||0)+1;
+    });
     var sortedMeds = Object.keys(topMeds).sort(function(a,b){ return topMeds[b]-topMeds[a]; }).slice(0,5);
+    var byRes = {}; medsDados.forEach(function(m){ var n=m.nombreRes||m.residente||m.residenteId||'—'; byRes[n]=(byRes[n]||0)+1; });
     var h2 = '<table style="width:100%;font-size:12px">';
-    h2 += '<tr><th style="text-align:left">Estado</th><th>Total</th></tr>';
+    h2 += '<tr><td>Total registros</td><td>'+meds.length+'</td></tr>';
+    h2 += '<tr><td style="color:var(--vs)">✅ Administrados</td><td style="color:var(--vs);font-weight:700">'+medsDados.length+'</td></tr>';
+    h2 += '<tr><td colspan="2" style="padding-top:6px;font-weight:700;color:var(--am)">Por estado</td></tr>';
     Object.keys(byEst2).forEach(function(k){ h2+='<tr><td>'+k+'</td><td>'+byEst2[k]+'</td></tr>'; });
     if (sortedMeds.length) {
-      h2 += '<tr><td colspan="2" style="padding-top:6px;font-weight:700;color:var(--am)">Top medicamentos</td></tr>';
+      h2 += '<tr><td colspan="2" style="padding-top:6px;font-weight:700;color:var(--am)">Top medicamentos dados</td></tr>';
       sortedMeds.forEach(function(k){ h2+='<tr><td>'+k+'</td><td>'+topMeds[k]+'</td></tr>'; });
     }
+    if (Object.keys(byRes).length) {
+      h2 += '<tr><td colspan="2" style="padding-top:6px;font-weight:700;color:var(--am)">Por residente</td></tr>';
+      Object.keys(byRes).sort(function(a,b){return byRes[b]-byRes[a];}).slice(0,5).forEach(function(k){ h2+='<tr><td>'+k+'</td><td>'+byRes[k]+'</td></tr>'; });
+    }
     h2 += '</table>';
-    mDiv.innerHTML = h2 || '<p style="color:var(--gm);font-size:13px">Sin registros en este período.</p>';
+    mDiv.innerHTML = meds.length ? h2 : '<p style="color:var(--gm);font-size:13px">Sin registros en este período.</p>';
   }
 
   var iDiv = document.getElementById('repIncidentes');
