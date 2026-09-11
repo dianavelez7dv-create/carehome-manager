@@ -1295,9 +1295,10 @@
       <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:flex-end">
         <div class="fi" style="width:160px"><label>Período</label>
           <select id="rRepPer" onchange="rReportes()">
+            <option value="todo" selected>Todo el historial</option>
             <option value="hoy">Hoy</option>
             <option value="semana">Esta semana</option>
-            <option value="mes" selected>Este mes</option>
+            <option value="mes">Este mes</option>
           </select>
         </div>
         <button class="btn bmo" onclick="pdfReporteGeneral()">📄 Reporte Completo PDF</button>
@@ -1830,7 +1831,7 @@
         <div class="fi"><label>Medicamento *</label><input id="mN" type="text"></div>
         <div class="fi"><label>Dosis</label><input id="mD" type="text" placeholder="Ej: 500mg"></div>
         <div class="fi"><label>Vía de administración</label><select id="mV"><option>Oral</option><option>Sublingual</option><option>Intramuscular</option><option>Intravenosa</option><option>Subcutánea</option><option>Tópica</option><option>Inhalatoria</option><option>Rectal</option></select></div>
-        <div class="fi"><label>Hora administrada</label><input id="mH" type="time"></div>
+        <div class="fg"><div class="fi"><label>Fecha de administración</label><input id="mFecha" type="date"></div><div class="fi"><label>Hora administrada</label><div style="display:flex;gap:6px;align-items:center"><input id="mH" type="number" min="1" max="12" placeholder="12" style="width:55px;text-align:center;font-size:14px;padding:6px;border:1.5px solid var(--bo);border-radius:8px"><span style="font-weight:700">:</span><input id="mHMin" type="number" min="0" max="59" placeholder="00" style="width:55px;text-align:center;font-size:14px;padding:6px;border:1.5px solid var(--bo);border-radius:8px"><select id="mHAmPm" style="font-size:14px;padding:6px;border:1.5px solid var(--bo);border-radius:8px"><option>AM</option><option>PM</option></select></div></div></div>
         <div class="fi"><label>Estado</label><select id="mEst"><option>Administrado ✅</option><option>Pendiente ⏳</option><option>Rechazado ❌</option><option>Suspendido 🚫</option></select></div>
         <div class="fi"><label>Observaciones</label><textarea id="mO" rows="2"></textarea></div>
       </div>
@@ -3822,7 +3823,15 @@ function rEvol() {
 function openMed() {
   openM('mMed');
   var n = new Date();
-  document.getElementById('mH').value = n.toTimeString().slice(0,5);
+  var hrs = n.getHours();
+  var ampm = hrs >= 12 ? 'PM' : 'AM';
+  var h12 = hrs % 12 || 12;
+  var mins = n.getMinutes();
+  if(document.getElementById('mH')) document.getElementById('mH').value = h12;
+  if(document.getElementById('mHMin')) document.getElementById('mHMin').value = String(mins).padStart(2,'0');
+  if(document.getElementById('mHAmPm')) document.getElementById('mHAmPm').value = ampm;
+  var fEl = document.getElementById('mFecha');
+  if (fEl) fEl.value = n.toISOString().slice(0,10);
   setTimeout(function(){
     pSel('mR');
     var li = document.getElementById('lupa_mR');
@@ -4043,12 +4052,12 @@ function saveMed() {
   var _pinMed = document.getElementById('mE') ? document.getElementById('mE').value.trim() : '';
   var _empMed = _pinMed ? DB.usuarios.find(function(u){ return u.password&&u.password.slice(-4)===_pinMed; }) : null;
   if (!_empMed) { toast('⚠️ PIN incorrecto — solo empleados autorizados pueden registrar medicamentos'); return; }
-  var m={id:'M'+Date.now(),ts:fh(),fecha:new Date().toISOString().slice(0,10),residenteId:rid,enfermera:(function(){
+  var m={id:'M'+Date.now(),ts:fh(),fecha:document.getElementById('mFecha')?document.getElementById('mFecha').value||new Date().toISOString().slice(0,10):new Date().toISOString().slice(0,10),residenteId:rid,nombreRes:(DB.residentes.find(function(r){return r.id===rid;})||{nombre:'—'}).nombre,enfermera:(function(){
     var pin=document.getElementById('mE')?document.getElementById('mE').value.trim():'';
     if(!pin) return '';
     var emp=DB.usuarios.find(function(u){ return u.password&&u.password.slice(-4)===pin; });
     return emp?emp.nombre:pin;
-  })(),nombre:nom,dosis:document.getElementById('mD').value.trim(),via:document.getElementById('mV').value,hora:document.getElementById('mH').value,estado:document.getElementById('mEst').value,obs:document.getElementById('mO').value.trim()};
+  })(),nombre:nom,dosis:document.getElementById('mD').value.trim(),via:document.getElementById('mV').value,hora:(function(){ var h=document.getElementById('mH')?document.getElementById('mH').value:''; var m=document.getElementById('mHMin')?document.getElementById('mHMin').value:'00'; var ap=document.getElementById('mHAmPm')?document.getElementById('mHAmPm').value:'AM'; return h+':'+(String(m).padStart(2,'0'))+' '+ap; })(),estado:document.getElementById('mEst').value,obs:document.getElementById('mO').value.trim()};
   DB.medicamentos.push(m); sDB(); closeM('mMed');
   if(document.getElementById('mE')) document.getElementById('mE').value='';
   if(document.getElementById('mERes')) { document.getElementById('mERes').textContent='Ingresa tu PIN'; document.getElementById('mERes').className='pin-emp-result pin-emp-idle'; }
@@ -8798,14 +8807,15 @@ function pdfAuditoria() {
 }
 
 function rReportes() {
-  var per = document.getElementById('rRepPer') ? document.getElementById('rRepPer').value : 'mes';
+  var per = document.getElementById('rRepPer') ? document.getElementById('rRepPer').value : 'todo';
   var hoy = new Date();
   var desde = new Date();
-  if (per==='hoy') { desde = new Date(hoy.toISOString().slice(0,10)); }
-  else if (per==='semana') { desde.setDate(hoy.getDate()-6); }
-  else { desde = new Date(hoy.getFullYear(), hoy.getMonth(), 1); }
-  var desdeStr = desde.toISOString().slice(0,10);
-  var hastaStr = hoy.toISOString().slice(0,10);
+  var desdeStr, hastaStr;
+  hastaStr = hoy.toISOString().slice(0,10);
+  if (per==='hoy') { desdeStr = hoy.toISOString().slice(0,10); }
+  else if (per==='semana') { desde.setDate(hoy.getDate()-6); desdeStr = desde.toISOString().slice(0,10); }
+  else if (per==='mes') { desde = new Date(hoy.getFullYear(), hoy.getMonth(), 1); desdeStr = desde.toISOString().slice(0,10); }
+  else { desdeStr = '2000-01-01'; } // todo el historial
 
   // Convierte cualquier formato de fecha a YYYY-MM-DD
   function toISO(ts) {
@@ -8830,7 +8840,7 @@ function rReportes() {
 
   var resActivos  = DB.residentes.filter(function(r){ return r.estado==='Activo'||r.estado==='En observación'; }).length;
   var resFallec   = (DB.fallecidos||[]).filter(function(f){ return enRango(f); }).length;
-  var medAdm      = (DB.medicamentos||[]).filter(function(m){ return m.estado==='Administrado'&&enRango(m); }).length;
+  var medAdm      = (DB.medicamentos||[]).filter(function(m){ return (m.estado||'').includes('Administrado')&&enRango(m); }).length;
   var incTotal    = (DB.incidentes||[]).filter(function(i){ return enRango(i); }).length;
   var incGraves   = (DB.incidentes||[]).filter(function(i){ return enRango(i)&&i.gravedad&&i.gravedad.includes('Grave'); }).length;
   var cuarActivos = (DB.cuarentenas||[]).filter(function(q){ return q.estado==='Activo'; }).length;
@@ -8868,7 +8878,7 @@ function rReportes() {
   var mDiv = document.getElementById('repMedicamentos');
   if (mDiv) {
     var meds = (DB.medicamentos||[]).filter(function(m){ return enRango(m); });
-    var medsDados = meds.filter(function(m){ return m.estado==='Administrado'||m.estado==='Dado'||m.estado==='Administrado ✅'; });
+    var medsDados = meds.filter(function(m){ return (m.estado||'').includes('Administrado')||(m.estado||'').includes('Dado'); });
     var byEst2 = {}; meds.forEach(function(m){ byEst2[m.estado]=(byEst2[m.estado]||0)+1; });
     // Usar campo 'nombre' o 'medicamento' - el guardado usa 'nombre'
     var topMeds = {}; meds.forEach(function(m){
