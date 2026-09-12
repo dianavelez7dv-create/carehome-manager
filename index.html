@@ -343,7 +343,7 @@
       <button class="btn bmo" onclick="pdfMed()">📄 PDF</button>
     </div>
     <div class="tw"><table>
-      <thead><tr><th>Hora</th><th>Residente</th><th>Medicamento</th><th>Dosis</th><th>Vía</th><th>Enfermera</th><th>Estado</th><th>Obs.</th></tr></thead>
+      <thead><tr><th>Fecha / Hora</th><th>Residente</th><th>Medicamento</th><th>Dosis</th><th>Vía</th><th>Enfermera</th><th>Estado</th><th>Obs.</th></tr></thead>
       <tbody id="tMed"></tbody>
     </table></div>
   </div></div>
@@ -4072,7 +4072,7 @@ function rMed() {
   var h='';
   lista.forEach(function(m){
     var bc=m.estado.includes('✅')?'bvd':m.estado.includes('❌')||m.estado.includes('🚫')?'brd':'bnd';
-    h+='<tr><td>'+m.hora+'</td><td>'+nr(m.residenteId)+'</td><td><strong>'+m.nombre+'</strong></td><td>'+(m.dosis||'—')+'</td><td>'+m.via+'</td><td>'+(m.enfermera||'—')+'</td><td><span class="badge '+bc+'">'+m.estado.replace(/[✅❌🚫⏳]/g,'').trim()+'</span></td><td style="font-size:12px">'+(m.obs||'—')+'</td></tr>';
+    h+='<tr><td>'+(m.fecha||'')+' '+( m.hora||'')+'</td><td>'+nr(m.residenteId)+'</td><td><strong>'+m.nombre+'</strong></td><td>'+(m.dosis||'—')+'</td><td>'+m.via+'</td><td>'+(m.enfermera||'—')+'</td><td><span class="badge '+bc+'">'+m.estado.replace(/[✅❌🚫⏳]/g,'').trim()+'</span></td><td style="font-size:12px">'+(m.obs||'—')+'</td></tr>';
   });
   tbody.innerHTML=h;
 }
