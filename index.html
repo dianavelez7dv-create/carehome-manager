@@ -4090,6 +4090,16 @@ function saveMed() {
   if(document.getElementById('mERes')) { document.getElementById('mERes').textContent='Ingresa tu PIN'; document.getElementById('mERes').className='pin-emp-result pin-emp-idle'; }
   rMed();
   ['mE','mN','mD','mO'].forEach(function(i){ document.getElementById(i).value=''; });
+  var mRs=document.getElementById('mR'); if(mRs) mRs.value='';
+  var lmR=document.getElementById('lupa_mR'); if(lmR) lmR.value='';
+  mostrarPanelMed('');
+  // Limpiar selección de residente para evitar errores al próximo registro
+  var mRsel = document.getElementById('mR');
+  if (mRsel) mRsel.value = '';
+  var lupaEl = document.getElementById('lupa_mR');
+  if (lupaEl) lupaEl.value = '';
+  // Limpiar panel de alertas
+  mostrarPanelMed('');
   logAudit('Medicamento','Medicamento: '+document.getElementById('mM').value+(document.getElementById('mR')?'':'')+' | Paciente: '+(DB.residentes.find(function(r){return r.id===document.getElementById('mR').value;})||{nombre:''}).nombre, _empMed.nombre);
   toast('✅ Medicamento registrado','vs');
 }
@@ -4745,9 +4755,18 @@ function calcAlerts() {
     });
   }
 
-  var svRecientes = DB.signos.filter(function(s){
-    return s.raw && (now-new Date(s.raw))/3600000<8;
+  // Solo el último registro de signos de cada residente (no acumular alertas viejas)
+  var svUltimos = {};
+  DB.signos.forEach(function(s){
+    if (!s.raw) return;
+    var diffH = (now - new Date(s.raw)) / 3600000;
+    if (diffH > 24) return; // solo últimas 24h
+    var rid = s.residenteId || s.residente || '';
+    if (!svUltimos[rid] || new Date(s.raw) > new Date(svUltimos[rid].raw)) {
+      svUltimos[rid] = s;
+    }
   });
+  var svRecientes = Object.keys(svUltimos).map(function(k){ return svUltimos[k]; });
   svRecientes.forEach(function(s){
     var alertas=[];
     if (s.tas && parseInt(s.tas)>160) alertas.push('TA alta ('+s.tas+'/'+s.tad+' mmHg)');
