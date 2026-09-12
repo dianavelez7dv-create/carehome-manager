@@ -2006,7 +2006,7 @@
           </select></div>
         <div class="fi"><label>Turno habitual</label><select id="uT"><option>☀️ Día</option><option>🌤 Tarde</option><option>🌙 Noche</option><option>Rotativo</option></select></div>
         <div class="fi"><label>Teléfono</label><input id="uTel" type="tel"></div>
-        <div class="fi"><label>Fecha inicio de empleo</label><input id="uFechaInicio" type="date" style="width:100%">
+        <div class="fi"><label>Fecha inicio de empleo</label><input id="uFechaInicio" type="date" style="width:100%" min="1950-01-01" max="2026-09-12">
         <label>Salario por hora ($)</label><input id="uSalario" type="number" step="0.01" min="0" placeholder="Ej: 12.50"></div>
         <div class="fi"><label>Horas regulares por semana</label><input id="uHorasReg" type="number" min="1" max="80" placeholder="Ej: 40" value="40"></div>
       </div>
@@ -3304,6 +3304,11 @@ function cargarDesdeSupa() {
         if(d.usuarios&&d.usuarios.length>0) DB.usuarios=d.usuarios;
         localStorage.setItem('chdb4', res.data.payload);
         _supaReady = true;
+        // Refrescar SES con datos actualizados del usuario en sesión
+        if (SES && SES.id) {
+          var sesUser = DB.usuarios.find(function(u){ return u.id === SES.id; });
+          if (sesUser) SES = sesUser;
+        }
         actualizarVistasSync();
         toast('☁️ Sincronizado con Supabase');
         console.log('✅ Datos cargados');
@@ -3351,6 +3356,11 @@ function suscribirCambiosSupa() {
           ].forEach(function(k){ if(d[k]!==undefined) DB[k]=d[k]; });
           if(d.usuarios&&d.usuarios.length>0&&!SES.id) DB.usuarios=d.usuarios;
           localStorage.setItem('chdb4', row.payload);
+          // Refrescar SES
+          if (SES && SES.id) {
+            var sesU = DB.usuarios.find(function(u){ return u.id === SES.id; });
+            if (sesU) SES = sesU;
+          }
           actualizarVistasSync();
           toast('🔄 Sincronizado');
         } catch(e) { console.warn('Polling parse error:', e); }
@@ -4259,6 +4269,9 @@ function resetModalUsr() {
   ['uN','uU','uP','uTel'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
   if(document.getElementById('uSalario')) document.getElementById('uSalario').value='';
   if(document.getElementById('uHorasReg')) document.getElementById('uHorasReg').value='40';
+  if(document.getElementById('uFechaInicio')) document.getElementById('uFechaInicio').value='';
+  if(document.getElementById('uVacUsados')) document.getElementById('uVacUsados').value='0';
+  if(document.getElementById('uEnfUsados')) document.getElementById('uEnfUsados').value='0';
 }
 
 function editUsr(uid) {
@@ -4271,8 +4284,9 @@ function editUsr(uid) {
   document.getElementById('uR').value   = u.rol      || 'enfermera';
   document.getElementById('uT').value   = u.turno    || '☀️ Día';
   document.getElementById('uTel').value = u.tel      || '';
-  if (document.getElementById('uSalario'))  document.getElementById('uSalario').value  = u.salario  || '';
-  if (document.getElementById('uHorasReg')) document.getElementById('uHorasReg').value = u.horasReg || 40;
+  if (document.getElementById('uSalario'))    document.getElementById('uSalario').value    = u.salario       || '';
+  if (document.getElementById('uHorasReg'))   document.getElementById('uHorasReg').value   = u.horasReg      || 40;
+  if (document.getElementById('uFechaInicio')) document.getElementById('uFechaInicio').value = u.fechaInicioEmp || '';
 
   var hdr = document.querySelector('#mUsr .mh');
   if (hdr) hdr.childNodes[0].textContent = '✏️ Editar Usuario ';
@@ -4300,6 +4314,15 @@ function actualizarUsr(uid) {
   u.tel      = document.getElementById('uTel').value;
   u.salario  = parseFloat(document.getElementById('uSalario')  ? document.getElementById('uSalario').value  : u.salario)  || u.salario  || 0;
   u.horasReg = parseInt (document.getElementById('uHorasReg') ? document.getElementById('uHorasReg').value : u.horasReg) || u.horasReg || 40;
+  var fechaVal = document.getElementById('uFechaInicio') ? document.getElementById('uFechaInicio').value : '';
+  if (fechaVal) {
+    var partesFecha = fechaVal.split('-');
+    var anio = parseInt(partesFecha[0]);
+    if (partesFecha.length !== 3 || anio < 1950 || anio > new Date().getFullYear()) {
+      toast('⚠️ Fecha de inicio inválida. Usa el formato correcto (ej: 2020-01-15)'); return;
+    }
+  }
+  u.fechaInicioEmp = fechaVal;
   sDB();
   closeM('mUsr');
   rUsr();
@@ -4316,9 +4339,16 @@ function saveUsr() {
   var n=document.getElementById('uN').value.trim(), u=document.getElementById('uU').value.trim().toLowerCase(), p=document.getElementById('uP').value;
   if (!n||!u||!p) { toast('⚠️ Nombre, usuario y contraseña son obligatorios'); return; }
   if (DB.usuarios.find(function(x){ return x.username===u; })) { toast('⚠️ Ese usuario ya existe'); return; }
-  DB.usuarios.push({id:'U'+Date.now(),nombre:n,username:u,password:p,rol:document.getElementById('uR').value,turno:document.getElementById('uT').value,salario:parseFloat(document.getElementById('uSalario').value)||0,horasReg:parseInt(document.getElementById('uHorasReg').value)||40,fechaInicioEmp:document.getElementById('uFechaInicio')?document.getElementById('uFechaInicio').value:'',vacUsados:0,enfUsados:0});
+  var fechaIni = document.getElementById('uFechaInicio') ? document.getElementById('uFechaInicio').value : '';
+  if (fechaIni) {
+    var pf = fechaIni.split('-'); var ay = parseInt(pf[0]);
+    if (pf.length !== 3 || ay < 1950 || ay > new Date().getFullYear()) {
+      toast('⚠️ Fecha de inicio inválida. Usa el formato correcto (ej: 2020-01-15)'); return;
+    }
+  }
+  DB.usuarios.push({id:'U'+Date.now(),nombre:n,username:u,password:p,rol:document.getElementById('uR').value,turno:document.getElementById('uT').value,salario:parseFloat(document.getElementById('uSalario').value)||0,horasReg:parseInt(document.getElementById('uHorasReg').value)||40,fechaInicioEmp:fechaIni,vacUsados:0,enfUsados:0});
   sDB(); closeM('mUsr'); rUsr();
-  ['uN','uU','uP','uTel','uSalario'].forEach(function(i){ document.getElementById(i).value=''; }); document.getElementById('uHorasReg').value='40';
+  ['uN','uU','uP','uTel','uSalario'].forEach(function(i){ document.getElementById(i).value=''; }); document.getElementById('uHorasReg').value='40'; if(document.getElementById('uFechaInicio')) document.getElementById('uFechaInicio').value='';
   logAudit('Usuario','Usuario creado: '+n);
   toast('✅ Usuario creado','vs');
 }
