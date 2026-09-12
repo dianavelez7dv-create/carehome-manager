@@ -1815,7 +1815,7 @@
         <div class="fi ff">
         <label>Residente *</label>
         <input type="text" id="lupa_mR" placeholder="🔍 Escribir para buscar..." oninput="lupaFiltrar('lupa_mR','mR')" style="border:1.5px solid var(--bo);border-radius:8px;padding:9px 12px;font-size:15px;width:100%;margin-bottom:4px">
-        <div style="display:flex;gap:6px;align-items:center;margin-bottom:4px"><button class="btn bxs" style="background:#444;color:white;white-space:nowrap" onclick="abrirQR('mR')">📷 QR</button></div><select id="mR" size="4" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px" onchange="mostrarPanelMed(this.value)"><option value="">— Seleccionar —</option></select>
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:4px"><button class="btn bxs" style="background:#444;color:white;white-space:nowrap" onclick="abrirQR('mR')">📷 QR</button></div><select id="mR" size="4" style="width:100%;border:1.5px solid var(--bo);border-radius:8px;font-size:15px;padding:4px" onchange="mostrarPanelMed(this.value);var lm=document.getElementById('lupa_mR');if(lm&&this.options[this.selectedIndex])lm.value=this.options[this.selectedIndex].text" onclick="mostrarPanelMed(this.value)"><option value="">— Seleccionar —</option></select>
           <div id="alertaAlerMed" style="display:none;background:var(--rc);border:1.5px solid var(--ra);border-radius:8px;padding:10px 12px;margin-top:6px;font-size:13px;color:var(--ra);font-weight:700"></div>
           <div id="medPanelRecetados" style="display:none;background:var(--ac);border:1.5px solid var(--am);border-radius:8px;padding:10px 12px;margin-top:6px;font-size:13px"></div>
       </div>
@@ -3171,6 +3171,8 @@ function pSelEmps(sid, roles) {
     sel.appendChild(o);
   });
   if (cur) sel.value = cur;
+  // Si es el select de medicamentos, mostrar panel
+  if (selId === 'mR' && sel.value) mostrarPanelMed(sel.value);
 }
 
 function pSel(sid) {
@@ -3658,6 +3660,7 @@ function saveRes() {
     nivelCuido: document.getElementById('rNivelCuido').value,
     medicare: document.getElementById('rMedicare').value,
     medicareID: document.getElementById('rMedicareID').value.trim(),
+    medsRecetados: document.getElementById('rMedsRecetados') ? document.getElementById('rMedsRecetados').value.trim() : '',
     medicaid: document.getElementById('rMedicaid').value,
     medicaidID: document.getElementById('rMedicaidID').value.trim(),
     cupones: document.getElementById('rCupones').value,
@@ -3842,6 +3845,7 @@ function openMed() {
   if(document.getElementById('mHAmPm')) document.getElementById('mHAmPm').value = ampm;
   var fEl = document.getElementById('mFecha');
   if (fEl) fEl.value = n.toISOString().slice(0,10);
+  mostrarPanelMed('');
   setTimeout(function(){
     pSel('mR');
     var li = document.getElementById('lupa_mR');
@@ -3865,9 +3869,11 @@ function openMedConRes() {
       var r = DB.residentes.find(function(x){ return x.id===filtroRid; });
       var li = document.getElementById('lupa_mR');
       if (li && r) li.value = r.nombre + ' (Hab. ' + r.habitacion + ')';
+      mostrarPanelMed(filtroRid);
     } else {
       var li2 = document.getElementById('lupa_mR');
       if (li2) li2.value = '';
+      mostrarPanelMed('');
     }
   }, 50);
 }
@@ -4057,7 +4063,18 @@ function openAlim() { openM('mAlim'); setTimeout(function(){ pSel('alR'); var l=
 function openInc()  { openM('mInc'); setTimeout(function(){ pSel('inR'); var l=document.getElementById('lupa_inR'); if(l)l.value=''; },50); }
 function openVis()  { openM('mVis'); var n=new Date(); document.getElementById('viE').value=n.toTimeString().slice(0,5); setTimeout(function(){ pSel('viR'); var l=document.getElementById('lupa_viR'); if(l)l.value=''; },50); }
 function saveMed() {
-  var rid=document.getElementById('mR').value, nom=document.getElementById('mN').value.trim();
+  var mRsel = document.getElementById('mR');
+  var rid = mRsel ? mRsel.value : '';
+  // Si mR no tiene valor, intentar con el primer option no-vacío seleccionado
+  if (!rid && mRsel && mRsel.options) {
+    for (var oi=0; oi<mRsel.options.length; oi++) {
+      if (mRsel.options[oi].value && mRsel.options[oi].selected) { rid = mRsel.options[oi].value; break; }
+    }
+    // Si solo hay una opción no-vacía, tomarla
+    var nonEmpty = Array.from(mRsel.options).filter(function(o){ return o.value; });
+    if (!rid && nonEmpty.length === 1) rid = nonEmpty[0].value;
+  }
+  var nom=document.getElementById('mN').value.trim();
   if (!rid||!nom) { toast('⚠️ Residente y medicamento obligatorios'); return; }
   var _pinMed = document.getElementById('mE') ? document.getElementById('mE').value.trim() : '';
   var _empMed = _pinMed ? DB.usuarios.find(function(u){ return u.password&&u.password.slice(-4)===_pinMed; }) : null;
@@ -5877,6 +5894,7 @@ function editRes(id) {
   if (document.getElementById('rRevPlan')) document.getElementById('rRevPlan').value = r.revPlan || '';
   if (document.getElementById('rRevEspec')) document.getElementById('rRevEspec').value = r.revEspec || '';
   if (document.getElementById('rEspecialista')) document.getElementById('rEspecialista').value = r.especialista || '';
+  if (document.getElementById('rMedsRecetados')) document.getElementById('rMedsRecetados').value = r.medsRecetados || '';
 
   if (r.foto) {
     document.getElementById('rFotoImg').src = r.foto;
@@ -5886,6 +5904,9 @@ function editRes(id) {
     if (document.getElementById('rFotoQuit')) document.getElementById('rFotoQuit').style.display = 'inline-flex';
   }
 
+  // Cargar medicamentos recetados
+  var rMR = document.getElementById('rMedsRecetados');
+  if (rMR) rMR.value = r.medsRecetados || '';
   var btnGuardar = document.querySelector('#mRes .btn.bvs');
   if (btnGuardar) {
     btnGuardar.textContent = '💾 Actualizar Residente';
@@ -5936,7 +5957,8 @@ function actualizarRes(id) {
     revMedica: document.getElementById('rRevMedica') ? document.getElementById('rRevMedica').value : '',
     revPlan: document.getElementById('rRevPlan') ? document.getElementById('rRevPlan').value : '',
     revEspec: document.getElementById('rRevEspec') ? document.getElementById('rRevEspec').value : '',
-    especialista: document.getElementById('rEspecialista') ? document.getElementById('rEspecialista').value.trim() : ''
+    especialista: document.getElementById('rEspecialista') ? document.getElementById('rEspecialista').value.trim() : '',
+    medsRecetados: document.getElementById('rMedsRecetados') ? document.getElementById('rMedsRecetados').value.trim() : ''
   });
   sDB(); closeM('mRes'); rRes();
   logAudit('Residente','Nuevo residente registrado',n);
@@ -9330,6 +9352,7 @@ function mostrarPanelMed(rid) {
   var p = document.getElementById('medPanelRecetados');
   if (!p) return;
   var r = rid ? DB.residentes.find(function(x){return x.id===rid;}) : null;
+  console.log('mostrarPanelMed rid='+rid+' medsRecetados='+(r?r.medsRecetados:'NO RESIDENTE'));
   if (!r || !r.medsRecetados) { p.style.display='none'; return; }
   var lineas = r.medsRecetados.replace(/,/g,'|').split('|').map(function(s){return s.trim();}).filter(Boolean);
   p.innerHTML = '<div style="font-size:11px;font-weight:700;color:var(--am);margin-bottom:4px">📋 Medicamentos recetados:</div>'+
