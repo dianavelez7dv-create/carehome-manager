@@ -4158,7 +4158,7 @@ function saveSV() {
     var el = document.getElementById(id); if (el) el.value = '';
   });
   // Limpiar resultado del PIN
-  var svPinRes = document.getElementById('svPinRes');
+  var svPinRes = document.getElementById('svERes');
   if (svPinRes) { svPinRes.textContent = 'Ingresa tu PIN'; svPinRes.className = 'pin-emp-result pin-emp-idle'; }
   if (pesoEl) pesoEl.value = '';
   if (document.getElementById('svPUnit')) document.getElementById('svPUnit').value = 'kg';
