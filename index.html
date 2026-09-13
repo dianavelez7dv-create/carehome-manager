@@ -7790,8 +7790,7 @@ function saveMemo(genPDF) {
     cuerpo: cuerpo,
     supervisor: document.getElementById('memoSupervisor').value.trim(),
     firma: document.getElementById('memoFirma').checked,
-    firmaImg: document.getElementById('memoFirma') && document.getElementById('memoFirma').checked ? getFirmaBase64() : '',
-    firmaImg: document.getElementById('memoFirma').checked ? getFirmaBase64() : '',
+    firmaImg: window._firmaDataURL || '',
     firmado: false,
     empleado: emp ? emp.nombre : '',
     ts: fh(), raw: new Date().toISOString()
