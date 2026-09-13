@@ -2588,12 +2588,20 @@
           <input id="memoSupervisor" type="text" placeholder="Nombre del supervisor" value="">
         </div>
         <div class="fi" style="display:flex;align-items:center;gap:10px">
-          <input type="checkbox" id="memoFirma" style="width:20px;height:20px;accent-color:var(--mo)">
+          <input type="checkbox" id="memoFirma" style="width:20px;height:20px;accent-color:var(--mo)" onchange="toggleFirmaCanvas()">
           <label for="memoFirma" style="cursor:pointer;font-size:13px">Requiere firma del empleado</label>
+        </div>
+        <div id="firmaCanvasWrap" style="display:none" class="fi ff">
+          <label>✍️ Firma del empleado <span style="font-size:11px;color:var(--gm)">(firma con el dedo o mouse)</span></label>
+          <canvas id="firmaCanvas" width="400" height="150" style="border:2px solid var(--bo);border-radius:8px;background:white;touch-action:none;width:100%;cursor:crosshair"></canvas>
+          <div style="display:flex;gap:8px;margin-top:6px">
+            <button class="btn bra bxs" onclick="limpiarFirma()">🗑️ Limpiar firma</button>
+            <span id="firmaStatus" style="font-size:12px;color:var(--gm);align-self:center"></span>
+          </div>
         </div>
       </div>
       <div class="ab">
-        <button class="btn bol" onclick="closeM('mMemo')">Cancelar</button>
+        <button class="btn bol" onclick="closeM('mMemo');limpiarFirma();document.getElementById('firmaCanvasWrap').style.display='none';document.getElementById('memoFirma').checked=false;">Cancelar</button>
         <button class="btn" style="background:#7B2D8B;color:white" onclick="saveMemo()">💾 Guardar Memo</button>
         <button class="btn bmo" onclick="pdfMemo()">📄 Guardar y PDF</button>
       </div>
@@ -5154,8 +5162,18 @@ function rEmpStatus() {
 
 function toMin(hora) {
   if (!hora) return 0;
-  var p = hora.split(':');
-  return parseInt(p[0])*60 + parseInt(p[1]||0);
+  var h = hora.toString().trim();
+  // Normalizar: quitar puntos de a.m./p.m. y espacios extra
+  var ampm = '';
+  var hNorm = h.toUpperCase().replace(/\./g,'').replace(/\s+/g,' ').trim();
+  if (hNorm.includes('AM')) { ampm='AM'; hNorm=hNorm.replace('AM','').trim(); }
+  else if (hNorm.includes('PM')) { ampm='PM'; hNorm=hNorm.replace('PM','').trim(); }
+  var p = hNorm.split(':');
+  var hrs = parseInt(p[0]) || 0;
+  var mins = parseInt(p[1]) || 0;
+  if (ampm==='PM' && hrs!==12) hrs += 12;
+  if (ampm==='AM' && hrs===12) hrs = 0;
+  return hrs*60 + mins;
 }
 
 function rReporte() {
@@ -5175,19 +5193,25 @@ function rReporte() {
   // Calcular minutos trabajados por empleado por día
   // Algoritmo: ordenar ponches por hora, ir alternando entrada/salida
   function calcMinutos(ponches) {
-    var sorted = ponches.slice().sort(function(a,b){ return a.hora>b.hora?1:-1; });
+    // Ordenar por timestamp real (raw) para manejar turnos nocturnos
+    var sorted = ponches.slice().sort(function(a,b){
+      var ta = a.raw ? new Date(a.raw).getTime() : toMin(a.hora);
+      var tb = b.raw ? new Date(b.raw).getTime() : toMin(b.hora);
+      return ta - tb;
+    });
     var min = 0;
     var ultimaEntrada = null;
     sorted.forEach(function(p){
       if (p.tipo==='entrada') {
-        ultimaEntrada = toMin(p.hora);
+        ultimaEntrada = p.raw ? new Date(p.raw).getTime() : toMin(p.hora)*60000;
       } else if (p.tipo==='salida' && ultimaEntrada !== null) {
-        var sal = toMin(p.hora);
-        if (sal > ultimaEntrada) min += sal - ultimaEntrada;
+        var sal = p.raw ? new Date(p.raw).getTime() : toMin(p.hora)*60000;
+        var diff = (sal - ultimaEntrada) / 60000; // en minutos
+        if (diff > 0 && diff < 720) min += diff; // max 12h por turno
         ultimaEntrada = null;
       }
     });
-    return min;
+    return Math.round(min);
   }
 
   var fechasSet = {};
@@ -5207,10 +5231,27 @@ function rReporte() {
   DB.usuarios.forEach(function(u){
     if (uid && u.id!==uid) return;
     fechas.forEach(function(fecha){
-      var regs = (DB.ponches||[]).filter(function(p){ return p.userId===u.id && p.fecha===fecha; });
+      var regs = (DB.ponches||[]).filter(function(p){ 
+        return (p.userId===u.id || p.nombre===u.nombre) && p.fecha===fecha; 
+      });
       if (!regs.length) return;
 
-      var sorted = regs.slice().sort(function(a,b){ return a.hora>b.hora?1:-1; });
+      // Ordenar por timestamp real
+      var sorted = regs.slice().sort(function(a,b){ 
+        return new Date(a.raw||0).getTime() - new Date(b.raw||0).getTime(); 
+      });
+      
+      // Si la última entrada no tiene salida, buscar salida en el día siguiente
+      var ultimoTipo = sorted.length ? sorted[sorted.length-1].tipo : '';
+      if (ultimoTipo === 'entrada') {
+        var nextDay = new Date(fecha); nextDay.setDate(nextDay.getDate()+1);
+        var nextDayStr = nextDay.toISOString().slice(0,10);
+        var salNextDay = (DB.ponches||[]).filter(function(p){
+          return (p.userId===u.id || p.nombre===u.nombre) && p.fecha===nextDayStr && p.tipo==='salida';
+        }).sort(function(a,b){ return new Date(a.raw||0).getTime()-new Date(b.raw||0).getTime(); })[0];
+        if (salNextDay) regs = regs.concat([salNextDay]);
+      }
+      
       var horaEnt = sorted.find(function(p){ return p.tipo==='entrada'; });
       var horaSal = sorted.slice().reverse().find(function(p){ return p.tipo==='salida'; });
       var totalMin = calcMinutos(regs);
@@ -7714,6 +7755,26 @@ function openMemo() {
   openM('mMemo');
 }
 
+// FIRMA DIGITAL
+var _firmaActiva = false;
+function toggleFirmaCanvas() {
+  var wrap=document.getElementById('firmaCanvasWrap'); var chk=document.getElementById('memoFirma');
+  if(!wrap) return; wrap.style.display=chk.checked?'block':'none'; if(chk.checked) initFirmaCanvas();
+}
+function initFirmaCanvas() {
+  var canvas=document.getElementById('firmaCanvas'); if(!canvas||canvas._firmaInit) return; canvas._firmaInit=true;
+  var ctx=canvas.getContext('2d'); ctx.strokeStyle='#1A3A5C'; ctx.lineWidth=2.5; ctx.lineCap='round'; ctx.lineJoin='round';
+  function getPos(e){var rect=canvas.getBoundingClientRect();var scaleX=canvas.width/rect.width;var scaleY=canvas.height/rect.height;var src=e.touches?e.touches[0]:e;return{x:(src.clientX-rect.left)*scaleX,y:(src.clientY-rect.top)*scaleY};}
+  function start(e){e.preventDefault();_firmaActiva=true;var p=getPos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);var s=document.getElementById('firmaStatus');if(s)s.textContent='';}
+  function move(e){if(!_firmaActiva)return;e.preventDefault();var p=getPos(e);ctx.lineTo(p.x,p.y);ctx.stroke();ctx.beginPath();ctx.moveTo(p.x,p.y);}
+  function end(){_firmaActiva=false;var s=document.getElementById('firmaStatus');if(s)s.textContent='✅ Firma capturada';}
+  canvas.addEventListener('mousedown',start,{passive:false});canvas.addEventListener('mousemove',move,{passive:false});
+  canvas.addEventListener('mouseup',end);canvas.addEventListener('mouseleave',end);
+  canvas.addEventListener('touchstart',start,{passive:false});canvas.addEventListener('touchmove',move,{passive:false});canvas.addEventListener('touchend',end,{passive:false});
+}
+function limpiarFirma(){var c=document.getElementById('firmaCanvas');if(!c)return;c.getContext('2d').clearRect(0,0,c.width,c.height);var s=document.getElementById('firmaStatus');if(s)s.textContent='';}
+function getFirmaBase64(){var c=document.getElementById('firmaCanvas');if(!c)return '';var ctx=c.getContext('2d');var d=ctx.getImageData(0,0,c.width,c.height).data;for(var i=3;i<d.length;i+=4){if(d[i]>0)return c.toDataURL('image/png');}return '';}
+
 function saveMemo(genPDF) {
   if (!_empSelId) return;
   var asunto = document.getElementById('memoAsunto').value.trim();
@@ -7728,6 +7789,8 @@ function saveMemo(genPDF) {
     cuerpo: cuerpo,
     supervisor: document.getElementById('memoSupervisor').value.trim(),
     firma: document.getElementById('memoFirma').checked,
+    firmaImg: document.getElementById('memoFirma') && document.getElementById('memoFirma').checked ? getFirmaBase64() : '',
+    firmaImg: document.getElementById('memoFirma').checked ? getFirmaBase64() : '',
     firmado: false,
     empleado: emp ? emp.nombre : '',
     ts: fh(), raw: new Date().toISOString()
@@ -8576,6 +8639,17 @@ function saveAseo() {
   var hechos = Object.values(items).filter(Boolean).length;
 
   if (!DB.aseos) DB.aseos = [];
+
+  // Verificar si ya existe una entrada del mismo residente en el mismo turno hoy
+  var hoy = new Date().toISOString().slice(0,10);
+  var turnoActual = document.getElementById('aseoTurno') ? document.getElementById('aseoTurno').value : '';
+  var aseoExistente = DB.aseos.find(function(a){
+    return a.residenteId === rid && a.raw && a.raw.slice(0,10) === hoy && a.turno === turnoActual;
+  });
+  if (aseoExistente) {
+    if (!confirm('⚠️ Ya existe un registro de aseo para ' + (r ? r.nombre : 'este residente') + ' en el turno ' + turnoActual + ' de hoy.\n\n¿Deseas registrar otro?')) return;
+  }
+
   DB.aseos.push({
     id: 'AS'+Date.now(),
     ts: fh(), raw: new Date().toISOString(),
