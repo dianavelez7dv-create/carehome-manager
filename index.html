@@ -3179,8 +3179,6 @@ function pSelEmps(sid, roles) {
     sel.appendChild(o);
   });
   if (cur) sel.value = cur;
-  // Si es el select de medicamentos, mostrar panel
-  if (selId === 'mR' && sel.value) mostrarPanelMed(sel.value);
 }
 
 function pSel(sid) {
@@ -4156,9 +4154,12 @@ function saveSV() {
   rSV();
   gSV();
 
-  ['svS','svDi','svF','svFR','svT','svG','svO2','svOb'].forEach(function(id){
+  ['svS','svDi','svF','svFR','svT','svG','svO2','svOb','svE'].forEach(function(id){
     var el = document.getElementById(id); if (el) el.value = '';
   });
+  // Limpiar resultado del PIN
+  var svPinRes = document.getElementById('svPinRes');
+  if (svPinRes) { svPinRes.textContent = 'Ingresa tu PIN'; svPinRes.className = 'pin-emp-result pin-emp-idle'; }
   if (pesoEl) pesoEl.value = '';
   if (document.getElementById('svPUnit')) document.getElementById('svPUnit').value = 'kg';
   if (document.getElementById('svPConv')) document.getElementById('svPConv').textContent = '';
