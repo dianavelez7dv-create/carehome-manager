@@ -2588,7 +2588,7 @@
           <input id="memoSupervisor" type="text" placeholder="Nombre del supervisor" value="">
         </div>
         <div class="fi" style="display:flex;align-items:center;gap:10px">
-          <input type="checkbox" id="memoFirma" style="width:20px;height:20px;accent-color:var(--mo)" onchange="toggleFirmaCanvas()">
+          <input type="checkbox" id="memoFirma" style="width:20px;height:20px;accent-color:var(--mo)" onclick="toggleFirmaCanvas()">
           <label for="memoFirma" style="cursor:pointer;font-size:13px">Requiere firma del empleado</label>
         </div>
         <div id="firmaCanvasWrap" style="display:none" class="fi ff">
@@ -7757,6 +7757,7 @@ function openMemo() {
 
 // FIRMA DIGITAL
 var _firmaActiva = false;
+window._firmaDataURL = '';
 function toggleFirmaCanvas() {
   var wrap=document.getElementById('firmaCanvasWrap'); var chk=document.getElementById('memoFirma');
   if(!wrap) return; wrap.style.display=chk.checked?'block':'none'; if(chk.checked) initFirmaCanvas();
@@ -7767,13 +7768,13 @@ function initFirmaCanvas() {
   function getPos(e){var rect=canvas.getBoundingClientRect();var scaleX=canvas.width/rect.width;var scaleY=canvas.height/rect.height;var src=e.touches?e.touches[0]:e;return{x:(src.clientX-rect.left)*scaleX,y:(src.clientY-rect.top)*scaleY};}
   function start(e){e.preventDefault();_firmaActiva=true;var p=getPos(e);ctx.beginPath();ctx.moveTo(p.x,p.y);var s=document.getElementById('firmaStatus');if(s)s.textContent='';}
   function move(e){if(!_firmaActiva)return;e.preventDefault();var p=getPos(e);ctx.lineTo(p.x,p.y);ctx.stroke();ctx.beginPath();ctx.moveTo(p.x,p.y);}
-  function end(){_firmaActiva=false;var s=document.getElementById('firmaStatus');if(s)s.textContent='✅ Firma capturada';}
+  function end(){_firmaActiva=false;var s=document.getElementById('firmaStatus');if(s)s.textContent='✅ Firma capturada'; window._firmaDataURL=canvas.toDataURL('image/png');}
   canvas.addEventListener('mousedown',start,{passive:false});canvas.addEventListener('mousemove',move,{passive:false});
   canvas.addEventListener('mouseup',end);canvas.addEventListener('mouseleave',end);
   canvas.addEventListener('touchstart',start,{passive:false});canvas.addEventListener('touchmove',move,{passive:false});canvas.addEventListener('touchend',end,{passive:false});
 }
-function limpiarFirma(){var c=document.getElementById('firmaCanvas');if(!c)return;c.getContext('2d').clearRect(0,0,c.width,c.height);var s=document.getElementById('firmaStatus');if(s)s.textContent='';}
-function getFirmaBase64(){var c=document.getElementById('firmaCanvas');if(!c)return '';var ctx=c.getContext('2d');var d=ctx.getImageData(0,0,c.width,c.height).data;for(var i=3;i<d.length;i+=4){if(d[i]>0)return c.toDataURL('image/png');}return '';}
+function limpiarFirma(){var c=document.getElementById('firmaCanvas');if(!c)return;c.getContext('2d').clearRect(0,0,c.width,c.height);var s=document.getElementById('firmaStatus');if(s)s.textContent='';window._firmaDataURL='';}
+function getFirmaBase64(){return window._firmaDataURL||'';}
 
 function saveMemo(genPDF) {
   if (!_empSelId) return;
