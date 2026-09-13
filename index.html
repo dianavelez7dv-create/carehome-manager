@@ -7751,7 +7751,10 @@ function openMemo() {
   document.getElementById('memoAsunto').value = '';
   document.getElementById('memoCuerpo').value = '';
   document.getElementById('memoSupervisor').value = SES.nombre;
-  document.getElementById('memoFirma').checked = true;
+  document.getElementById('memoFirma').checked = false;
+  window._firmaDataURL = '';
+  var fw = document.getElementById('firmaCanvasWrap');
+  if (fw) fw.style.display = 'none';
   openM('mMemo');
 }
 
@@ -7870,7 +7873,8 @@ function rMemos() {
     h += '<button class="btn bsm bra" onclick="eliminarMemo(window._memoIds['+i+'])">🗑️</button>';
     h += '</div></div>';
     h += '<div class="memo-body">'+m.cuerpo+'</div>';
-    h += '<div class="memo-firma">Por: '+m.supervisor+' · '+m.ts+(m.firma?' · Requiere firma del empleado':'')+'</div>';
+    h += '<div class="memo-firma">Por: '+m.supervisor+' · '+m.ts+(m.firma?' · ✍️ Requiere firma':'')+'</div>';
+    if (m.firmaImg) { h += '<div style="margin:8px 0;padding:8px;border:1px solid #e0e0e0;border-radius:8px;background:#fafafa"><div style="font-size:11px;color:var(--gm);margin-bottom:4px">✍️ Firma del empleado:</div><img src="'+m.firmaImg+'" style="max-width:100%;max-height:120px;border-radius:4px"></div>'; }
     h += '</div>';
   });
   div.innerHTML = h;
