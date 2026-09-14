@@ -291,10 +291,18 @@
     <div class="is exp" id="exp-docs">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
         <div style="font-size:13px;font-weight:700;color:var(--pa)">📁 Laboratorios e Informes</div>
-        <label class="btn bvs" style="cursor:pointer;margin:0">
-          ➕ Subir archivo
-          <input type="file" id="docResFile" accept=".pdf,.jpg,.jpeg,.png,.webp" multiple style="display:none" onchange="subirDocRes(this)">
-        </label>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <select id="docResTipoNuevo" style="font-size:13px;padding:6px 10px;border-radius:8px;border:1.5px solid var(--bo)">
+            <option value="Laboratorio">🧪 Laboratorio</option>
+            <option value="Informe médico">📋 Informe médico</option>
+            <option value="Receta">💊 Receta</option>
+            <option value="Otro">📄 Otro</option>
+          </select>
+          <label class="btn bvs" style="cursor:pointer;margin:0">
+            ➕ Subir archivo
+            <input type="file" id="docResFile" accept=".pdf,.jpg,.jpeg,.png,.webp" multiple style="display:none" onchange="subirDocRes(this)">
+          </label>
+        </div>
       </div>
       <div style="font-size:11px;color:var(--gm);margin-bottom:10px">📎 Formatos: PDF, JPG, PNG · Máx. 5MB por archivo · Los archivos se guardan en este dispositivo</div>
       <div id="docResTipoFiltro" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
@@ -3583,6 +3591,7 @@ function goExp(id) {
 
 function loadExp() {
   var id = document.getElementById('selExp').value;
+  expResId = id; // asignar para documentos y otras funciones del expediente
   if (!id) { document.getElementById('expCont').style.display='none'; document.getElementById('expVac').style.display='block'; return; }
   document.getElementById('expCont').style.display = 'block';
   document.getElementById('expVac').style.display = 'none';
@@ -3740,8 +3749,7 @@ function openMedConRes() {
 // ══════════════════════════════════════════
 // DOCUMENTOS DE RESIDENTES — Supabase Storage
 // ══════════════════════════════════════════
-var _docResActivo = null;
-var expResId = null;  // objeto doc completo abierto en modal
+var _docResActivo = null;  // objeto doc completo abierto en modal
 var DOCS_BUCKET   = 'documentos-residentes';
 
 // Obtener URL pública de un path en Storage
@@ -3923,6 +3931,19 @@ function openAlim() { openM('mAlim'); setTimeout(function(){ pSel('alR'); var l=
 function openInc()  { openM('mInc'); setTimeout(function(){ pSel('inR'); var l=document.getElementById('lupa_inR'); if(l)l.value=''; },50); }
 function openVis()  { openM('mVis'); var n=new Date(); document.getElementById('viE').value=n.toTimeString().slice(0,5); setTimeout(function(){ pSel('viR'); var l=document.getElementById('lupa_viR'); if(l)l.value=''; },50); }
 function saveMed() {
+  // Asegurar fecha y hora - poner automático si faltan
+  var fecEl = document.getElementById('mFecha');
+  var horaEl = document.getElementById('mH');
+  var minEl = document.getElementById('mHMin');
+  var apEl = document.getElementById('mHAmPm');
+  var now = new Date();
+  if (fecEl && !fecEl.value) fecEl.value = now.toISOString().slice(0,10);
+  if (horaEl && !horaEl.value) {
+    var hrs = now.getHours(); var h12 = hrs%12||12; var ap = hrs>=12?'PM':'AM';
+    horaEl.value = h12;
+    if (minEl) minEl.value = String(now.getMinutes()).padStart(2,'0');
+    if (apEl) apEl.value = ap;
+  }
   var mRsel = document.getElementById('mR');
   var rid = mRsel ? mRsel.value : '';
   // Si mR no tiene valor, intentar con el primer option no-vacío seleccionado
