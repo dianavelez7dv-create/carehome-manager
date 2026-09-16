@@ -351,7 +351,7 @@
       <button class="btn bmo" onclick="pdfMed()">📄 PDF</button>
     </div>
     <div class="tw"><table>
-      <thead><tr><th>Fecha / Hora</th><th>Residente</th><th>Medicamento</th><th>Dosis</th><th>Vía</th><th>Enfermera</th><th>Estado</th><th>Obs.</th></tr></thead>
+      <thead><tr><th>Fecha / Hora</th><th>Residente</th><th>Medicamento</th><th>Dosis</th><th>Vía</th><th>Enfermera</th><th>Estado</th><th>Obs.</th><th>✏️</th></tr></thead>
       <tbody id="tMed"></tbody>
     </table></div>
   </div></div>
@@ -408,7 +408,7 @@
       <button class="btn bmo" onclick="pdfInc()">📄 PDF del mes</button>
     </div>
     <div class="tw"><table>
-      <thead><tr><th>Fecha/Hora</th><th>Residente</th><th>Tipo</th><th>Descripción</th><th>Gravedad</th><th>Acción</th><th>Reportó</th></tr></thead>
+      <thead><tr><th>Fecha/Hora</th><th>Residente</th><th>Tipo</th><th>Descripción</th><th>Gravedad</th><th>Acción</th><th>Reportó</th><th>Editar</th></tr></thead>
       <tbody id="tInc"></tbody>
     </table></div>
   </div></div>
@@ -3817,7 +3817,7 @@ function saveAler() {
   var med  = document.getElementById('eAMed').value.trim();
   var alim = document.getElementById('eAAlim').value.trim();
   var otra = document.getElementById('eAOtra').value.trim();
-  DB.expedientes[id].alergias = {medicamentos:med, alimentos:alim, otras:otra};
+  DB.expedientes[id].alergias = {medicamentos:med, alimentos:alim, otras:otra, modificadoPor: SES?SES.nombre:'', modificadoTs: fh()};
 
   var r = DB.residentes.find(function(x){ return x.id===id; });
   if (r) { r.alerMed=med; r.alerAlim=alim; r.alerOtra=otra; }
@@ -4178,6 +4178,69 @@ function saveSV() {
   logAudit('Signos Vitales','Signos registrados'+(r?' para '+r.nombre:'')+(enfermera?' por '+enfermera:''));
   toast('✅ Signos registrados', 'vs');
 }
+function editarSV(sid) {
+  var s = (DB.signos||[]).find(function(x){ return x.id===sid; });
+  if (!s) return;
+  var fields = {fSVR:s.residenteId, svS:s.tas, svDi:s.tad, svF:s.fc, svFR:s.fr, svT:s.temp, svG:s.glucosa, svO2:s.spo2, svOb:s.obs||''};
+  Object.keys(fields).forEach(function(id){ var el=document.getElementById(id); if(el) el.value=fields[id]||''; });
+  var lupaEl = document.getElementById('lupa_fSVR'); if(lupaEl) lupaEl.value = nr(s.residenteId);
+  var btn = document.querySelector('#tab-signos .btn.bvs[onclick="saveSV()"]') || document.querySelector('#tab-signos .btn.bvs');
+  if (btn) {
+    btn.textContent = '💾 Actualizar Signos';
+    btn._editSVId = sid;
+    btn.onclick = function() {
+      var s2 = (DB.signos||[]).find(function(x){ return x.id===this._editSVId; }.bind(this));
+      if (!s2) return;
+      s2.tas=document.getElementById('svS')?document.getElementById('svS').value:s2.tas;
+      s2.tad=document.getElementById('svDi')?document.getElementById('svDi').value:s2.tad;
+      s2.fc=document.getElementById('svF')?document.getElementById('svF').value:s2.fc;
+      s2.fr=document.getElementById('svFR')?document.getElementById('svFR').value:s2.fr;
+      s2.temp=document.getElementById('svT')?document.getElementById('svT').value:s2.temp;
+      s2.glucosa=document.getElementById('svG')?document.getElementById('svG').value:s2.glucosa;
+      s2.spo2=document.getElementById('svO2')?document.getElementById('svO2').value:s2.spo2;
+      s2.obs=document.getElementById('svOb')?document.getElementById('svOb').value:s2.obs;
+      s2.modificadoPor = SES?SES.nombre:''; s2.modificadoTs = fh();
+      sDB(); rSV(); gSV(); calcAlerts();
+      logAudit('Signos Vitales','Editado por '+(SES?SES.nombre:''));
+      toast('✅ Signos actualizados','vs');
+      btn.textContent='💾 Registrar Signos'; btn.onclick=saveSV; btn._editSVId=null;
+    };
+  }
+  var form=document.querySelector('#tab-signos .card'); if(form) form.scrollIntoView({behavior:'smooth'});
+  toast('✏️ Editando signos — modifica y guarda','am');
+}
+
+function editarMed(mid) {
+  var m = (DB.medicamentos||[]).find(function(x){ return x.id===mid; });
+  if (!m) return;
+  var mRsel=document.getElementById('mR'); if(mRsel) mRsel.value=m.residenteId;
+  var lupaEl=document.getElementById('lupa_mR'); if(lupaEl) lupaEl.value=nr(m.residenteId);
+  var mN=document.getElementById('mN'); if(mN) mN.value=m.nombre||'';
+  var mD=document.getElementById('mD'); if(mD) mD.value=m.dosis||'';
+  var mV=document.getElementById('mV'); if(mV) mV.value=m.via||'';
+  var mEst=document.getElementById('mEst'); if(mEst) mEst.value=m.estado||'';
+  var mO=document.getElementById('mO'); if(mO) mO.value=m.obs||'';
+  var mFecha=document.getElementById('mFecha'); if(mFecha) mFecha.value=m.fecha||'';
+  mostrarPanelMed(m.residenteId);
+  openM('mMed');
+  var btn=document.querySelector('#mMed .btn.bol[onclick="saveMed()"]') || document.querySelector('#mMed .ab .btn.bvs');
+  if(!btn) btn=document.querySelector('#mMed .ab button:last-child');
+  if(btn) {
+    var origText=btn.textContent; btn.textContent='💾 Actualizar'; btn._editMedId=mid;
+    btn.onclick=function(){
+      var m2=(DB.medicamentos||[]).find(function(x){return x.id===this._editMedId;}.bind(this));
+      if(!m2) return;
+      m2.nombre=mN?mN.value:m2.nombre; m2.dosis=mD?mD.value:m2.dosis; m2.via=mV?mV.value:m2.via;
+      m2.estado=mEst?mEst.value:m2.estado; m2.obs=mO?mO.value:m2.obs; m2.fecha=mFecha?mFecha.value:m2.fecha;
+      m2.modificadoPor=SES?SES.nombre:''; m2.modificadoTs=fh();
+      sDB(); rMed(); closeM('mMed');
+      logAudit('Medicamento','Editado por '+(SES?SES.nombre:''));
+      toast('✅ Medicamento actualizado','vs');
+      btn.textContent=origText; btn.onclick=saveMed; btn._editMedId=null;
+    };
+  }
+}
+
 function rSV() {
   var tbody=document.getElementById('tSV'), lista=DB.signos.slice().reverse();
   if (!lista.length) { tbody.innerHTML=em(10,'📈','Sin registros de signos vitales.'); return; }
@@ -4185,7 +4248,7 @@ function rSV() {
   lista.forEach(function(s){
     var ta=(s.tas&&s.tad)?s.tas+'/'+s.tad:'—';
     var al=parseInt(s.tas)>160||parseInt(s.glucosa)>200?'style="background:#fff5f5"':'';
-    h+='<tr '+al+'><td style="white-space:nowrap">'+s.ts+'</td><td>'+nr(s.residenteId)+'</td><td>'+(parseInt(s.tas)>160?'<strong style="color:red">'+ta+'</strong>':ta)+'</td><td>'+(s.fc||'—')+'</td><td>'+(s.fr||'—')+'</td><td>'+(s.temp?s.temp+'°C':'—')+'</td><td>'+(s.glucosa?s.glucosa+' mg/dL':'—')+'</td><td>'+(s.spo2?s.spo2+'%':'—')+'</td><td>'+(s.enfermera||'—')+'</td><td style="font-size:12px">'+(s.obs||'—')+'</td></tr>';
+    h+='<tr '+al+'><td style="white-space:nowrap">'+s.ts+'</td><td>'+nr(s.residenteId)+'</td><td>'+(parseInt(s.tas)>160?'<strong style="color:red">'+ta+'</strong>':ta)+'</td><td>'+(s.fc||'—')+'</td><td>'+(s.fr||'—')+'</td><td>'+(s.temp?s.temp+'°C':'—')+'</td><td>'+(s.glucosa?s.glucosa+' mg/dL':'—')+'</td><td>'+(s.spo2?s.spo2+'%':'—')+'</td><td>'+(s.enfermera||'—')+'</td><td style="font-size:12px">'+(s.obs||'—')+'</td><td><button class="btn bxs bmo" data-sid="'+s.id+'" onclick="editarSV(this.dataset.sid)">✏️</button>'+(s.modificadoPor?'<div style="font-size:10px;color:var(--gm)">'+s.modificadoPor+'</div>':'')+'</td></tr>';
   });
   tbody.innerHTML=h;
 }
@@ -4242,13 +4305,55 @@ function saveInc() {
   ['inD','inA','inRep'].forEach(function(i){ document.getElementById(i).value=''; });
   toast('🚨 Incidente reportado','vs');
 }
+function editarIncidente(iid) {
+  var inc = (DB.incidentes||[]).find(function(i){ return i.id===iid; });
+  if (!inc) return;
+  // Llenar el formulario con los datos del incidente
+  var rSel = document.getElementById('inR'); if (rSel) rSel.value = inc.residenteId;
+  var lupaEl = document.getElementById('lupa_inR'); if (lupaEl) lupaEl.value = nr(inc.residenteId);
+  var tipo = document.getElementById('inT'); if (tipo) tipo.value = inc.tipo;
+  var desc = document.getElementById('inDesc'); if (desc) desc.value = inc.descripcion;
+  var grav = document.getElementById('inG'); if (grav) grav.value = inc.gravedad;
+  var acc  = document.getElementById('inAcc'); if (acc) acc.value = inc.accion||'';
+  var rep  = document.getElementById('inRep'); if (rep) rep.value = inc.reporta||'';
+  // Cambiar botón de guardar para actualizar en vez de crear
+  var btn = document.querySelector('#tab-incidentes .btn.bvs');
+  if (btn) {
+    btn.textContent = '💾 Actualizar Incidente';
+    btn._editId = iid;
+    btn.onclick = function() {
+      var i2 = (DB.incidentes||[]).find(function(x){ return x.id===this._editId; }.bind(this));
+      if (!i2) return;
+      i2.residenteId = rSel ? rSel.value : i2.residenteId;
+      i2.tipo        = tipo ? tipo.value : i2.tipo;
+      i2.descripcion = desc ? desc.value : i2.descripcion;
+      i2.gravedad    = grav ? grav.value : i2.gravedad;
+      i2.accion      = acc ? acc.value : i2.accion;
+      i2.reporta     = rep ? rep.value : i2.reporta;
+      i2.modificadoPor = SES ? SES.nombre : '';
+      i2.modificadoTs  = fh();
+      sDB(); rInc();
+      logAudit('Incidente', 'Editado por ' + (SES?SES.nombre:''));
+      toast('✅ Incidente actualizado', 'vs');
+      // Restaurar botón original
+      btn.textContent = '💾 Registrar Incidente';
+      btn.onclick = saveInc;
+      btn._editId = null;
+    };
+  }
+  // Scroll al formulario
+  var form = document.querySelector('#tab-incidentes .card');
+  if (form) form.scrollIntoView({behavior:'smooth'});
+  toast('✏️ Editando incidente — modifica y guarda', 'am');
+}
+
 function rInc() {
   var tbody=document.getElementById('tInc'), lista=DB.incidentes.slice().reverse();
   if (!lista.length) { tbody.innerHTML=em(7,'✅','Sin incidentes reportados.'); return; }
   var h='';
   lista.forEach(function(i){
     var bc=i.gravedad.includes('Crítico')||i.gravedad.includes('Grave')?'brd':i.gravedad.includes('Moderado')?'bnd':'bvd';
-    h+='<tr><td style="white-space:nowrap">'+i.ts+'</td><td>'+nr(i.residenteId)+'</td><td>'+i.tipo+'</td><td style="font-size:13px">'+i.descripcion+'</td><td><span class="badge '+bc+'">'+i.gravedad+'</span></td><td style="font-size:12px">'+(i.accion||'—')+'</td><td>'+(i.reporta||'—')+'</td></tr>';
+    h+='<tr><td style="white-space:nowrap">'+i.ts+'</td><td>'+nr(i.residenteId)+'</td><td>'+i.tipo+'</td><td style="font-size:13px">'+i.descripcion+'</td><td><span class="badge '+bc+'">'+i.gravedad+'</span></td><td style="font-size:12px">'+(i.accion||'—')+'</td><td>'+(i.reporta||'—')+'</td><td><button class="btn bxs bmo" data-iid="'+i.id+'" onclick="editarIncidente(this.dataset.iid)">✏️</button></td></tr>';
   });
   tbody.innerHTML=h;
 }
@@ -8073,6 +8178,7 @@ function rPagos() {
     if (p.estado!=='Pagado') h += '<button class="btn bsm bvs" onclick="marcarPagado(window._pgIds['+i+'])">✅ Marcar Pagado</button>';
     if (p.estado==='Plan de pago') h += '<button class="btn bsm" style="background:#117A65;color:white" onclick="openAbono(window._pgIds['+i+'])">💵 Abonar</button>';
     h += '<button class="btn bsm bmo" onclick="editarEstadoPago(window._pgIds['+i+'])">✏️ Estado</button>';
+    h += '<button class="btn bsm" style="background:#607D8B;color:white" onclick="editarPagoCompleto(window._pgIds['+i+'])">📝 Editar</button>';
     h += '<button class="btn bsm" style="background:#1A3A5C;color:white" onclick="imprimirRecibo(window._pgIds['+i+'])">🧾 Recibo</button>';
     h += '<button class="btn bsm bra" onclick="eliminarPago(window._pgIds['+i+'])">🗑️</button>';
     h += '</div></div>';
@@ -8092,6 +8198,51 @@ function marcarPagado(id) {
 }
 
 var _pgEditId = null;
+function editarPagoCompleto(pid) {
+  var p = (DB.pagos||[]).find(function(x){ return x.id===pid; });
+  if (!p) return;
+  // Llenar modal de pago con datos existentes
+  var fRes=document.getElementById('fPagoRes'); if(fRes) fRes.value=p.residenteId||'';
+  var fTipo=document.getElementById('mPagoTipo')||document.getElementById('fPagoTipo2');
+  var fMonto=document.getElementById('mPagoMonto')||document.getElementById('fMonto');
+  var fMes=document.getElementById('mPagoMes')||document.getElementById('fPagoMes');
+  var fEst=document.getElementById('mPagoEst')||document.getElementById('fPagoEst2');
+  var fMet=document.getElementById('mPagoMetodo')||document.getElementById('fMetodo');
+  var fNota=document.getElementById('mPagoNota')||document.getElementById('fNota');
+  // Abrir modal de pago y esperar a que esté listo
+  openPago();
+  setTimeout(function(){
+    var fTipo2=document.getElementById('mPagoTipo'); if(fTipo2) fTipo2.value=p.tipo||'';
+    var fMonto2=document.getElementById('mPagoMonto'); if(fMonto2) fMonto2.value=p.monto||'';
+    var fMes2=document.getElementById('mPagoMes'); if(fMes2) fMes2.value=p.mes||p.periodo||'';
+    var fEst2=document.getElementById('mPagoEst'); if(fEst2) fEst2.value=p.estado||'';
+    var fMet2=document.getElementById('mPagoMetodo'); if(fMet2) fMet2.value=p.metodo||'';
+    var fNota2=document.getElementById('mPagoNota'); if(fNota2) fNota2.value=p.nota||'';
+    var fRes2=document.getElementById('fPagoRes'); if(fRes2) fRes2.value=p.residenteId||'';
+    // Cambiar botón guardar
+    var btn=document.querySelector('#mPago .btn.bvs')||document.querySelector('#mPago .ab .btn:last-child');
+    if(btn){
+      var origClick=btn.onclick; var origText=btn.textContent;
+      btn.textContent='💾 Actualizar Pago'; btn._editPid=pid;
+      btn.onclick=function(){
+        var p2=(DB.pagos||[]).find(function(x){return x.id===this._editPid;}.bind(this));
+        if(!p2) return;
+        p2.tipo=fTipo2?fTipo2.value:p2.tipo;
+        p2.monto=parseFloat(fMonto2?fMonto2.value:p2.monto)||p2.monto;
+        p2.mes=fMes2?fMes2.value:p2.mes;
+        p2.estado=fEst2?fEst2.value:p2.estado;
+        p2.metodo=fMet2?fMet2.value:p2.metodo;
+        p2.nota=fNota2?fNota2.value:p2.nota;
+        p2.modificadoPor=SES?SES.nombre:''; p2.modificadoTs=fh();
+        sDB(); rPagos(); closeM('mPago');
+        logAudit('Pago','Editado por '+(SES?SES.nombre:''));
+        toast('✅ Pago actualizado','vs');
+        btn.textContent=origText; btn.onclick=origClick; btn._editPid=null;
+      };
+    }
+  },100);
+}
+
 function editarEstadoPago(id) {
   var p = (DB.pagos||[]).find(function(x){ return x.id===id; });
   if (!p) return;
