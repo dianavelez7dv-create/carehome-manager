@@ -4184,7 +4184,7 @@ function editarSV(sid) {
   var fields = {fSVR:s.residenteId, svS:s.tas, svDi:s.tad, svF:s.fc, svFR:s.fr, svT:s.temp, svG:s.glucosa, svO2:s.spo2, svOb:s.obs||''};
   Object.keys(fields).forEach(function(id){ var el=document.getElementById(id); if(el) el.value=fields[id]||''; });
   var lupaEl = document.getElementById('lupa_fSVR'); if(lupaEl) lupaEl.value = nr(s.residenteId);
-  var btn = document.querySelector('#tab-signos .btn.bvs[onclick="saveSV()"]') || document.querySelector('#tab-signos .btn.bvs');
+  var btn = document.getElementById('btnSaveSV');
   if (btn) {
     btn.textContent = '💾 Actualizar Signos';
     btn._editSVId = sid;
@@ -4317,7 +4317,7 @@ function editarIncidente(iid) {
   var acc  = document.getElementById('inAcc'); if (acc) acc.value = inc.accion||'';
   var rep  = document.getElementById('inRep'); if (rep) rep.value = inc.reporta||'';
   // Cambiar botón de guardar para actualizar en vez de crear
-  var btn = document.querySelector('#tab-incidentes .btn.bvs');
+  var btn = document.getElementById('btnSaveInc');
   if (btn) {
     btn.textContent = '💾 Actualizar Incidente';
     btn._editId = iid;
