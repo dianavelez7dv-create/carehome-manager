@@ -1888,7 +1888,7 @@
         </div>
         <div class="fi ff"><label>Observaciones</label><textarea id="svOb" rows="2"></textarea></div>
       </div>
-      <div class="ab"><button class="btn bol" onclick="closeM('mSV')">Cancelar</button><button class="btn bam" onclick="saveSV()">💾 Guardar</button></div>
+      <div class="ab"><button class="btn bol" onclick="closeM('mSV')">Cancelar</button><button class="btn bam" id="btnSaveSV" onclick="saveSV()">💾 Guardar</button></div>
     </div>
   </div>
 </div>
@@ -1960,7 +1960,7 @@
         <div class="fi"><label>¿Notificó al médico?</label><select id="inNM"><option>No aún</option><option>Sí, notificado</option><option>No aplica</option></select></div>
         <div class="fi"><label>Reporta</label><input id="inRep" type="text"></div>
       </div>
-      <div class="ab"><button class="btn bol" onclick="closeM('mInc')">Cancelar</button><button class="btn bra" onclick="saveInc()">🚨 Reportar</button></div>
+      <div class="ab"><button class="btn bol" onclick="closeM('mInc')">Cancelar</button><button class="btn bra" id="btnSaveInc" onclick="saveInc()">🚨 Reportar</button></div>
     </div>
   </div>
 </div>
@@ -3126,13 +3126,7 @@ function openM(id) {
   var el = document.getElementById(id);
   if (!el) return;
   if (id === 'mLogin') { el.style.display = 'flex'; }
-  else { 
-    el.classList.add('on');
-    var mainEl = document.querySelector('.main');
-    if (mainEl) mainEl.style.pointerEvents = 'none';
-    // Ocultar todos los sub-tabs del expediente para que no floten encima
-    document.querySelectorAll('.is').forEach(function(s){ s.style.display='none'; });
-  }
+  else { el.classList.add('on'); }
 }
 function cerrarModal(id) { closeM(id); }
 function closeM(id) {
@@ -3140,13 +3134,7 @@ function closeM(id) {
   var el = document.getElementById(id);
   if (!el) return;
   if (id === 'mLogin') { el.style.display = 'none'; }
-  else { 
-    el.classList.remove('on');
-    var mainEl = document.querySelector('.main');
-    if (mainEl) mainEl.style.pointerEvents = '';
-    // Restaurar visibilidad de sub-tabs
-    document.querySelectorAll('.is').forEach(function(s){ s.style.display=''; });
-  }
+  else { el.classList.remove('on'); }
 }
 document.querySelectorAll('.mo').forEach(function(o){
   o.addEventListener('click', function(e){ if(e.target===o) o.classList.remove('on'); });
@@ -4091,7 +4079,7 @@ function saveMed() {
     var nonEmpty = Array.from(mRsel.options).filter(function(o){ return o.value; });
     if (!rid && nonEmpty.length === 1) rid = nonEmpty[0].value;
   }
-  var nom=document.getElementById('mN').value.trim();
+  var mNel=document.getElementById('mN'); var nom=mNel?mNel.value.trim():'';
   if (!rid||!nom) { toast('⚠️ Residente y medicamento obligatorios'); return; }
   var _pinMed = document.getElementById('mE') ? document.getElementById('mE').value.trim() : '';
   var _empMed = _pinMed ? DB.usuarios.find(function(u){ return u.password&&u.password.slice(-4)===_pinMed; }) : null;
@@ -4101,7 +4089,7 @@ function saveMed() {
     if(!pin) return '';
     var emp=DB.usuarios.find(function(u){ return u.password&&u.password.slice(-4)===pin; });
     return emp?emp.nombre:pin;
-  })(),nombre:nom,dosis:document.getElementById('mD').value.trim(),via:document.getElementById('mV').value,hora:(function(){ var h=document.getElementById('mH')?document.getElementById('mH').value:''; var m=document.getElementById('mHMin')?document.getElementById('mHMin').value:'00'; var ap=document.getElementById('mHAmPm')?document.getElementById('mHAmPm').value:'AM'; return h+':'+(String(m).padStart(2,'0'))+' '+ap; })(),estado:document.getElementById('mEst').value,obs:document.getElementById('mO').value.trim()};
+  })(),nombre:nom,dosis:(document.getElementById('mD')?document.getElementById('mD').value.trim():''),via:(document.getElementById('mV')?document.getElementById('mV').value:''),hora:(function(){ var h=document.getElementById('mH')?document.getElementById('mH').value:''; var m=document.getElementById('mHMin')?document.getElementById('mHMin').value:'00'; var ap=document.getElementById('mHAmPm')?document.getElementById('mHAmPm').value:'AM'; return h+':'+(String(m).padStart(2,'0'))+' '+ap; })(),estado:(document.getElementById('mEst')?document.getElementById('mEst').value:''),obs:(document.getElementById('mO')?document.getElementById('mO').value.trim():'')};
   DB.medicamentos.push(m); sDB(); closeM('mMed');
   if(document.getElementById('mE')) document.getElementById('mE').value='';
   if(document.getElementById('mERes')) { document.getElementById('mERes').textContent='Ingresa tu PIN'; document.getElementById('mERes').className='pin-emp-result pin-emp-idle'; }
@@ -4126,7 +4114,7 @@ function rMed() {
   var h='';
   lista.forEach(function(m){
     var bc=m.estado.includes('✅')?'bvd':m.estado.includes('❌')||m.estado.includes('🚫')?'brd':'bnd';
-    h+='<tr><td>'+(m.fecha||'')+' '+( m.hora||'')+'</td><td>'+nr(m.residenteId)+'</td><td><strong>'+m.nombre+'</strong></td><td>'+(m.dosis||'—')+'</td><td>'+m.via+'</td><td>'+(m.enfermera||'—')+'</td><td><span class="badge '+bc+'">'+m.estado.replace(/[✅❌🚫⏳]/g,'').trim()+'</span></td><td style="font-size:12px">'+(m.obs||'—')+'</td></tr>';
+    h+='<tr><td>'+(m.fecha||'')+' '+( m.hora||'')+'</td><td>'+nr(m.residenteId)+'</td><td><strong>'+m.nombre+'</strong></td><td>'+(m.dosis||'—')+'</td><td>'+m.via+'</td><td>'+(m.enfermera||'—')+'</td><td><span class="badge '+bc+'">'+m.estado.replace(/[✅❌🚫⏳]/g,'').trim()+'</span></td><td style="font-size:12px">'+(m.obs||'—')+'</td><td><button class="btn bxs bmo" data-mid="'+m.id+'" onclick="editarMed(this.dataset.mid)">✏️</button>'+(m.modificadoPor?'<div style="font-size:10px;color:var(--gm)">'+m.modificadoPor+'</div>':'')+'</td></tr>';
   });
   tbody.innerHTML=h;
 }
@@ -4179,9 +4167,16 @@ function saveSV() {
 function editarSV(sid) {
   var s = (DB.signos||[]).find(function(x){ return x.id===sid; });
   if (!s) return;
-  var fields = {fSVR:s.residenteId, svS:s.tas, svDi:s.tad, svF:s.fc, svFR:s.fr, svT:s.temp, svG:s.glucosa, svO2:s.spo2, svOb:s.obs||''};
+  // Abrir modal primero
+  openSV();
+  setTimeout(function(){
+  var fields = {svS:s.tas, svDi:s.tad, svF:s.fc, svFR:s.fr, svT:s.temp, svG:s.glucosa, svO2:s.spo2, svOb:s.obs||''};
   Object.keys(fields).forEach(function(id){ var el=document.getElementById(id); if(el) el.value=fields[id]||''; });
-  var lupaEl = document.getElementById('lupa_fSVR'); if(lupaEl) lupaEl.value = nr(s.residenteId);
+  // Seleccionar residente
+  var svRsel = document.getElementById('svR')||document.getElementById('fSVR');
+  if(svRsel) svRsel.value = s.residenteId;
+  var lupaEl = document.getElementById('lupa_fSVR')||document.getElementById('lupa_svR');
+  if(lupaEl) lupaEl.value = nr(s.residenteId);
   var btn = document.getElementById('btnSaveSV');
   if (btn) {
     btn.textContent = '💾 Actualizar Signos';
@@ -4206,6 +4201,7 @@ function editarSV(sid) {
   }
   var form=document.querySelector('#tab-signos .card'); if(form) form.scrollIntoView({behavior:'smooth'});
   toast('✏️ Editando signos — modifica y guarda','am');
+  }, 100); // fin setTimeout
 }
 
 function editarMed(mid) {
@@ -4315,6 +4311,8 @@ function editarIncidente(iid) {
   var acc  = document.getElementById('inAcc'); if (acc) acc.value = inc.accion||'';
   var rep  = document.getElementById('inRep'); if (rep) rep.value = inc.reporta||'';
   // Cambiar botón de guardar para actualizar en vez de crear
+  openM('mInc');
+  setTimeout(function(){
   var btn = document.getElementById('btnSaveInc');
   if (btn) {
     btn.textContent = '💾 Actualizar Incidente';
@@ -4340,8 +4338,7 @@ function editarIncidente(iid) {
     };
   }
   // Scroll al formulario
-  var form = document.querySelector('#tab-incidentes .card');
-  if (form) form.scrollIntoView({behavior:'smooth'});
+  }, 100); // fin setTimeout
   toast('✏️ Editando incidente — modifica y guarda', 'am');
 }
 
