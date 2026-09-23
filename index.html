@@ -299,8 +299,12 @@
             <option value="Otro">📄 Otro</option>
           </select>
           <label class="btn bvs" style="cursor:pointer;margin:0">
-            ➕ Subir archivo
+            📎 Subir archivo
             <input type="file" id="docResFile" accept=".pdf,.jpg,.jpeg,.png,.webp" multiple style="display:none" onchange="subirDocRes(this)">
+          </label>
+          <label class="btn bvs" style="cursor:pointer;margin:0;background:#27AE60">
+            📷 Tomar foto
+            <input type="file" id="docResCamara" accept="image/*" capture="environment" style="display:none" onchange="subirDocRes(this)">
           </label>
         </div>
       </div>
@@ -3992,17 +3996,8 @@ function abrirDocRes(elOrId) {
   prev.innerHTML = '<div style="text-align:center;padding:30px;color:var(--pa)">⏳ Cargando...</div>';
   openM('mdDocRes');
 
-  // Generar URL con signed URL (60 min) para seguridad, o usar public si bucket es público
-  supaClient.storage.from(DOCS_BUCKET).createSignedUrl(doc.path, 3600)
-    .then(function(resp) {
-      if (resp.error || !resp.data) {
-        // Fallback a URL pública
-        mostrarPrevDocRes(docSupaURL(doc.path), doc);
-      } else {
-        mostrarPrevDocRes(resp.data.signedUrl, doc);
-      }
-    })
-    .catch(function() { mostrarPrevDocRes(docSupaURL(doc.path), doc); });
+  // Usar URL pública directamente (bucket es público)
+  mostrarPrevDocRes(docSupaURL(doc.path), doc);
 }
 
 function mostrarPrevDocRes(url, doc) {
