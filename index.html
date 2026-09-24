@@ -320,11 +320,11 @@
     </div>
 
     <!-- MODAL vista previa documento -->
-    <div id="mdDocRes" class="modal" style="display:none">
-      <div class="mc" style="max-width:700px;width:95%">
+    <div id="mdDocRes" class="mo">
+      <div class="md" style="max-width:700px;width:95%">
         <div class="mh">
           <span id="mdDocResNombre">Documento</span>
-          <button class="mcl" onclick="cerrarModal('mdDocRes')">✕</button>
+          <button class="mx" onclick="closeM('mdDocRes')">✕</button>
         </div>
         <div class="mb" style="padding:0">
           <div id="mdDocResPreview" style="width:100%;min-height:300px;max-height:70vh;overflow:auto;background:#f5f5f5;display:flex;align-items:center;justify-content:center"></div>
@@ -3132,7 +3132,7 @@ function openM(id) {
   if (id === 'mLogin') { el.style.display = 'flex'; }
   else { el.classList.add('on'); }
 }
-function cerrarModal(id) { closeM(id); }
+function closeM(id) { closeM(id); }
 function closeM(id) {
   if (id==='mLogin' && (!SES || !SES.id)) return;
   var el = document.getElementById(id);
@@ -4046,7 +4046,7 @@ function eliminarDocRes() {
   res.documentos = res.documentos.filter(function(d){ return d.id !== doc.id; });
   logAudit('Documento eliminado: ' + doc.nombre + ' → ' + (res.nombre||res.id));
   _docResActivo = null;
-  cerrarModal('mdDocRes');
+  closeM('mdDocRes');
   renderDocsRes('todos');
   sDB();
   toast('🗑️ Documento eliminado');
@@ -5615,7 +5615,7 @@ function abrirModalLicencia(uid) {
     md.id = mid; md.className = 'modal';
     md.style.display = 'none';
     var tpl = document.createElement('template');
-    tpl.innerHTML = '<div class="mc" style="max-width:440px"><div class="mh"><span id="mdLicNombre">Licencias</span><button class="mcl" id="mdLicClose">&#x2715;</button></div><div class="mb" id="mdLicBody"></div></div>';
+    tpl.innerHTML = '<div class="mc" style="max-width:440px"><div class="mh"><span id="mdLicNombre">Licencias</span><button class="mx" id="mdLicClose">&#x2715;</button></div><div class="mb" id="mdLicBody"></div></div>';
     md.appendChild(tpl.content.cloneNode(true));
     document.getElementById('mdLicClose').onclick = function(){ md.style.display='none'; };
     document.body.appendChild(md);
