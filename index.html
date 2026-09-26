@@ -978,6 +978,17 @@
     <div class="mh" style="background:#E91E8C">👶 Registrar Niño <button class="mx" onclick="closeM('mCuidoNino')">✕</button></div>
     <div class="mb">
       <div class="fg">
+        <div class="fi ff" style="text-align:center">
+          <label>📷 Foto del niño</label>
+          <div style="margin:8px auto;width:100px;height:100px;border-radius:50%;overflow:hidden;background:var(--ac);border:2px solid var(--bo);display:flex;align-items:center;justify-content:center">
+            <img id="cnFotoPreview" src="" style="width:100%;height:100%;object-fit:cover;display:none">
+            <span id="cnFotoPlaceholder" style="font-size:40px">👶</span>
+          </div>
+          <div style="display:flex;gap:6px;justify-content:center;margin-top:6px">
+            <label class="btn bxs bvs" style="cursor:pointer">📁 Archivo<input type="file" accept="image/*" style="display:none" onchange="cnCargarFoto(this)"></label>
+            <label class="btn bxs" style="background:#27AE60;color:white;cursor:pointer">📷 Cámara<input type="file" accept="image/*" capture="environment" style="display:none" onchange="cnCargarFoto(this)"></label>
+          </div>
+        </div>
         <div class="fi"><label>Nombre del niño *</label><input id="cnNombre" type="text" placeholder="Nombre completo"></div>
         <div class="fi"><label>Fecha de nacimiento</label><input id="cnNacimiento" type="date"></div>
         <div class="fi"><label>Empleado responsable *</label><select id="cnEmpleado" style="font-size:14px;padding:8px;border:1.5px solid var(--bo);border-radius:8px;width:100%"><option value="">— Seleccionar —</option></select></div>
@@ -3279,6 +3290,20 @@ function cnPoblarSelects() {
   if (cnEmp) cnEmp.innerHTML = empOpts;
 }
 
+function cnCargarFoto(input) {
+  if (!input.files || !input.files[0]) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var preview = document.getElementById('cnFotoPreview');
+    var placeholder = document.getElementById('cnFotoPlaceholder');
+    if (preview) { preview.src = e.target.result; preview.style.display = 'block'; }
+    if (placeholder) placeholder.style.display = 'none';
+    // Guardar en variable global
+    window._cnFotoB64 = e.target.result;
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
 function saveCuidoNino() {
   var nombre = document.getElementById('cnNombre') ? document.getElementById('cnNombre').value.trim() : '';
   if (!nombre) { toast('⚠️ El nombre es obligatorio'); return; }
@@ -3297,6 +3322,7 @@ function saveCuidoNino() {
       n.contacto      = document.getElementById('cnContactoEmergencia').value.trim();
       n.horario       = document.getElementById('cnHorario').value.trim();
       n.obs           = document.getElementById('cnObs').value.trim();
+      if (window._cnFotoB64) n.foto = window._cnFotoB64;
       n.modificadoPor = SES ? SES.nombre : '';
       n.modificadoTs  = fh();
     }
@@ -3304,6 +3330,7 @@ function saveCuidoNino() {
   } else {
     DB.cuidoNinos.push({
       id: 'CN'+Date.now(),
+      foto:          window._cnFotoB64 || '',
       nombre:        nombre,
       nacimiento:    document.getElementById('cnNacimiento').value,
       empleado:      document.getElementById('cnEmpleado').value,
@@ -3313,6 +3340,7 @@ function saveCuidoNino() {
       contacto:      document.getElementById('cnContactoEmergencia').value.trim(),
       horario:       document.getElementById('cnHorario').value.trim(),
       obs:           document.getElementById('cnObs').value.trim(),
+      foto:          window._cnFotoB64 || '',
       creadoPor:     SES ? SES.nombre : '',
       ts:            fh()
     });
@@ -3320,6 +3348,12 @@ function saveCuidoNino() {
   sDB(); closeM('mCuidoNino'); rCuidoNinos(); cnPoblarSelects();
   logAudit('Cuido Niños', (editId?'Editado':'Registrado')+': '+nombre);
   toast('✅ Niño guardado', 'vs');
+  window._cnFotoB64 = '';
+  var prev2=document.getElementById('cnFotoPreview'); if(prev2){prev2.src='';prev2.style.display='none';}
+  var ph2=document.getElementById('cnFotoPlaceholder'); if(ph2) ph2.style.display='';
+  window._cnFotoB64 = '';
+  var prevCl=document.getElementById('cnFotoPreview'); if(prevCl){prevCl.src='';prevCl.style.display='none';}
+  var phCl=document.getElementById('cnFotoPlaceholder'); if(phCl) phCl.style.display='';
   ['cnNombre','cnNacimiento','cnCondicion','cnAlergias','cnTelEmergencia','cnContactoEmergencia','cnHorario','cnObs'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.value='';
   });
@@ -3331,6 +3365,12 @@ function editarCuidoNino(id) {
   cnPoblarSelects();
   openM('mCuidoNino');
   setTimeout(function(){
+    window._cnFotoB64 = n.foto || '';
+    var prev=document.getElementById('cnFotoPreview'); var ph=document.getElementById('cnFotoPlaceholder');
+    if(n.foto && prev){ prev.src=n.foto; prev.style.display='block'; if(ph) ph.style.display='none'; } else { if(prev) prev.style.display='none'; if(ph) ph.style.display=''; }
+    window._cnFotoB64 = n.foto || '';
+    var prevE=document.getElementById('cnFotoPreview'); var phE=document.getElementById('cnFotoPlaceholder');
+    if(n.foto && prevE){prevE.src=n.foto;prevE.style.display='block';if(phE)phE.style.display='none';}else{if(prevE)prevE.style.display='none';if(phE)phE.style.display='';}
     var fields = {cnNombre:n.nombre, cnNacimiento:n.nacimiento||'', cnEmpleado:n.empleado||'', cnCondicion:n.condicion||'', cnAlergias:n.alergias||'', cnTelEmergencia:n.telEmergencia||'', cnContactoEmergencia:n.contacto||'', cnHorario:n.horario||'', cnObs:n.obs||''};
     Object.keys(fields).forEach(function(fid){ var el=document.getElementById(fid); if(el) el.value=fields[fid]; });
     var btn=document.getElementById('btnSaveCN');
@@ -3355,7 +3395,8 @@ function rCuidoNinos() {
       edad = a + ' año(s)';
     }
     h += '<div class="card" style="margin:0;padding:0;overflow:hidden">';
-    h += '<div style="background:#E91E8C;color:white;padding:10px 14px;font-weight:700">👶 '+n.nombre+(edad?' · '+edad:'')+'</div>';
+    var fotoHtml = n.foto ? '<img src="'+n.foto+'" style="width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid white;margin-right:10px">' : '<div style="width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;font-size:28px;margin-right:10px">👶</div>';
+    h += '<div style="background:#E91E8C;color:white;padding:10px 14px;font-weight:700;display:flex;align-items:center">'+fotoHtml+'<div>'+n.nombre+(edad?'<br><span style="font-size:11px;font-weight:400">'+edad+'</span>':'')+'</div></div>';
     h += '<div style="padding:12px;font-size:13px">';
     if (n.empleado)     h += '<div>👤 <b>Empleado:</b> '+n.empleado+'</div>';
     if (n.horario)      h += '<div>⏰ <b>Horario:</b> '+n.horario+'</div>';
