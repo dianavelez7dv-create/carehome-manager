@@ -78,6 +78,7 @@
   <div class="nt tab-admin" onclick="goTab('pagos',this)">💳 Pagos</div>
   <div class="nt tab-admin" onclick="goTab('fallecidos',this)">✝ Fallecidos</div>
   <div class="nt tab-admin" onclick="goTab('usuarios',this)">👥 Usuarios</div>
+  <div class="nt tab-admin" onclick="goTab('cuido_ninos',this)">👶 Cuido Niños</div>
   <div class="nt" onclick="goTab('guia',this)">📖 Guía</div>
   <div style="flex:1;min-width:8px"></div>
   <div class="nav-salir">
@@ -921,6 +922,134 @@
     </div>
   </div>
 
+</div>
+
+<!-- CUIDO NIÑOS -->
+<div class="sec" id="tab-cuido_ninos">
+  <div class="card">
+    <div class="ch" style="background:#E91E8C">👶 Área de Cuido de Niños</div>
+    <div class="cb">
+      <div style="display:flex;gap:0;margin-bottom:14px;border-bottom:2px solid var(--bo)">
+        <div class="itb on" id="cnTab_ninos" onclick="cnSubTab('ninos',this)" style="padding:10px 16px;cursor:pointer;font-size:13px;font-weight:700">👶 Niños</div>
+        <div class="itb" id="cnTab_registro" onclick="cnSubTab('registro',this)" style="padding:10px 16px;cursor:pointer;font-size:13px;font-weight:700">⏱️ Entradas/Salidas</div>
+        <div class="itb" id="cnTab_accidentes" onclick="cnSubTab('accidentes',this)" style="padding:10px 16px;cursor:pointer;font-size:13px;font-weight:700">⚠️ Accidentes</div>
+      </div>
+      <div id="cnPanelNinos">
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <button class="btn" style="background:#E91E8C;color:white" onclick="openM('mCuidoNino')">➕ Registrar Niño</button>
+        </div>
+        <div id="cnListaNinos"><div class="es"><div class="ei">👶</div><p>Sin niños registrados.</p></div></div>
+      </div>
+      <div id="cnPanelRegistro" style="display:none">
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:flex-end">
+          <div class="fi" style="flex:1;min-width:200px">
+            <label>Niño</label>
+            <select id="cnSelNino" style="font-size:14px;padding:8px;border:1.5px solid var(--bo);border-radius:8px;width:100%"><option value="">— Seleccionar —</option></select>
+          </div>
+          <button class="btn bvs" onclick="cnPonchar('entrada')">✅ Entrada</button>
+          <button class="btn bra" onclick="cnPonchar('salida')">🚪 Salida</button>
+          <button class="btn" style="background:#7B2D8B;color:white" onclick="openM('mCnQRScan')">📷 Escanear QR</button>
+        </div>
+        <div class="fi" style="margin-bottom:12px;max-width:200px">
+          <label>Filtrar por fecha</label>
+          <input type="date" id="cnFechaReg" style="font-size:14px;padding:8px;border:1.5px solid var(--bo);border-radius:8px;width:100%">
+        </div>
+        <div class="tw"><table>
+          <thead><tr><th>Fecha/Hora</th><th>Niño</th><th>Tipo</th><th>Registró</th></tr></thead>
+          <tbody id="tCnRegistro"></tbody>
+        </table></div>
+      </div>
+      <div id="cnPanelAccidentes" style="display:none">
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <button class="btn bra" onclick="openM('mCuidoAccidente')">⚠️ Reportar Accidente</button>
+        </div>
+        <div class="tw"><table>
+          <thead><tr><th>Fecha/Hora</th><th>Niño</th><th>Descripción</th><th>Acción tomada</th><th>Notificó</th><th>Reportó</th></tr></thead>
+          <tbody id="tCnAccidentes"></tbody>
+        </table></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Registrar Niño -->
+<div class="mo" id="mCuidoNino">
+  <div class="md" style="max-width:560px">
+    <div class="mh" style="background:#E91E8C">👶 Registrar Niño <button class="mx" onclick="closeM('mCuidoNino')">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="fi"><label>Nombre del niño *</label><input id="cnNombre" type="text" placeholder="Nombre completo"></div>
+        <div class="fi"><label>Fecha de nacimiento</label><input id="cnNacimiento" type="date"></div>
+        <div class="fi"><label>Empleado responsable *</label><select id="cnEmpleado" style="font-size:14px;padding:8px;border:1.5px solid var(--bo);border-radius:8px;width:100%"><option value="">— Seleccionar —</option></select></div>
+        <div class="fi"><label>Condición médica</label><input id="cnCondicion" type="text" placeholder="Ej: Asma, diabetes..."></div>
+        <div class="fi"><label>Alergias</label><input id="cnAlergias" type="text" placeholder="Ej: Penicilina, mariscos..."></div>
+        <div class="fi"><label>Teléfono emergencia</label><input id="cnTelEmergencia" type="tel" placeholder="787-000-0000"></div>
+        <div class="fi"><label>Contacto emergencia</label><input id="cnContactoEmergencia" type="text" placeholder="Nombre del familiar"></div>
+        <div class="fi"><label>Horario de cuido</label><input id="cnHorario" type="text" placeholder="Ej: Lun-Vie 7am-5pm"></div>
+        <div class="fi ff"><label>Observaciones</label><textarea id="cnObs" rows="2"></textarea></div>
+      </div>
+    </div>
+    <div class="ab">
+      <button class="btn bol" onclick="closeM('mCuidoNino')">Cancelar</button>
+      <button class="btn" id="btnSaveCN" style="background:#E91E8C;color:white" onclick="saveCuidoNino()">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Reporte de Accidente -->
+<div class="mo" id="mCuidoAccidente">
+  <div class="md" style="max-width:520px">
+    <div class="mh" style="background:#C0392B;color:white">⚠️ Reporte de Accidente <button class="mx" onclick="closeM('mCuidoAccidente')">✕</button></div>
+    <div class="mb">
+      <div class="fg">
+        <div class="fi"><label>Niño *</label><select id="cnAccNino" style="font-size:14px;padding:8px;border:1.5px solid var(--bo);border-radius:8px;width:100%"><option value="">— Seleccionar —</option></select></div>
+        <div class="fi"><label>Fecha y hora</label><input id="cnAccFecha" type="datetime-local"></div>
+        <div class="fi ff"><label>Descripción del accidente *</label><textarea id="cnAccDesc" rows="3" placeholder="Describe qué ocurrió..."></textarea></div>
+        <div class="fi ff"><label>Acción tomada</label><textarea id="cnAccAccion" rows="2" placeholder="Primeros auxilios, llamadas..."></textarea></div>
+        <div class="fi"><label>Testigos</label><input id="cnAccTestigos" type="text" placeholder="Nombres de testigos"></div>
+        <div class="fi"><label>¿Se notificó al familiar?</label>
+          <select id="cnAccNotifico" style="font-size:14px;padding:8px;border:1.5px solid var(--bo);border-radius:8px;width:100%">
+            <option>Sí, notificado</option><option>No aún</option><option>No aplica</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="ab">
+      <button class="btn bol" onclick="closeM('mCuidoAccidente')">Cancelar</button>
+      <button class="btn bra" onclick="saveCuidoAccidente()">⚠️ Guardar Reporte</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal: Ver QR Niño -->
+<div class="mo" id="mCnQR">
+  <div class="md" style="max-width:340px;text-align:center">
+    <div class="mh" style="background:#E91E8C">📱 Código QR <button class="mx" onclick="closeM('mCnQR')">✕</button></div>
+    <div class="mb">
+      <div id="cnQRNombre" style="font-size:15px;font-weight:700;margin-bottom:12px"></div>
+      <div id="cnQRCode" style="display:flex;justify-content:center;margin-bottom:12px"></div>
+      <div style="font-size:11px;color:var(--gm);margin-bottom:10px">Escanea para registrar entrada/salida</div>
+      <button class="btn bvs" onclick="descargarQRNino()">⬇️ Descargar QR</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Escanear QR -->
+<div class="mo" id="mCnQRScan">
+  <div class="md" style="max-width:400px">
+    <div class="mh" style="background:#7B2D8B;color:white">📷 Escanear QR <button class="mx" onclick="cerrarScanQRNino()">✕</button></div>
+    <div class="mb" style="text-align:center">
+      <div style="margin-bottom:10px;font-size:13px;color:var(--gm)">Apunta la cámara al QR del niño</div>
+      <video id="cnQRVideo" style="width:100%;border-radius:8px;background:#000" playsinline></video>
+      <canvas id="cnQRCanvas" style="display:none"></canvas>
+      <div id="cnQRScanResult" style="margin-top:10px;font-size:14px;font-weight:700;color:var(--vs)"></div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
+        <button class="btn bvs" data-tipo="entrada" onclick="cnPoncharQR('entrada')">✅ Entrada</button>
+        <button class="btn bra" data-tipo="salida" onclick="cnPoncharQR('salida')">🚪 Salida</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- GUÍA DE USO -->
@@ -2928,7 +3057,7 @@
 
 var expResId = null;
 var DB = {
-  residentes:[], medicamentos:[], signos:[], alimentacion:[],
+  residentes:[], medicamentos:[], cuidoNinos:[], cuidoRegistros:[], cuidoAccidentes:[], signos:[], alimentacion:[],
   actividades:[], incidentes:[], visitas:[], turnos:[], expedientes:{},
   fallecidos:[], cuarentenas:[], ponches:[], aseos:[], auditoria:[],
   empDocs:{}, empMemos:{}, compras:[], mensajes:[], tareas:[],
@@ -2976,6 +3105,350 @@ function sDB() {
   try { actualizarSyncIndicator(); } catch(e) {}
 }
 function actualizarSyncIndicator() { }
+
+// ══════════════════════════════════════════
+// MÓDULO CUIDO DE NIÑOS
+// ══════════════════════════════════════════
+
+// QR para niños
+var _cnQRActivo = null;
+var _cnQRStream = null;
+var _cnQRScanned = null;
+
+function verQRNino(id) {
+  var n = (DB.cuidoNinos||[]).find(function(x){ return x.id===id; });
+  if (!n) return;
+  _cnQRActivo = n;
+  var nomEl = document.getElementById('cnQRNombre');
+  if (nomEl) nomEl.textContent = '👶 '+n.nombre;
+  var qrDiv = document.getElementById('cnQRCode');
+  if (qrDiv) {
+    qrDiv.innerHTML = '';
+    try {
+      new QRCode(qrDiv, {
+        text: 'CNINO:'+n.id+':'+n.nombre,
+        width: 200, height: 200,
+        colorDark: '#1A3A5C', colorLight: '#ffffff'
+      });
+    } catch(e) { qrDiv.innerHTML = '<div style="padding:20px;color:var(--gm)">QR no disponible</div>'; }
+  }
+  openM('mCnQR');
+}
+
+function descargarQRNino() {
+  if (!_cnQRActivo) return;
+  var qrDiv = document.getElementById('cnQRCode');
+  var img = qrDiv ? qrDiv.querySelector('img') : null;
+  if (!img) { toast('⚠️ QR no generado todavía'); return; }
+  var a = document.createElement('a');
+  a.href = img.src;
+  a.download = 'QR_'+_cnQRActivo.nombre.replace(/\s+/g,'_')+'.png';
+  a.click();
+  toast('⬇️ QR descargado');
+}
+
+function cerrarScanQRNino() {
+  if (_cnQRStream) { _cnQRStream.getTracks().forEach(function(t){ t.stop(); }); _cnQRStream = null; }
+  _cnQRScanned = null;
+  var res = document.getElementById('cnQRScanResult');
+  if (res) res.textContent = '';
+  closeM('mCnQRScan');
+}
+
+function openM_cnQRScan_orig() { openM('mCnQRScan'); iniciarScanQRNino(); }
+
+// Sobrescribir openM para mCnQRScan
+var _origOpenM = openM;
+openM = function(id) {
+  _origOpenM(id);
+  if (id === 'mCnQRScan') { setTimeout(iniciarScanQRNino, 300); }
+};
+
+function iniciarScanQRNino() {
+  var video = document.getElementById('cnQRVideo');
+  if (!video) return;
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    toast('⚠️ Cámara no disponible en este dispositivo'); return;
+  }
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}})
+    .then(function(stream){
+      _cnQRStream = stream;
+      video.srcObject = stream;
+      video.play();
+      escanearFrameQRNino();
+    })
+    .catch(function(){ toast('⚠️ No se pudo acceder a la cámara'); });
+}
+
+function escanearFrameQRNino() {
+  var video = document.getElementById('cnQRVideo');
+  var canvas = document.getElementById('cnQRCanvas');
+  if (!video || !canvas || !_cnQRStream) return;
+  if (video.readyState === video.HAVE_ENOUGH_DATA) {
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    // Usar BarcodeDetector si está disponible
+    if (window.BarcodeDetector) {
+      var bd = new BarcodeDetector({formats:['qr_code']});
+      bd.detect(canvas).then(function(codes){
+        if (codes.length > 0) {
+          procesarQRNino(codes[0].rawValue);
+          return;
+        }
+        if (_cnQRStream) requestAnimationFrame(escanearFrameQRNino);
+      }).catch(function(){ if (_cnQRStream) requestAnimationFrame(escanearFrameQRNino); });
+    } else {
+      // Sin BarcodeDetector - usar entrada manual
+      if (_cnQRStream) requestAnimationFrame(escanearFrameQRNino);
+    }
+  } else {
+    if (_cnQRStream) requestAnimationFrame(escanearFrameQRNino);
+  }
+}
+
+function procesarQRNino(texto) {
+  if (!texto.startsWith('CNINO:')) return;
+  var partes = texto.split(':');
+  var nid = partes[1];
+  var n = (DB.cuidoNinos||[]).find(function(x){ return x.id===nid; });
+  if (!n) { toast('⚠️ Niño no encontrado'); return; }
+  _cnQRScanned = n;
+  var res = document.getElementById('cnQRScanResult');
+  if (res) res.textContent = '✅ '+n.nombre+' identificado — selecciona Entrada o Salida';
+  // Seleccionar en el select
+  var sel = document.getElementById('cnSelNino');
+  if (sel) sel.value = nid;
+}
+
+function cnPoncharQR(tipo) {
+  if (!_cnQRScanned) { toast('⚠️ Escanea el QR del niño primero'); return; }
+  var n = _cnQRScanned;
+  if (!DB.cuidoRegistros) DB.cuidoRegistros = [];
+  var now = new Date();
+  DB.cuidoRegistros.push({
+    id: 'CR'+Date.now(), nino: n.nombre, ninoId: n.id, tipo: tipo,
+    fecha: now.toISOString().slice(0,10), hora: fh(), raw: now.toISOString(),
+    registradoPor: SES ? SES.nombre : ''
+  });
+  sDB(); rCuidoRegistros(); cerrarScanQRNino();
+  toast((tipo==='entrada'?'✅ Entrada':'🚪 Salida')+' registrada para '+n.nombre, 'vs');
+}
+
+function initCuidoNinos() {
+  if (!DB.cuidoNinos)     DB.cuidoNinos     = [];
+  if (!DB.cuidoRegistros) DB.cuidoRegistros = [];
+  if (!DB.cuidoAccidentes)DB.cuidoAccidentes= [];
+  var hoy = new Date().toISOString().slice(0,10);
+  var fEl = document.getElementById('cnFechaReg');
+  if (fEl && !fEl.value) fEl.value = hoy;
+  cnPoblarSelects();
+  rCuidoNinos();
+  rCuidoRegistros();
+  rCuidoAccidentes();
+}
+
+function cnSubTab(tab, btn) {
+  ['ninos','registro','accidentes'].forEach(function(t){
+    var p = document.getElementById('cnPanel'+t.charAt(0).toUpperCase()+t.slice(1));
+    var b = document.getElementById('cnTab_'+t);
+    if (p) p.style.display = t===tab ? 'block' : 'none';
+    if (b) b.classList.toggle('on', t===tab);
+  });
+  if (tab==='registro') rCuidoRegistros();
+  if (tab==='accidentes') rCuidoAccidentes();
+}
+
+function cnPoblarSelects() {
+  var opts = '<option value="">— Seleccionar —</option>';
+  (DB.cuidoNinos||[]).forEach(function(n){
+    opts += '<option value="'+n.id+'">'+n.nombre+'</option>';
+  });
+  ['cnSelNino','cnAccNino'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.innerHTML = opts;
+  });
+  // Poblar empleados
+  var empOpts = '<option value="">— Seleccionar —</option>';
+  (DB.usuarios||[]).forEach(function(u){
+    empOpts += '<option value="'+u.nombre+'">'+u.nombre+'</option>';
+  });
+  var cnEmp = document.getElementById('cnEmpleado');
+  if (cnEmp) cnEmp.innerHTML = empOpts;
+}
+
+function saveCuidoNino() {
+  var nombre = document.getElementById('cnNombre') ? document.getElementById('cnNombre').value.trim() : '';
+  if (!nombre) { toast('⚠️ El nombre es obligatorio'); return; }
+  if (!DB.cuidoNinos) DB.cuidoNinos = [];
+  var btn = document.getElementById('btnSaveCN');
+  var editId = btn ? btn._editId : null;
+  if (editId) {
+    var n = DB.cuidoNinos.find(function(x){ return x.id===editId; });
+    if (n) {
+      n.nombre        = nombre;
+      n.nacimiento    = document.getElementById('cnNacimiento').value;
+      n.empleado      = document.getElementById('cnEmpleado').value;
+      n.condicion     = document.getElementById('cnCondicion').value.trim();
+      n.alergias      = document.getElementById('cnAlergias').value.trim();
+      n.telEmergencia = document.getElementById('cnTelEmergencia').value.trim();
+      n.contacto      = document.getElementById('cnContactoEmergencia').value.trim();
+      n.horario       = document.getElementById('cnHorario').value.trim();
+      n.obs           = document.getElementById('cnObs').value.trim();
+      n.modificadoPor = SES ? SES.nombre : '';
+      n.modificadoTs  = fh();
+    }
+    if (btn) { btn.textContent='💾 Guardar'; btn.onclick=saveCuidoNino; btn._editId=null; }
+  } else {
+    DB.cuidoNinos.push({
+      id: 'CN'+Date.now(),
+      nombre:        nombre,
+      nacimiento:    document.getElementById('cnNacimiento').value,
+      empleado:      document.getElementById('cnEmpleado').value,
+      condicion:     document.getElementById('cnCondicion').value.trim(),
+      alergias:      document.getElementById('cnAlergias').value.trim(),
+      telEmergencia: document.getElementById('cnTelEmergencia').value.trim(),
+      contacto:      document.getElementById('cnContactoEmergencia').value.trim(),
+      horario:       document.getElementById('cnHorario').value.trim(),
+      obs:           document.getElementById('cnObs').value.trim(),
+      creadoPor:     SES ? SES.nombre : '',
+      ts:            fh()
+    });
+  }
+  sDB(); closeM('mCuidoNino'); rCuidoNinos(); cnPoblarSelects();
+  logAudit('Cuido Niños', (editId?'Editado':'Registrado')+': '+nombre);
+  toast('✅ Niño guardado', 'vs');
+  ['cnNombre','cnNacimiento','cnCondicion','cnAlergias','cnTelEmergencia','cnContactoEmergencia','cnHorario','cnObs'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.value='';
+  });
+}
+
+function editarCuidoNino(id) {
+  var n = (DB.cuidoNinos||[]).find(function(x){ return x.id===id; });
+  if (!n) return;
+  cnPoblarSelects();
+  openM('mCuidoNino');
+  setTimeout(function(){
+    var fields = {cnNombre:n.nombre, cnNacimiento:n.nacimiento||'', cnEmpleado:n.empleado||'', cnCondicion:n.condicion||'', cnAlergias:n.alergias||'', cnTelEmergencia:n.telEmergencia||'', cnContactoEmergencia:n.contacto||'', cnHorario:n.horario||'', cnObs:n.obs||''};
+    Object.keys(fields).forEach(function(fid){ var el=document.getElementById(fid); if(el) el.value=fields[fid]; });
+    var btn=document.getElementById('btnSaveCN');
+    if(btn){ btn.textContent='💾 Actualizar'; btn._editId=id; }
+  }, 100);
+}
+
+function rCuidoNinos() {
+  var div = document.getElementById('cnListaNinos');
+  if (!div) return;
+  if (!(DB.cuidoNinos||[]).length) {
+    div.innerHTML='<div class="es"><div class="ei">👶</div><p>Sin niños registrados.</p></div>';
+    return;
+  }
+  var h = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">';
+  DB.cuidoNinos.forEach(function(n) {
+    var edad = '';
+    if (n.nacimiento) {
+      var hoy = new Date(); var nac = new Date(n.nacimiento);
+      var a = hoy.getFullYear()-nac.getFullYear();
+      if (hoy.getMonth()<nac.getMonth()||(hoy.getMonth()===nac.getMonth()&&hoy.getDate()<nac.getDate())) a--;
+      edad = a + ' año(s)';
+    }
+    h += '<div class="card" style="margin:0;padding:0;overflow:hidden">';
+    h += '<div style="background:#E91E8C;color:white;padding:10px 14px;font-weight:700">👶 '+n.nombre+(edad?' · '+edad:'')+'</div>';
+    h += '<div style="padding:12px;font-size:13px">';
+    if (n.empleado)     h += '<div>👤 <b>Empleado:</b> '+n.empleado+'</div>';
+    if (n.horario)      h += '<div>⏰ <b>Horario:</b> '+n.horario+'</div>';
+    if (n.condicion)    h += '<div>🏥 <b>Condición:</b> '+n.condicion+'</div>';
+    if (n.alergias)     h += '<div style="color:var(--ra)">⚠️ <b>Alergias:</b> '+n.alergias+'</div>';
+    if (n.contacto)     h += '<div>📞 <b>Contacto:</b> '+n.contacto+(n.telEmergencia?' · <a href="tel:'+n.telEmergencia+'">'+n.telEmergencia+'</a>':'')+'</div>';
+    if (n.obs)          h += '<div style="color:var(--gm);font-size:12px">'+n.obs+'</div>';
+    h += '<div style="display:flex;gap:6px;margin-top:8px">';
+    h += '<button class="btn bxs bmo" data-cnid="'+n.id+'" onclick="editarCuidoNino(this.dataset.cnid)">✏️ Editar</button>';
+    h += '<button class="btn bxs" style="background:#7B2D8B;color:white" data-cnid="'+n.id+'" onclick="verQRNino(this.dataset.cnid)">📱 QR</button>';
+    h += '<button class="btn bxs bra" data-cnid="'+n.id+'" onclick="if(confirm(\"¿Eliminar?\"))eliminarCuidoNino(this.dataset.cnid)">🗑️</button>';
+    h += '</div></div></div>';
+  });
+  h += '</div>';
+  div.innerHTML = h;
+}
+
+function eliminarCuidoNino(id) {
+  DB.cuidoNinos = (DB.cuidoNinos||[]).filter(function(x){ return x.id!==id; });
+  sDB(); rCuidoNinos(); cnPoblarSelects();
+  toast('🗑️ Niño eliminado');
+}
+
+function cnPonchar(tipo) {
+  var sel = document.getElementById('cnSelNino');
+  var nid = sel ? sel.value : '';
+  if (!nid) { toast('⚠️ Selecciona un niño'); return; }
+  var n = (DB.cuidoNinos||[]).find(function(x){ return x.id===nid; });
+  if (!DB.cuidoRegistros) DB.cuidoRegistros = [];
+  var now = new Date();
+  DB.cuidoRegistros.push({
+    id:     'CR'+Date.now(),
+    nino:   n ? n.nombre : nid,
+    ninoId: nid,
+    tipo:   tipo,
+    fecha:  now.toISOString().slice(0,10),
+    hora:   fh(),
+    raw:    now.toISOString(),
+    registradoPor: SES ? SES.nombre : ''
+  });
+  sDB(); rCuidoRegistros();
+  toast((tipo==='entrada'?'✅ Entrada':'🚪 Salida')+' registrada para '+(n?n.nombre:''),'vs');
+}
+
+function rCuidoRegistros() {
+  var tbody = document.getElementById('tCnRegistro');
+  if (!tbody) return;
+  var fecha = document.getElementById('cnFechaReg') ? document.getElementById('cnFechaReg').value : '';
+  var lista = (DB.cuidoRegistros||[]).filter(function(r){
+    return !fecha || r.fecha===fecha;
+  }).slice().reverse();
+  if (!lista.length) { tbody.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--gm)">Sin registros.</td></tr>'; return; }
+  tbody.innerHTML = lista.map(function(r){
+    var color = r.tipo==='entrada'?'color:var(--vs)':'color:var(--ra)';
+    return '<tr><td style="white-space:nowrap">'+r.hora+'</td><td>'+r.nino+'</td><td style="'+color+';font-weight:700">'+(r.tipo==='entrada'?'✅ Entrada':'🚪 Salida')+'</td><td>'+(r.registradoPor||'—')+'</td></tr>';
+  }).join('');
+}
+
+function saveCuidoAccidente() {
+  var ninoSel = document.getElementById('cnAccNino');
+  var nid = ninoSel ? ninoSel.value : '';
+  var desc = document.getElementById('cnAccDesc') ? document.getElementById('cnAccDesc').value.trim() : '';
+  if (!nid || !desc) { toast('⚠️ Niño y descripción son obligatorios'); return; }
+  var n = (DB.cuidoNinos||[]).find(function(x){ return x.id===nid; });
+  if (!DB.cuidoAccidentes) DB.cuidoAccidentes = [];
+  var fechaEl = document.getElementById('cnAccFecha');
+  DB.cuidoAccidentes.push({
+    id:          'CA'+Date.now(),
+    ninoId:      nid,
+    nino:        n ? n.nombre : nid,
+    fecha:       fechaEl ? fechaEl.value : fh(),
+    descripcion: desc,
+    accion:      document.getElementById('cnAccAccion') ? document.getElementById('cnAccAccion').value.trim() : '',
+    testigos:    document.getElementById('cnAccTestigos') ? document.getElementById('cnAccTestigos').value.trim() : '',
+    notifico:    document.getElementById('cnAccNotifico') ? document.getElementById('cnAccNotifico').value : '',
+    reportadoPor:SES ? SES.nombre : '',
+    ts:          fh()
+  });
+  sDB(); closeM('mCuidoAccidente'); rCuidoAccidentes();
+  logAudit('Cuido Niños','Accidente reportado: '+(n?n.nombre:''));
+  toast('⚠️ Accidente reportado', 'am');
+  ['cnAccDesc','cnAccAccion','cnAccTestigos'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+}
+
+function rCuidoAccidentes() {
+  var tbody = document.getElementById('tCnAccidentes');
+  if (!tbody) return;
+  var lista = (DB.cuidoAccidentes||[]).slice().reverse();
+  if (!lista.length) { tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--gm)">Sin accidentes reportados.</td></tr>'; return; }
+  tbody.innerHTML = lista.map(function(a){
+    return '<tr style="background:#fff5f5"><td style="white-space:nowrap">'+a.fecha+'</td><td>'+a.nino+'</td><td style="font-size:12px">'+a.descripcion+'</td><td style="font-size:12px">'+(a.accion||'—')+'</td><td>'+(a.notifico||'—')+'</td><td>'+(a.reportadoPor||'—')+'</td></tr>';
+  }).join('');
+}
 
 cDB();
 
@@ -9658,6 +10131,7 @@ document.addEventListener('DOMContentLoaded', function arrancarApp() {
       try { rAuditoria(); rFallecidos(); rCuarentena(); rVM(); } catch(e) {}
       try { initCompras(); initMensajes(); initEmpleados(); } catch(e) {}
       try { initAseo(); initPagos(); initMenu(); calcNomina(); } catch(e) {}
+      try { initCuidoNinos(); } catch(e) {}
       try { calcAlerts(); } catch(e) {}
     } else {
       // Sin sesión — login ya visible en HTML
